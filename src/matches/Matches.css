@@ -1,0 +1,33 @@
+label {
+    padding-right: 5px;
+}
+
+.select_style {
+    background: #FFF;
+    overflow: hidden;
+    display: inline-block;
+    color: #525252;
+    font-weight: 300;
+    -webkit-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+    -moz-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+    border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
+    -webkit-box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
+    -moz-box-shadow: 0 0 5px rgba(123,123,123,.2);
+    box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
+    border: solid 1px #DADADA;
+    font-family: "helvetica neue",arial;
+    position: relative;
+    cursor: pointer;
+}
+
+.select_style select {
+    -webkit-appearance: none;
+    appearance:none;
+    width:120%;
+    background:none;
+    background:transparent;
+    border:none;
+    outline:none;
+    cursor:pointer;
+    padding:7px 10px;
+}

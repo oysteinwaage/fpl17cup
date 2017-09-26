@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import {Router,Route,IndexRoute, hashHistory} from 'react-router';
 import './index.css';
 import App from './App';
-import Kamper from './Kamper';
-import Grupper from './Grupper';
-import Funfacts from './Funfacts';
+import Kamper from './matches/Kamper';
+import Grupper from './groups/Grupper';
+import Funfacts from './funfacts/Funfacts';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(<Router history={hashHistory}>

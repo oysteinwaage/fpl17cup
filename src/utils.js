@@ -21,7 +21,7 @@ export var players = {
     26900: "FK Matre",
     2287279: "WE ARE THE PEOPLE",
     2690627: "Flakka Kickerz",
-    2003531: "SignOnFee-Lovers",
+    2003531: "SignOnFee Lovers",
 //Gruppe D
     446195: "Team champs",
     454412: "Liggeunderlaget",
