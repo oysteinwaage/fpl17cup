@@ -34,8 +34,11 @@ class App extends Component {
   render() {
     return (
         <div>
-            <div className="overHeader oh2">
-                <h1>For Fame And Glory FPL'17 Cup-O-Rama</h1>
+            <div className="overHeader">
+                <div className="headerText">
+                    <h1>For Fame And Glory FPL'17 Cup-O-Rama</h1>
+                </div>
+                <div className="headerArt"></div>
             </div>
             <ul className="header">
                 <li><IndexLink to="/" activeClassName="active">Kamper</IndexLink></li>
