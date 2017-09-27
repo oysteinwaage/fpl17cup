@@ -70,10 +70,10 @@ export function MatchesForGroup(props) {
         <div>
             {groups.map(function (groupLetter) {
                 const groupId = 'group' + groupLetter;
-                return (<div>
+                return (<div key={groupId}>
                     <div className='groupName'>{'Gruppe ' + groupLetter}</div>
                     {gamesPrGroupAndRound[round][groupId].map(function (match) {
-                        return <Match team1={match[0]} team2={match[1]}/>;
+                        return <Match key={match[0] + match[1]} team1={match[0]} team2={match[1]}/>;
                     })}
                 </div>);
             })}

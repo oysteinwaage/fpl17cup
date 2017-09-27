@@ -10,8 +10,9 @@ class App extends Component {
     };
 
     changeSelectedRound() {
-        this.state.selectedRound = document.getElementsByName('selectBox')[0].value;
-        this.forceUpdate();
+        this.setState({
+            selectedRound: document.getElementsByName('selectBox')[0].value
+        })
     };
 
     render() {
