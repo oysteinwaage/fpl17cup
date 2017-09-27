@@ -29,6 +29,7 @@ class App extends Component {
                     <option value="15">15</option>
                     <option value="17">17</option>
                     <option value="19">19</option>
+                    <option value="21">21</option>
                 </select>
                 <h2>{'Runde ' + this.state.selectedRound}</h2>
                 <MatchesForGroup chosenRound={this.state.selectedRound}/>
