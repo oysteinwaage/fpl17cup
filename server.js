@@ -39,8 +39,7 @@ app.get('/api/score', function (req, res) {
 
 var server = http.createServer(app);
 
-// var port = process.env.PORT || 9999;
-var port = 9999;
+var port = process.env.PORT || 9999;
 app.listen(port);
 
 console.log("Server running on: localhost:", port);
