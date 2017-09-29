@@ -4,7 +4,7 @@ import {Router,Route,IndexRoute, hashHistory} from 'react-router';
 import './index.css';
 import App from './App';
 import Kamper from './matches/Kamper';
-import Grupper from './groups/Grupper';
+import Grupper from './groups/Groups';
 import Funfacts from './funfacts/Funfacts';
 import registerServiceWorker from './registerServiceWorker';
 

@@ -19,7 +19,7 @@ export var players = {
     1727710: "Team Waage",
     407749: "Bayern Neverlusen",
     26900: "FK Matre",
-    2287279: "WE ARE THE PEOPLE",
+    2287279: "We Are The People",
     2690627: "Flakka Kickerz",
     2003531: "SignOnFee Lovers",
 //Gruppe D

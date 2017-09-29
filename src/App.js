@@ -14,7 +14,22 @@ class App extends Component {
                               }
                           }; */
         $.get("/api/score").done(function (result) {
-            console.log(result);
+            var dataz = {};
+            result.forEach(player => player.forEach(round => {
+                var roundKey = 'round' + round.event;
+               // console.log(roundKey);
+                //TODO overskriver tydeligivs hele skjiten hver gang.. fix it
+                dataz = Object.assign({}, dataz, {
+                    [round.entry]: {
+                        [roundKey]: {
+                            points: round.points,
+                            pointsOnBench: round.points_on_bench,
+                        }
+                    }
+                })
+            }));
+            console.log('result: ', result);
+            console.log('dataz: ', dataz);
         });
     }
 

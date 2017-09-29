@@ -40,7 +40,7 @@ const gamesPrGroupAndRound = {
     }
 };
 
-const groups = ['A', 'B', 'C', 'D', 'E'];
+export const groups = ['A', 'B', 'C', 'D', 'E'];
 
 function getRoundNr(round) {
     switch (round) {
