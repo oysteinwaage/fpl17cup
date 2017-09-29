@@ -14,7 +14,7 @@ class App extends Component {
                               }
                           }; */
         $.get("/api/score").done(function (result) {
-            var dataz = {};
+         /*   var dataz = {};
             result.forEach(player => player.forEach(round => {
                 var roundKey = 'round' + round.event;
                // console.log(roundKey);
@@ -29,7 +29,7 @@ class App extends Component {
                 })
             }));
             console.log('result: ', result);
-            console.log('dataz: ', dataz);
+            console.log('dataz: ', dataz); */
         });
     }
 
