@@ -3,12 +3,12 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import $ from 'jquery';
 
-import { playerIds } from './utils.js';
+import {playerIds} from './utils.js';
 
 var dataz = {};
 const reducer2 = (a, b) => {
     Object.assign(a, {
-        ['round' + b.event] : {
+        ['round' + b.event]: {
             points: b.points - b.event_transfers_cost,
             pointsOnBench: b.points_on_bench,
         }
@@ -24,8 +24,8 @@ const reducer1 = data => (acc, current) => {
 const transformData = data =>
     playerIds.reduce(reducer1(data), {})
 
-export function score(t1, t2, round){
-    return dataz[t1] && dataz[t1][round] ?  dataz[t1][round].points + ' - ' + dataz[t2][round].points : ' - ';
+export function score(t1, t2, round) {
+    return dataz[t1] && dataz[t1][round] ? dataz[t1][round].points + ' - ' + dataz[t2][round].points : ' - ';
 }
 
 class App extends Component {
@@ -37,10 +37,12 @@ class App extends Component {
     componentDidMount() {
         var that = this;
         $.get("/api/score").done(function (result) {
-            console.log('result: ', result);
-            console.log('mineData: ', transformData(result));
-            dataz = transformData(result);
-            that.setState({points: transformData(result)})
+            if (result) {
+                console.log('result: ', result);
+                console.log('mineData: ', transformData(result));
+                dataz = transformData(result);
+                that.setState({points: transformData(result)})
+            }
         });
         console.log('state: ', this.state);
     }
