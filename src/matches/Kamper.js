@@ -3,7 +3,7 @@ import './Matches.css';
 import {MatchesForGroup} from './Runder.js';
 
 
-class App extends Component {
+class Kamper extends Component {
     constructor(props) {
         super(props);
         this.state = {selectedRound: 3};
@@ -39,4 +39,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default Kamper;
