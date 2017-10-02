@@ -34,28 +34,27 @@ class App extends Component {
         console.log('result: ', result);
         console.log('dataz: ', dataz);
     }
-}
 
-render()
-{
-    return (
-        <div>
-            <div className="overHeader">
-                <div className="headerText">
-                    <h1>For Fame And Glory FPL'17 Cup-O-Rama</h1>
+    render() {
+        return (
+            <div>
+                <div className="overHeader">
+                    <div className="headerText">
+                        <h1>For Fame And Glory FPL'17 Cup-O-Rama</h1>
+                    </div>
+                    <div className="headerArt"></div>
                 </div>
-                <div className="headerArt"></div>
+                <ul className="header">
+                    <li><IndexLink to="/" activeClassName="active">Kamper</IndexLink></li>
+                    <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
+                    <li><Link to="/funfacts" activeClassName="active">Funfacts</Link></li>
+                </ul>
+                <div className="content">
+                    {this.props.children}
+                </div>
             </div>
-            <ul className="header">
-                <li><IndexLink to="/" activeClassName="active">Kamper</IndexLink></li>
-                <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
-                <li><Link to="/funfacts" activeClassName="active">Funfacts</Link></li>
-            </ul>
-            <div className="content">
-                {this.props.children}
-            </div>
-        </div>
-    );
+        );
+    }
 }
 
 
