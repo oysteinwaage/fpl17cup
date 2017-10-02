@@ -5,6 +5,7 @@ import $ from 'jquery';
 
 import { playerIds } from './utils.js';
 
+var dataz = {};
 const reducer2 = (a, b) => {
     Object.assign(a, {
         ['round' + b.event] : {
@@ -23,6 +24,10 @@ const reducer1 = data => (acc, current) => {
 const transformData = data =>
     playerIds.reduce(reducer1(data), {})
 
+export function score(t1, t2, round){
+    return dataz[t1] && dataz[t1][round] ?  dataz[t1][round].points + ' - ' + dataz[t2][round].points : ' - ';
+}
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -30,13 +35,13 @@ class App extends Component {
     };
 
     componentDidMount() {
-        var x = {};
+        var that = this;
         $.get("/api/score").done(function (result) {
             console.log('result: ', result);
             console.log('mineData: ', transformData(result));
-            x = transformData(result);
+            dataz = transformData(result);
+            that.setState({points: transformData(result)})
         });
-        this.setState({points: x});
         console.log('state: ', this.state);
     }
 

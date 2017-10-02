@@ -1,4 +1,5 @@
 import React from 'react';
+import { score } from './App.js';
 
 export var players = {
 //Gruppe A
@@ -50,7 +51,7 @@ export function Match(props) {
     return (
         <div className="match-score-container">
             <div className="match-result">
-                {players[props.team1] + ' - ' + players[props.team2]}
+                {players[props.team1] + ' ' + score(props.team1, props.team2, props.round) + ' ' + players[props.team2]}
             </div>
         </div>
     );
