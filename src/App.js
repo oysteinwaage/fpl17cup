@@ -31,8 +31,8 @@ class App extends Component {
         //         )
         //     })
         // });
-        console.log('result: ', result);
-        console.log('dataz: ', dataz);
+        // console.log('result: ', result);
+        // console.log('dataz: ', dataz);
     }
 
     render() {
