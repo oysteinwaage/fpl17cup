@@ -34,6 +34,10 @@ app.get('/api/score', function (req, res) {
         res.type('application/json')
             .send(values)
             .end();
+    }).catch((error) =>{
+        res.type('application/json')
+            .send(error)
+            .end();
     });
 });
 
