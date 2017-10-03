@@ -36,8 +36,11 @@ class App extends Component {
 
     componentDidMount() {
         var that = this;
-        $.get("/api/score").done(function (result) {
-            if (result) {
+        $.get({
+            url: "/api/score",
+            cache: false
+        }).done(function (result) {
+            if (result || []) {
                 console.log('result: ', result);
                 console.log('mineData: ', transformData(result));
                 dataz = transformData(result);
