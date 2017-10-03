@@ -13,8 +13,8 @@ const playerIds = [
 ];
 
 var app = express();
-app.use(express.static('dist'));
-app.use(express.static('public'));
+app.use(express.static('build'));
+// app.use(express.static('public'));
 
 app.use(function (err, req, res, next) {
     console.error(err.stack);
@@ -35,6 +35,12 @@ app.get('/api/score', function (req, res) {
             .send(values)
             .end();
     });
+});
+
+app.get('/api/ping', function (req, res) {
+        res.type('application/json')
+            .send("pong")
+            .end();
 });
 
 var server = http.createServer(app);
