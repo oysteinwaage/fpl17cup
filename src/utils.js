@@ -47,6 +47,8 @@ export var playerIds = [
     276910, 71962, 2287279
 ];
 
+export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
+
 export function Match(props) {
     return (
         <div className="match-score-container">

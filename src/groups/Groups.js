@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../App.css';
 import './Groups.css';
-import {groups} from '../matches/Runder.js';
+import {groups, gamesPrGroupAndRound, getRoundNr} from '../matches/Runder.js';
 import {players} from '../utils.js';
 
 const groupsMenmbers = {

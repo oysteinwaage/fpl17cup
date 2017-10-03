@@ -2,7 +2,7 @@ import React from 'react';
 import {Match} from '../utils.js'
 import './Runder.css';
 
-const gamesPrGroupAndRound = {
+export const gamesPrGroupAndRound = {
     round3_13: {
         groupA: [[1083723, 94232], [3041546, 86070], [1773168, 276910]],
         groupB: [[546878, 552058], [1413504, 144360], [92124, 71962]],
@@ -42,7 +42,7 @@ const gamesPrGroupAndRound = {
 
 export const groups = ['A', 'B', 'C', 'D', 'E'];
 
-function getRoundNr(round) {
+export function getRoundNr(round) {
     switch (round) {
         case '3':
         case '13':
