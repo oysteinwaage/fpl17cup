@@ -32,19 +32,24 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {points: {}};
+        this.setData = this.setData.bind(this);
     };
 
+    setData(data) {
+        this.setState({ points: data });
+        console.log(this.state);
+    }
+
     componentDidMount() {
-        var that = this;
-        $.get({
-            url: "/api/score",
-            cache: false
-        }).done(function (result) {
+        // var that = this;
+        $.get("/api/score").done(function (result) {
             if (result || []) {
-                console.log('result: ', result);
-                console.log('mineData: ', transformData(result));
+                // console.log('result: ', result);
                 dataz = transformData(result);
-                that.setState({points: transformData(result)})
+                // console.log('mineData: ', dataz);
+                // that.setData(transformData(result));
+                // this.setState({points: transformData(result)})
+                // that.forceUpdate();
             }
         });
         console.log('state: ', this.state);
