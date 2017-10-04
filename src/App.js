@@ -5,7 +5,7 @@ import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {playerIds, participatingRounds} from './utils.js';
 
-var dataz = {};
+export var dataz = {};
 export var groupData = {};
 export var currentRound = 5;
 
@@ -121,7 +121,7 @@ class App extends Component {
                 // console.log('result: ', result);
                 that.setCurrentRound(result[0].length);
                 dataz = transformData(result);
-                // console.log('mineData: ', dataz);
+                console.log('mineData: ', dataz);
                 that.setData(dataz);
                 // this.setState({points: transformData(result)})
                 // that.forceUpdate();
