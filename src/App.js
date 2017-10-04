@@ -6,7 +6,7 @@ import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {playerIds, participatingRounds} from './utils.js';
 
 var dataz = {};
-var groupData = {};
+export var groupData = {};
 export var currentRound = 5;
 
 const reducer2 = (a, b) => {
@@ -28,72 +28,105 @@ const transformData = data =>
     playerIds.reduce(reducer1(data), {})
 
 export function score(t1, t2, round) {
-    return dataz[t1] && dataz[t1][round] ? dataz[t1][round].points + ' - ' + dataz[t2][round].points : ' - ';
+    return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ' - ' + roundScore(t2, round) : ' - ';
 }
 
-//const makeGroupData = data =>
+function roundScore(team, round) {
+    return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
+}
+
+function newPointsFor(team, winningTeam) {
+    const originalPoints = groupData[team] ? groupData[team].points : 0;
+    if (winningTeam === team) {
+        return originalPoints + 3;
+    } else if (winningTeam === 'draw') {
+        return originalPoints + 1;
+    }
+    return originalPoints;
+}
+
+function newMatchesWonFor(team, winningTeam) {
+    const originalValue = groupData[team] ? groupData[team].matchesWon : 0;
+    return winningTeam === team ? originalValue + 1 : originalValue;
+}
+
+function newMatchesDrawnFor(team, winningTeam) {
+    const originalValue = groupData[team] ? groupData[team].matchesDrawn : 0;
+    return winningTeam === 'draw' ? originalValue + 1 : originalValue;
+}
+
+function newMatchesLostFor(team, winningTeam) {
+    const originalValue = groupData[team] ? groupData[team].matchesLost : 0;
+    return winningTeam !== 'draw' && winningTeam !== team ? originalValue + 1 : originalValue;
+}
+
+function updateGroupData(team1, team2, round) {
+    const team1Score = roundScore(team1, round);
+    const team2Score = roundScore(team2, round);
+    const winningTeam = team1Score > team2Score ? team1 : team1Score === team2Score ? 'draw' : team2;
+    Object.assign(groupData, {
+        [team1]: {
+            points: newPointsFor(team1, winningTeam),
+            matches: groupData[team1] ? groupData[team1].matches + 1 : 1,
+            matchesWon: newMatchesWonFor(team1, winningTeam),
+            matchesDrawn: newMatchesDrawnFor(team1, winningTeam),
+            matchesLost: newMatchesLostFor(team1, winningTeam),
+        },
+        [team2]: {
+            points: newPointsFor(team2, winningTeam),
+            matches: groupData[team2] ? groupData[team2].matches + 1 : 1,
+            matchesWon: newMatchesWonFor(team2, winningTeam),
+            matchesDrawn: newMatchesDrawnFor(team2, winningTeam),
+            matchesLost: newMatchesLostFor(team2, winningTeam),
+        }
+    })
+}
+
 function makeGroupData() {
-    participatingRounds.forEach(r => {
+    participatingRounds.filter(pr => pr <= currentRound).forEach(function (r) {
         groups.forEach(function (groupLetter) {
             const groupId = 'group' + groupLetter;
             gamesPrGroupAndRound[getRoundNr(r)][groupId].forEach(match => {
-                if (groupData[match[0]]) {
-                    groupData[match[0]].matches += 1;
-                    groupData[match[0]].points += 3;
-                } else {
-
-                }
+                updateGroupData(match[0], match[1], 'round' + r);
             })
         })
     })
-    console.log('makeGroup', groupData);
-
-    /* groups.map(function (groupLetter) {
-         const groupId = 'group' + groupLetter;
-         return {gamesPrGroupAndRound[round][groupId].map(function (match) {
-                 return <Match key={match[0] + match[1]}
-                               team1={match[0]}
-                               team2={match[1]}
-                               round={'round' + props.chosenRound}/>;
-             })};
-     }*/
 }
 
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {points: {}, currentRound: 3};
+        this.state = { points: {}, currentRound: 3 };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
     };
 
     setData(data) {
-        this.setState({points: data});
-        console.log(this.state);
+        this.setState({ points: data });
+        // console.log(this.state);
     }
 
     setCurrentRound(cur) {
-        this.setState({currentRound: cur});
+        this.setState({ currentRound: cur });
         currentRound = cur;
-        console.log(this.state);
+        // console.log(this.state);
     }
 
     componentDidMount() {
         var that = this;
         $.get("/api/score").done(function (result) {
             if (result || []) {
-                console.log('result: ', result);
-                dataz = transformData(result);
-                console.log('mineData: ', dataz);
-                that.setData(dataz);
+                // console.log('result: ', result);
                 that.setCurrentRound(result[0].length);
+                dataz = transformData(result);
+                // console.log('mineData: ', dataz);
+                that.setData(dataz);
                 // this.setState({points: transformData(result)})
                 // that.forceUpdate();
-                //groupData = makeGroupData(dataz);
                 makeGroupData();
             }
         });
-        console.log('state: ', this.state);
+        // console.log('state: ', this.state);
     }
 
     render() {

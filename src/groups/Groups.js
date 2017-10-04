@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../App.css';
 import './Groups.css';
 import {groups, gamesPrGroupAndRound, getRoundNr} from '../matches/Runder.js';
+import {groupData} from '../App.js';
 import {players} from '../utils.js';
 
 const groupsMenmbers = {
@@ -29,21 +30,24 @@ class App extends Component {
             <div>
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
+                    const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
+                       return groupData[b].points - groupData[a].points;
+                    });
                     return (<div key={groupId}>
                         <div className='groupName'>{'Gruppe ' + groupLetter}</div>
-                            {groupTableHeader}
-                            {groupsMenmbers[groupId].map(team => {
-                                return (
-                                    <tr key={team}>
-                                        <td className='name'>{players[team]}</td>
-                                        <td>2</td>
-                                        <td>1</td>
-                                        <td>0</td>
-                                        <td>1</td>
-                                        <td>3</td>
-                                    </tr>
-                                );
-                            })}
+                        {groupTableHeader}
+                        {sortedGroupMembers.map(team => {
+                            return (
+                                <tr key={team}>
+                                    <td className='name'>{players[team]}</td>
+                                    <td className='matches'>{groupData[team].matches}</td>
+                                    <td className='won'>{groupData[team].matchesWon}</td>
+                                    <td className='draw'>{groupData[team].matchesDrawn}</td>
+                                    <td className='lost'>{groupData[team].matchesLost}</td>
+                                    <td className='points'>{groupData[team].points}</td>
+                                </tr>
+                            );
+                        })}
                     </div>);
                 })}
             </div>
