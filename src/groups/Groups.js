@@ -16,11 +16,12 @@ const groupsMenmbers = {
 const groupTableHeader = (
     <tr>
         <td>Lag</td>
-        <td>Kamper</td>
+        <td>K</td>
         <td>S</td>
         <td>U</td>
         <td>T</td>
         <td>Poeng</td>
+        <td>Diff</td>
     </tr>
 )
 
@@ -37,6 +38,7 @@ class App extends Component {
                         <div className='groupName'>{'Gruppe ' + groupLetter}</div>
                         {groupTableHeader}
                         {sortedGroupMembers.map(team => {
+                            const diff = groupData[team].difference;
                             return (
                                 <tr key={team}>
                                     <td className='name'>{players[team]}</td>
@@ -45,6 +47,7 @@ class App extends Component {
                                     <td className='draw'>{groupData[team].matchesDrawn}</td>
                                     <td className='lost'>{groupData[team].matchesLost}</td>
                                     <td className='points'>{groupData[team].points}</td>
+                                    <td className='difference'>{diff > 0 ? '+' + diff : diff}</td>
                                 </tr>
                             );
                         })}

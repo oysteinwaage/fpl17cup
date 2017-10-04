@@ -71,6 +71,7 @@ function updateGroupData(team1, team2, round) {
             matchesWon: newMatchesWonFor(team1, winningTeam),
             matchesDrawn: newMatchesDrawnFor(team1, winningTeam),
             matchesLost: newMatchesLostFor(team1, winningTeam),
+            difference: groupData[team1] ? groupData[team1].difference + (team1Score-team2Score) : team1Score - team2Score,
         },
         [team2]: {
             points: newPointsFor(team2, winningTeam),
@@ -78,6 +79,7 @@ function updateGroupData(team1, team2, round) {
             matchesWon: newMatchesWonFor(team2, winningTeam),
             matchesDrawn: newMatchesDrawnFor(team2, winningTeam),
             matchesLost: newMatchesLostFor(team2, winningTeam),
+            difference: groupData[team2] ? groupData[team2].difference + (team2Score-team1Score) : team2Score - team1Score,
         }
     })
 }
