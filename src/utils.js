@@ -53,9 +53,9 @@ export function Match(props) {
     return (
         <div className="match-score-container">
             <div className="match-result">
-                <div className="homeTeam">{players[props.team1]}</div>
+                <div className="homeTeam team">{players[props.team1]} <br/> <div className="subName">Managers Navn</div></div>
                 <div className="score">{score(props.team1, props.team2, props.round)}</div>
-                <div className="awayTeam">{players[props.team2]}</div>
+                <div className="awayTeam team">{players[props.team2]} <br/> <div className="subName">Managers Navn</div></div>
             </div>
         </div>
     );

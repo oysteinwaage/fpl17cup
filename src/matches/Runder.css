@@ -27,10 +27,18 @@
     border-bottom: 1px solid #E8E8E8;
     padding: .7rem 1rem;
 }
+.team {
+    width: 30%;
+    font-weight: bold;
+}
 
 .homeTeam {
     text-align: right;
-    width: 30%;
+}
+
+.subName {
+    font-size: small;
+    font-weight: normal;
 }
 
 .score {
@@ -40,5 +48,4 @@
 
 .awayTeam {
     text-align: left;
-    width: 30%;
 }

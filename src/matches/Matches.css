@@ -31,3 +31,21 @@ label {
     cursor:pointer;
     padding:7px 10px;
 }
+/*.select_style select {*/
+    /*display: block;*/
+
+/*}*/
+
+/*.select_style {*/
+    /*font-size: 16px;*/
+    /*border-radius: 0;*/
+    /*width: 100%;*/
+    /*padding: 1rem;*/
+    /*position: relative;*/
+    /*border: 0;*/
+    /*background: none;*/
+    /*cursor: pointer;*/
+    /*z-index: 10;*/
+    /*-webkit-appearance: none;*/
+
+/*}*/
