@@ -1,9 +1,8 @@
-var http = require('http');
-var express = require('express');
-var util = require('util');
-var request = require('request');
-var fplapi = require('fpl-api-node');
-const leagueId = 44713;
+const http = require('http');
+const express = require('express');
+const util = require('util');
+const fplapi = require('fpl-api-node');
+// const leagueId = 44713;
 const playerIds = [
     1727710, 1773168, 446195, 92124, 407749, 1261708, 1898765,
     2690627, 2547467, 144360, 1305123, 1331886, 3041546,
@@ -12,16 +11,15 @@ const playerIds = [
     276910, 71962, 2287279
 ];
 
-var app = express();
+let app = express();
 app.use(express.static('build'));
-// app.use(express.static('public'));
 
 app.use(function (err, req, res, next) {
     console.error(err.stack);
     next(err);
 });
 
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     util.inspect(err);
     res.status(500).send({error: err.message});
 });
@@ -41,15 +39,29 @@ app.get('/api/score', function (req, res) {
     });
 });
 
+app.get('/api/players', function (req, res) {
+    Promise.all(
+        playerIds.map(fplapi.findEntry)
+    ).then(values => {
+        res.type('application/json')
+            .send(values)
+            .end();
+    }).catch((error) =>{
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
 app.get('/api/ping', function (req, res) {
         res.type('application/json')
             .send("pong")
             .end();
 });
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
-var port = process.env.PORT || 9999;
+const port = process.env.PORT || 9999;
 app.listen(port);
 
 console.log("Server running on: localhost:", port);

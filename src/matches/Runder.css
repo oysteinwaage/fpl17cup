@@ -19,7 +19,7 @@
     background-color: #38003C;
     color: #00FF87;
     border-bottom: 1px solid #E8E8E8;
-    padding: .7rem 0rem;
+    padding: .7rem 0;
 }
 .team {
     width: 40%;
@@ -33,6 +33,7 @@
 .subName {
     font-size: small;
     font-weight: normal;
+    padding-right: 4px;
 }
 
 .score {

@@ -1,7 +1,7 @@
 import React from 'react';
-import { score } from './App.js';
+import { score, dataz } from './App.js';
 
-export var players = {
+export const players = {
 //Gruppe A
     1083723: "Dompa IL",
     94232: "Herrems utvalgte",
@@ -39,7 +39,7 @@ export var players = {
     2547467: "FK Hoggormene",
 };
 
-export var playerIds = [
+export const playerIds = [
     1727710, 1773168, 446195, 92124, 407749, 1261708, 1898765,
     2690627, 2547467, 144360, 1305123, 1331886, 3041546,
     26900, 1969508, 454412, 2003531, 1083723, 546878, 188947,
@@ -53,10 +53,10 @@ export function Match(props) {
     return (
         <div className="match-score-container">
             <div className="match-result">
-                <div className="homeTeam team">{players[props.team1]} <br/> <div className="subName">Managers Navn</div></div>
+                <div className="homeTeam team">{players[props.team1]} <br/> <div className="subName">{dataz[props.team1] && dataz[props.team1].managerName}</div></div>
                 <div className="score">{score(props.team1, props.team2, props.round)}</div>
-                <div className="awayTeam team">{players[props.team2]} <br/> <div className="subName">Managers Navn</div></div>
+                <div className="awayTeam team">{players[props.team2]} <br/> <div className="subName">{dataz[props.team2] && dataz[props.team2].managerName}</div></div>
             </div>
         </div>
     );
-};
+}

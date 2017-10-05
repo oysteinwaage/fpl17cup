@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../App.css';
 import './Groups.css';
-import {groups, gamesPrGroupAndRound, getRoundNr} from '../matches/Runder.js';
+import {groups} from '../matches/Runder.js';
 import {groupData} from '../App.js';
 import {players} from '../utils.js';
 
@@ -11,7 +11,7 @@ const groupsMenmbers = {
     groupC: [1727710, 407749, 26900, 2287279, 2690627, 2003531],
     groupD: [446195, 454412, 1136421, 1499253, 159488, 1969508],
     groupE: [188947, 1305123, 1898765, 1261708, 1331886, 2547467],
-}
+};
 
 const groupTableHeader = (
     <tr>
@@ -23,7 +23,7 @@ const groupTableHeader = (
         <td>Diff</td>
         <td>Poeng</td>
     </tr>
-)
+);
 
 class App extends Component {
     render() {

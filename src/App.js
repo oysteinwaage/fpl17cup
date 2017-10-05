@@ -5,9 +5,9 @@ import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {playerIds, participatingRounds} from './utils.js';
 
-export var dataz = {};
-export var groupData = {};
-export var currentRound = 5;
+export let dataz = {};
+export let groupData = {};
+export let currentRound = 5;
 
 const reducer2 = (a, b) => {
     Object.assign(a, {
@@ -15,7 +15,7 @@ const reducer2 = (a, b) => {
             points: b.points - b.event_transfers_cost,
             pointsOnBench: b.points_on_bench,
         }
-    })
+    });
     return a;
 };
 
@@ -25,7 +25,7 @@ const reducer1 = data => (acc, current) => {
 };
 
 const transformData = data =>
-    playerIds.reduce(reducer1(data), {})
+    playerIds.reduce(reducer1(data), {});
 
 export function score(t1, t2, round) {
     return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ' - ' + roundScore(t2, round) : ' - ';
@@ -115,19 +115,28 @@ class App extends Component {
     }
 
     componentDidMount() {
-        var that = this;
+        let that = this;
         $.get("/api/score").done(function (result) {
             if (result || []) {
-                // console.log('result: ', result);
                 that.setCurrentRound(result[0].length);
                 dataz = transformData(result);
-                console.log('mineData: ', dataz);
                 that.setData(dataz);
                 // this.setState({points: transformData(result)})
                 // that.forceUpdate();
                 makeGroupData();
             }
+            $.get("/api/players").done(function (result) {
+                result.forEach(function (player) {
+                    Object.assign(dataz[player.id], {
+                        managerName: player.player_first_name + ' ' + player.player_last_name,
+                        teamName: player.name,
+                        totalTransfers: player.total_transfers,
+                    });
+                });
+            });
+        console.log('dataz: ', dataz);
         });
+
         // console.log('state: ', this.state);
     }
 
@@ -138,7 +147,7 @@ class App extends Component {
                     <div className="headerText">
                         <h1>For Fame And Glory FPL'17 Cup-O-Rama</h1>
                     </div>
-                    <div className="headerArt"></div>
+                    <div className="headerArt"/>
                 </div>
                 <ul className="header">
                     <li><IndexLink to="/" activeClassName="active">Kamper</IndexLink></li>
