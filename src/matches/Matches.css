@@ -1,51 +1,27 @@
 label {
-    padding-right: 5px;
+    font-family: "PremierSans-Regular",Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+.selectBoxContainer {
+    text-align: center;
 }
 
 .select_style {
-    background: #FFF;
-    overflow: hidden;
-    display: inline-block;
-    color: #525252;
-    font-weight: 300;
-    -webkit-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
-    -moz-border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
-    border-radius: 5px 4px 4px 5px/5px 5px 4px 4px;
-    -webkit-box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
-    -moz-box-shadow: 0 0 5px rgba(123,123,123,.2);
-    box-shadow: 0 0 5px rgba(123, 123, 123, 0.2);
-    border: solid 1px #DADADA;
-    font-family: "helvetica neue",arial;
+    font-size: 16px;
+    border-radius: 0;
+    width: 90%;
+    padding: 7px;
     position: relative;
+    border: 0;
     cursor: pointer;
+    z-index: 10;
+    background-color: #dfdfdf;
+    border-bottom: solid black 1px;
+}
+
+.select_style:hover{
+    border-bottom: solid red 1px;
 }
 
 .select_style select {
-    -webkit-appearance: none;
-    appearance:none;
-    width:120%;
-    background:none;
-    background:transparent;
-    border:none;
-    outline:none;
-    cursor:pointer;
-    padding:7px 10px;
+    display: block;
 }
-/*.select_style select {*/
-    /*display: block;*/
-
-/*}*/
-
-/*.select_style {*/
-    /*font-size: 16px;*/
-    /*border-radius: 0;*/
-    /*width: 100%;*/
-    /*padding: 1rem;*/
-    /*position: relative;*/
-    /*border: 0;*/
-    /*background: none;*/
-    /*cursor: pointer;*/
-    /*z-index: 10;*/
-    /*-webkit-appearance: none;*/
-
-/*}*/

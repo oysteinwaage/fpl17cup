@@ -1,20 +1,14 @@
 .groupName {
-    /*text-decoration: underline;*/
     font-size: large;
     margin-top: 15px;
-    /*padding-bottom: 5px;*/
     background-color: #dfdfdf;
-
     text-align: center;
-
 }
 
 .groupMatches {
-
 }
 
 .match-score-container {
-
 }
 
 .match-result {
