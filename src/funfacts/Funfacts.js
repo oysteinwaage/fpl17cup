@@ -22,9 +22,12 @@ class App extends Component {
         let lowestScore = 150;
         let playerMostPointsOnBench = 0;
         let mostPointsOnBench = 0;
+        let mostTransfersUsed = 0;
+        let playerMostTransfers = 0;
         playerIds.forEach(function (p) {
             const points = dataz[p]['round' + round].points;
             const pointsOnBench = dataz[p]['round' + round].pointsOnBench;
+            const transfersUsed = dataz[p].totalTransfers;
 
             if (points > highestScore) {
                 playerHighest = p;
@@ -33,19 +36,24 @@ class App extends Component {
                 playerLowest = p;
                 lowestScore = points;
             }
-            if (points > mostPointsOnBench) {
-                mostPointsOnBench = pointsOnBench > mostPointsOnBench
-                    ? pointsOnBench : mostPointsOnBench;
+            if (pointsOnBench > mostPointsOnBench) {
+                mostPointsOnBench = pointsOnBench;
                 playerMostPointsOnBench = p;
             }
-        })
+            if (transfersUsed > mostTransfersUsed) {
+                mostTransfersUsed = transfersUsed;
+                playerMostTransfers = p;
+            }
+        });
         return {
             highestScorePlayer: playerHighest,
             highestRoundScore: highestScore,
             lowestScorePlayer: playerLowest,
             lowestRoundScore: lowestScore,
             mostPointsOnBench,
-            playerMostPointsOnBench
+            playerMostPointsOnBench,
+            mostTransfersUsed,
+            playerMostTransfers,
         }
     }
 
@@ -60,6 +68,8 @@ class App extends Component {
                 ' (' + players[score.lowestScorePlayer] + ')'}</p>
                 <p>{'Flest poeng på benken: ' + score.mostPointsOnBench + ' ('
                 + players[score.playerMostPointsOnBench] + ') '}</p>
+                <p>{'Flest totale bytter: ' + score.mostTransfersUsed + ' ('
+                + players[score.playerMostTransfers] + ') '}</p>
                 <p>+++</p>
             </div>
         );

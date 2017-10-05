@@ -12,14 +12,14 @@ body {
 
 .headerText {
     width: 30%;
-    min-width: 270px;
+    min-width: 330px;
 }
 
 .headerArt {
     width: 70%;
     margin: 0;
     background: url('https://ismdj.scdn5.secure.raxcdn.com/static/libsass/plfpl/dist/img/header-bg-large.png?109fa73b2dbf') no-repeat right -50px bottom;
-    background-position: right -250px top;
+    background-position: right top;
     height: 130px;
     vertical-align: middle;
 }
@@ -41,8 +41,8 @@ ul.header li {
 
 ul.header {
     background-color: #111;
-    padding: 0px 20px 0px 20px;
-    margin: 0px;
+    padding: 0 20px 0 20px;
+    margin: 0;
 }
 
 ul.header li a {
