@@ -19,7 +19,7 @@ app.use(function (err, req, res, next) {
     next(err);
 });
 
-app.use(function (err, req, res) {
+app.use(function (err, req, res, next) {
     util.inspect(err);
     res.status(500).send({error: err.message});
 });
@@ -42,6 +42,20 @@ app.get('/api/score', function (req, res) {
 app.get('/api/players', function (req, res) {
     Promise.all(
         playerIds.map(fplapi.findEntry)
+    ).then(values => {
+        res.type('application/json')
+            .send(values)
+            .end();
+    }).catch((error) =>{
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/chips', function (req, res) {
+    Promise.all(
+        playerIds.map(fplapi.findEntryChips)
     ).then(values => {
         res.type('application/json')
             .send(values)

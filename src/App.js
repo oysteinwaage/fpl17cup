@@ -134,7 +134,20 @@ class App extends Component {
                     });
                 });
             });
+            $.get("/api/chips").done(function (result) {
+                console.log('result: ', result);
+                result.forEach(function (x) {
+                    x.forEach(function (chip) {
+                        Object.assign(dataz[chip.entry]['round'+chip.event], {
+                            chipsPlayed: {
+                                chipPlayedName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
+                                playedTime: chip.played_time_formatted,
+                            }
+                        })
+                    })
+                })
         console.log('dataz: ', dataz);
+            });
         });
 
         // console.log('state: ', this.state);
