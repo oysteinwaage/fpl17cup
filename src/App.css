@@ -1,12 +1,15 @@
 body {
-    background-color: #00FF87;
-    padding: 20px;
     margin: 0;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
+
 .overHeader {
     display: flex;
     justify-content: space-between;
+    background-color: #00FF87;
+    width: 100%;
 }
+
 .headerText {
     width: 30%;
     min-width: 270px;
@@ -21,8 +24,13 @@ body {
     vertical-align: middle;
 }
 
-h1, h2, p, ul, li {
-    font-family: Helvetica, Arial, sans-serif;
+h1 {
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    padding-left: 20px;
+}
+
+h2, p, ul, li {
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 ul.header li {
@@ -33,7 +41,8 @@ ul.header li {
 
 ul.header {
     background-color: #111;
-    padding: 0;
+    padding: 0px 20px 0px 20px;
+    margin: 0px;
 }
 
 ul.header li a {
@@ -45,8 +54,8 @@ ul.header li a {
 }
 
 .content {
-    background-color: ghostwhite;
     padding: 20px;
+    max-width: 900px;
 }
 
 .content h2 {

@@ -20,7 +20,7 @@ class App extends Component {
         let highestScore = 0;
         let playerLowest = 0;
         let lowestScore = 150;
-        let playerMostPoitsOnBench = 0;
+        let playerMostPointsOnBench = 0;
         let mostPointsOnBench = 0;
         playerIds.forEach(function (p) {
             const points = dataz[p]['round' + round].points;
@@ -36,7 +36,7 @@ class App extends Component {
             if (points > mostPointsOnBench) {
                 mostPointsOnBench = pointsOnBench > mostPointsOnBench
                     ? pointsOnBench : mostPointsOnBench;
-                playerMostPoitsOnBench = p;
+                playerMostPointsOnBench = p;
             }
         })
         return {
@@ -45,7 +45,7 @@ class App extends Component {
             lowestScorePlayer: playerLowest,
             lowestRoundScore: lowestScore,
             mostPointsOnBench,
-            playerMostPoitsOnBench
+            playerMostPointsOnBench
         }
     }
 
@@ -58,8 +58,8 @@ class App extends Component {
                 ' (' + players[score.highestScorePlayer] + ') '}</p>
                 <p>{'Lavest score: ' + score.lowestRoundScore +
                 ' (' + players[score.lowestScorePlayer] + ')'}</p>
-                <p>Flest poeng på benken: {score.mostPointsOnBench + ' ('
-                + players[score.playerMostPoitsOnBench] + ') '}</p>
+                <p>{'Flest poeng på benken: ' + score.mostPointsOnBench + ' ('
+                + players[score.playerMostPointsOnBench] + ') '}</p>
                 <p>+++</p>
             </div>
         );

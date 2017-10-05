@@ -20,8 +20,8 @@ const groupTableHeader = (
         <td>S</td>
         <td>U</td>
         <td>T</td>
-        <td>Poeng</td>
         <td>Diff</td>
+        <td>Poeng</td>
     </tr>
 )
 
@@ -46,8 +46,8 @@ class App extends Component {
                                     <td className='won'>{groupData[team].matchesWon}</td>
                                     <td className='draw'>{groupData[team].matchesDrawn}</td>
                                     <td className='lost'>{groupData[team].matchesLost}</td>
-                                    <td className='points'>{groupData[team].points}</td>
                                     <td className='difference'>{diff > 0 ? '+' + diff : diff}</td>
+                                    <td className='points'>{groupData[team].points}</td>
                                 </tr>
                             );
                         })}

@@ -43,22 +43,33 @@ export const gamesPrGroupAndRound = {
 export const groups = ['A', 'B', 'C', 'D', 'E'];
 
 //TODO Flytt alle disse felles-funksjonene til utils. Brukes av mange
+//TODO også se om du kan fikse dette på en finere måte
 export function getRoundNr(round) {
     switch (round) {
-        case '3': case 3:
-        case '13': case 13:
+        case '3':
+        case 3:
+        case '13':
+        case 13:
             return 'round3_13';
-        case '5': case 5:
-        case '15': case 15:
+        case '5':
+        case 5:
+        case '15':
+        case 15:
             return 'round5_15';
-        case '7': case 7:
-        case '17': case 17:
+        case '7':
+        case 7:
+        case '17':
+        case 17:
             return 'round7_17';
-        case '9': case 9:
-        case '19': case 19:
+        case '9':
+        case 9:
+        case '19':
+        case 19:
             return 'round9_19';
-        case '11': case 11:
-        case '21': case 21:
+        case '11':
+        case 11:
+        case '21':
+        case 21:
             return 'round11_21';
         default:
             return 'round3_13';
@@ -71,15 +82,16 @@ export function MatchesForGroup(props) {
         <div>
             {groups.map(function (groupLetter) {
                 const groupId = 'group' + groupLetter;
-                return (<div key={groupId}>
-                    <div className='groupName'>{'Gruppe ' + groupLetter}</div>
-                    {gamesPrGroupAndRound[round][groupId].map(function (match) {
-                        return <Match key={match[0] + match[1]}
-                                      team1={match[0]}
-                                      team2={match[1]}
-                                      round={'round' + props.chosenRound}/>;
-                    })}
-                </div>);
+                return (
+                    <div key={groupId} className='groupMatches'>
+                        <div className='groupName'>{'Gruppe ' + groupLetter}</div>
+                        {gamesPrGroupAndRound[round][groupId].map(function (match) {
+                            return <Match key={match[0] + match[1]}
+                                          team1={match[0]}
+                                          team2={match[1]}
+                                          round={'round' + props.chosenRound}/>;
+                        })}
+                    </div>);
             })}
         </div>
     );
