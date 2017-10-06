@@ -3,6 +3,14 @@ import '../App.css';
 import {playerIds, players} from '../utils.js';
 import {currentRound, dataz} from '../App.js';
 
+//TODO inntil jeg får fikset redux med state
+function tempNullCheck(teamId){
+    return dataz[teamId] || {};
+}
+function tempNullCheck2(teamId, round){
+    return tempNullCheck(teamId) && tempNullCheck(teamId)[round] ? tempNullCheck(teamId)[round] : {};
+}
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -19,15 +27,15 @@ class App extends Component {
         let playerHighest = 0;
         let highestScore = 0;
         let playerLowest = 0;
-        let lowestScore = 150;
+        let lowestScore = 666;
         let playerMostPointsOnBench = 0;
         let mostPointsOnBench = 0;
         let mostTransfersUsed = 0;
         let playerMostTransfers = 0;
         playerIds.forEach(function (p) {
-            const points = dataz[p]['round' + round].points;
-            const pointsOnBench = dataz[p]['round' + round].pointsOnBench;
-            const transfersUsed = dataz[p].totalTransfers;
+            const points = tempNullCheck2(p, 'round' + round).points;
+            const pointsOnBench = tempNullCheck2(p, 'round' + round).pointsOnBench;
+            const transfersUsed = tempNullCheck(p).totalTransfers;
 
             if (points > highestScore) {
                 playerHighest = p;
