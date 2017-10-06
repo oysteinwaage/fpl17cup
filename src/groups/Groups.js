@@ -13,20 +13,22 @@ const groupsMenmbers = {
     groupE: [188947, 1305123, 1898765, 1261708, 1331886, 2547467],
 };
 
-const groupTableHeader = (
-    <tr>
-        <td>Lag</td>
-        <td>K</td>
-        <td>S</td>
-        <td>U</td>
-        <td>T</td>
-        <td>Diff</td>
-        <td>Poeng</td>
-    </tr>
-);
+function makeRow(team, matches, wins, draws, lost, goalDiff, points, extraClassname = "") {
+    return (
+        <div key={team} className={"gruppeRad" + extraClassname}>
+            <div className="groupTeam">{team}</div>
+            <div className="groupMatches">{matches}</div>
+            <div className="groupMatches">{wins}</div>
+            <div className="groupMatches">{draws}</div>
+            <div className="groupMatches">{lost}</div>
+            <div className="groupGoalDiff">{goalDiff}</div>
+            <div className="groupPoints">{points}</div>
+        </div>
+    )
+}
 
 //TODO inntil jeg får fikset redux med state
-function tempNullCheck(teamId){
+function tempNullCheck(teamId) {
     return groupData[teamId] || {};
 }
 
@@ -37,24 +39,22 @@ class App extends Component {
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
                     const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
-                       return tempNullCheck(b).points - tempNullCheck(a).points;
+                        return tempNullCheck(b).points - tempNullCheck(a).points;
                     });
                     return (<div key={groupId}>
                         <div className='groupName'>{'Gruppe ' + groupLetter}</div>
-                        {groupTableHeader}
+                        {makeRow('Lag', 'K', 'S', 'U', 'T', 'Diff', 'Poeng', 'Header')}
                         {sortedGroupMembers.map(team => {
                             const teamData = tempNullCheck(team);
-                            const diff = teamData.difference;
-                            return (
-                                <tr key={team}>
-                                    <td className='name'>{players[team]}</td>
-                                    <td className='matches'>{teamData.matches}</td>
-                                    <td className='won'>{teamData.matchesWon}</td>
-                                    <td className='draw'>{teamData.matchesDrawn}</td>
-                                    <td className='lost'>{teamData.matchesLost}</td>
-                                    <td className='difference'>{diff > 0 ? '+' + diff : diff}</td>
-                                    <td className='points'>{teamData.points}</td>
-                                </tr>
+                            const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
+                            return makeRow(
+                                players[team],
+                                teamData.matches,
+                                teamData.matchesWon,
+                                teamData.matchesDrawn,
+                                teamData.matchesLost,
+                                diff,
+                                teamData.points
                             );
                         })}
                     </div>);

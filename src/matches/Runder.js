@@ -83,7 +83,7 @@ export function MatchesForGroup(props) {
             {groups.map(function (groupLetter) {
                 const groupId = 'group' + groupLetter;
                 return (
-                    <div key={groupId} className='groupMatches'>
+                    <div key={groupId}>
                         <div className='groupName'>{'Gruppe ' + groupLetter}</div>
                         {gamesPrGroupAndRound[round][groupId].map(function (match) {
                             return <Match key={match[0] + match[1]}

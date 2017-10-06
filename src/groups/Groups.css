@@ -1,8 +1,51 @@
-td {
-    padding-right: 15px;
-    border: solid grey 1px;
+.groupName {
+    padding: 5px 0 0 0;
 }
 
-.name {
-    width: 150px;
+.gruppeRad {
+    display: flex;
+    justify-content: space-between;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    width: 100%;
+    border-bottom: dashed darkgrey 1px;
+    padding-top:10px;
+    background-color: #38003C;
+    color: #00FF87;
+
+    /*@media only screen and (max-width: 600px){*/
+
+    /*}*/
+}
+
+.gruppeRadHeader {
+    display: flex;
+    justify-content: space-between;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    width: 100%;
+    border-bottom: dashed darkgrey 1px;
+    padding-bottom:10px;
+    font-weight: bold;
+    background-color: #dfdfdf;
+
+    /*@media only screen and (max-width: 600px){*/
+
+    /*}*/
+}
+
+.groupTeam {
+    width: 60%;
+    min-width: 150px;
+    padding-left: 5px;
+}
+.groupMatches {
+    min-width: 20px;
+}
+.groupGoalDiff {
+    min-width: 50px;
+    text-align: center;
+}
+.groupPoints {
+    min-width: 50px;
+    text-align: center;
+    padding-right: 5px;
 }

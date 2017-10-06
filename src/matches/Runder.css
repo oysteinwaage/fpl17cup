@@ -3,9 +3,7 @@
     margin-top: 15px;
     background-color: #dfdfdf;
     text-align: center;
-}
-
-.groupMatches {
+    padding: 5px 0;
 }
 
 .match-score-container {
