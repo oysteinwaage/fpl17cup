@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import '../App.css';
-import {playerIds, players} from '../utils.js';
+import './Funfacts.css';
+import {playerIds, players, SelectBox, allRounds} from '../utils.js';
 import {currentRound, dataz} from '../App.js';
 
 //TODO inntil jeg får fikset redux med state
-function tempNullCheck(teamId){
+function tempNullCheck(teamId) {
     return dataz[teamId] || {};
 }
-function tempNullCheck2(teamId, round){
+
+function tempNullCheck2(teamId, round) {
     return tempNullCheck(teamId) && tempNullCheck(teamId)[round] ? tempNullCheck(teamId)[round] : {};
 }
 
@@ -18,9 +20,17 @@ class App extends Component {
             highestScorePlayer: '?',
             highestRoundScore: '?',
             lowestScorePlayer: '?',
-            lowestRoundScore: '?'
+            lowestRoundScore: '?',
+            selectedRound: currentRound,
         };
         this.highestRoundScore = this.highestRoundScore.bind(this);
+    };
+
+    changeSelectedRound() {
+        this.setState(
+            Object.assign(this.state, {
+                selectedRound: document.getElementsByName('selectBox')[0].value
+            }));
     };
 
     highestRoundScore(round) {
@@ -66,22 +76,35 @@ class App extends Component {
     }
 
     render() {
-        let score = this.highestRoundScore(currentRound);
+        let score = this.highestRoundScore(this.state.selectedRound);
         return (
-            <div>
-                <h2>Funfacts runde {currentRound}</h2>
-                <p>{'Høyest score: ' + score.highestRoundScore +
-                ' (' + players[score.highestScorePlayer] + ') '}</p>
-                <p>{'Lavest score: ' + score.lowestRoundScore +
-                ' (' + players[score.lowestScorePlayer] + ')'}</p>
-                <p>{'Flest poeng på benken: ' + score.mostPointsOnBench + ' ('
-                + players[score.playerMostPointsOnBench] + ') '}</p>
-                <p>{'Flest totale bytter: ' + score.mostTransfersUsed + ' ('
-                + players[score.playerMostTransfers] + ') '}</p>
-                <p>+++</p>
+            <div className="ff-content-container">
+                <div className="ff-header">
+                    <h2>Funfacts runde {this.state.selectedRound}</h2>
+                </div>
+                <div className="ff-round-facts">
+                    {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
+                    {normalFact('Høyest score', score.highestRoundScore, score.highestScorePlayer)}
+                    {normalFact('Lavest score', score.lowestRoundScore, score.lowestScorePlayer)}
+                    {normalFact('Flest poeng på benken', score.mostPointsOnBench, score.playerMostPointsOnBench)}
+                </div>
+                <div className="ff-total-facts">
+                    {normalFact('Flest totale bytter', score.mostTransfersUsed, score.playerMostTransfers)}
+                </div>
             </div>
         );
     }
+}
+
+function normalFact(text, score, player) {
+    return (
+        <div className="ff-normal-fact-container">
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {score + ' (' + players[player] + ')'}
+            </div>
+        </div>
+    )
 }
 
 export default App;

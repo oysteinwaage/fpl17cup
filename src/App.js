@@ -140,7 +140,7 @@ class App extends Component {
                     x.forEach(function (chip) {
                         Object.assign(dataz[chip.entry]['round'+chip.event], {
                             chipsPlayed: {
-                                chipPlayedName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
+                                chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
                                 playedTime: chip.played_time_formatted,
                             }
                         })

@@ -1,0 +1,33 @@
+.ff-content-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ff-header {
+    text-align: center;
+    padding-bottom: 10px;
+    margin-top: -10px;
+    width: 100%;
+}
+
+.ff-round-facts {
+    width: 50%;
+    /*border: solid blue 1px;*/
+}
+
+.ff-total-facts {
+    width: 50%;
+    /*border: solid green 1px;*/
+}
+
+.ff-normal-fact-container{
+    display: flex;
+    padding: 5px 0;
+}
+
+.ff-normal-fact-result {
+}
+
+.ff-normal-fact-text {
+
+}
