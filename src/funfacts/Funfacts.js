@@ -77,7 +77,7 @@ class App extends Component {
                 chipsUsed.push([p, roundNullsafe.chipsPlayed.chipName]);
             }
             if (roundNullsafe.takenHit > 0) {
-                hitsTaken.push([p, '-' + roundNullsafe.takenHit]);
+                hitsTaken.push([p, '-' + roundNullsafe.takenHit + 'p']);
             }
         });
         return {
@@ -94,6 +94,7 @@ class App extends Component {
 
     render() {
         let score = this.calculateStats(this.state.selectedRound);
+        const totalHits = ['-' + score.mostTotalHitsTaken[0] + 'p', score.mostTotalHitsTaken[1]];
         return (
             <div className="ff-content-container">
                 <div className="ff-rundens-smell">
@@ -111,7 +112,7 @@ class App extends Component {
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
                     {normalFact('Flest bytter', score.mostTransfersUsed)}
-                    {normalFact('Mest hits tatt', score.mostTotalHitsTaken)}
+                    {normalFact('Mest hits tatt', totalHits)}
                     {normalFact('Flest poeng på benk', score.mostTotalPointsOnBench)}
                 </div>
             </div>
