@@ -1,0 +1,45 @@
+.groupName {
+    font-size: large;
+    margin-top: 15px;
+    background-color: #dfdfdf;
+    text-align: center;
+    padding: 5px 0;
+}
+
+.match-score-container {
+}
+
+.match-result {
+    display: flex;
+    justify-content: space-between;
+
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    background-color: #38003C;
+    color: #00FF87;
+    border-bottom: 1px solid #E8E8E8;
+    padding: .7rem 0;
+}
+.team {
+    width: 40%;
+    font-weight: bold;
+}
+
+.homeTeam {
+    text-align: right;
+}
+
+.subName {
+    font-size: small;
+    font-weight: normal;
+    padding-right: 4px;
+}
+
+.score {
+    width: 20%;
+    text-align: center;
+    padding-top: 8px;
+}
+
+.awayTeam {
+    text-align: left;
+}

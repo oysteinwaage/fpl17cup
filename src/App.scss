@@ -1,0 +1,72 @@
+body {
+    margin: 0;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.overHeader {
+    display: flex;
+    justify-content: space-between;
+    background-color: #00FF87;
+    width: 100%;
+}
+
+.headerText {
+    width: 30%;
+    min-width: 330px;
+}
+
+.headerArt {
+    width: 70%;
+    margin: 0;
+    background: url('https://ismdj.scdn5.secure.raxcdn.com/static/libsass/plfpl/dist/img/header-bg-large.png?109fa73b2dbf') no-repeat right -50px bottom;
+    background-position: right top;
+    height: 130px;
+    vertical-align: middle;
+}
+
+h1 {
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    padding-left: 20px;
+}
+
+h2, p, ul, li {
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+ul.header li {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+}
+
+ul.header {
+    background-color: #111;
+    padding: 0 20px 0 20px;
+    margin: 0;
+}
+
+ul.header li a {
+    color: #FFF;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 20px;
+    display: inline-block;
+}
+
+.content {
+    padding: 20px;
+    max-width: 900px;
+}
+
+.content h2 {
+    padding: 0;
+    margin: 0;
+}
+
+.content li {
+    margin-bottom: 10px;
+}
+
+.active {
+    background-color: #0099FF;
+}

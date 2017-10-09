@@ -1,27 +1,23 @@
 label {
-    font-family: "PremierSans-Regular",Arial,"Helvetica Neue",Helvetica,sans-serif;
-}
+  font-family: "PremierSans-Regular",Arial,"Helvetica Neue",Helvetica,sans-serif; }
+
 .selectBoxContainer {
-    text-align: center;
-}
+  text-align: center; }
 
 .select_style {
-    font-size: 16px;
-    border-radius: 0;
-    width: 90%;
-    padding: 7px;
-    position: relative;
-    border: 0;
-    cursor: pointer;
-    z-index: 10;
-    background-color: #dfdfdf;
-    border-bottom: solid black 1px;
-}
+  font-size: 16px;
+  border-radius: 0;
+  width: 90%;
+  padding: 7px;
+  position: relative;
+  border: 0;
+  cursor: pointer;
+  z-index: 10;
+  background-color: #dfdfdf;
+  border-bottom: solid black 1px; }
 
-.select_style:hover{
-    border-bottom: solid red 1px;
-}
+.select_style:hover {
+  border-bottom: solid red 1px; }
 
 .select_style select {
-    display: block;
-}
+  display: block; }
