@@ -7,7 +7,7 @@ import {playerIds, participatingRounds} from './utils.js';
 
 export let dataz = {};
 export let groupData = {};
-export let currentRound = 5;
+export let currentRound = null;
 
 const reducer2 = (a, b) => {
     Object.assign(a, {

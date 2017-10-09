@@ -3,31 +3,45 @@
     flex-wrap: wrap;
 }
 
-.ff-header {
+.ff-rundens-dale {
     text-align: center;
-    padding-bottom: 10px;
-    margin-top: -10px;
+    padding: 10px 0;
+    margin-top: -20px;
     width: 100%;
+    background-color: #e2c1aa;
 }
 
 .ff-round-facts {
     width: 50%;
-    /*border: solid blue 1px;*/
+    min-width: 280px;
+    background-color: #c1ead6;
+}
+.ff-facts-header {
+    text-align: center;
+    font-weight: bold;
+    padding:5px 0;
 }
 
 .ff-total-facts {
     width: 50%;
-    /*border: solid green 1px;*/
+    min-width: 280px;
+    background-color: #a7c8f2;
 }
 
 .ff-normal-fact-container{
     display: flex;
+    justify-content: space-between;
     padding: 5px 0;
-}
+    border-bottom: dashed 1px #a7c8f2;
 
-.ff-normal-fact-result {
+    /*når SASS er inne, legg til bakgrunnsfarge på motsatt facts-felt som border-bottom farge*/
 }
 
 .ff-normal-fact-text {
+    padding: 0 5px;
+}
 
+.ff-normal-fact-result {
+    width: 50%;
+    text-align: left;
 }

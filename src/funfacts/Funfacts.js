@@ -79,16 +79,18 @@ class App extends Component {
         let score = this.highestRoundScore(this.state.selectedRound);
         return (
             <div className="ff-content-container">
-                <div className="ff-header">
-                    <h2>Funfacts runde {this.state.selectedRound}</h2>
+                <div className="ff-rundens-dale">
+                    Rundens Dale her?
                 </div>
                 <div className="ff-round-facts">
+                    <div className="ff-facts-header">Stats runde {this.state.selectedRound}</div>
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                     {normalFact('Høyest score', score.highestRoundScore, score.highestScorePlayer)}
                     {normalFact('Lavest score', score.lowestRoundScore, score.lowestScorePlayer)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench, score.playerMostPointsOnBench)}
                 </div>
                 <div className="ff-total-facts">
+                    <div className="ff-facts-header">Stats totalt</div>
                     {normalFact('Flest totale bytter', score.mostTransfersUsed, score.playerMostTransfers)}
                 </div>
             </div>
