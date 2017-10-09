@@ -23,7 +23,7 @@ class App extends Component {
             lowestRoundScore: '?',
             selectedRound: currentRound,
         };
-        this.highestRoundScore = this.highestRoundScore.bind(this);
+        this.calculateStats = this.calculateStats.bind(this);
     };
 
     changeSelectedRound() {
@@ -33,50 +33,49 @@ class App extends Component {
             }));
     };
 
-    highestRoundScore(round) {
-        let playerHighest = 0;
-        let highestScore = 0;
-        let playerLowest = 0;
-        let lowestScore = 666;
-        let playerMostPointsOnBench = 0;
-        let mostPointsOnBench = 0;
-        let mostTransfersUsed = 0;
-        let playerMostTransfers = 0;
+    calculateStats(round) {
+        let highestRoundScore = [0,''];
+        let lowestRoundScore = [666, ''];
+        let mostPointsOnBench = [0, ''];
+        let mostTotalPointsOnBench = [0, ''];
+        let mostTransfersUsed = [0, ''];
         playerIds.forEach(function (p) {
             const points = tempNullCheck2(p, 'round' + round).points;
             const pointsOnBench = tempNullCheck2(p, 'round' + round).pointsOnBench;
             const transfersUsed = tempNullCheck(p).totalTransfers;
+            const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
 
-            if (points > highestScore) {
-                playerHighest = p;
-                highestScore = points;
-            } else if (points < lowestScore) {
-                playerLowest = p;
-                lowestScore = points;
+            if (points > highestRoundScore[0]) {
+                highestRoundScore[0] = points;
+                highestRoundScore[1] = p;
+            } else if (points < lowestRoundScore[0]) {
+                lowestRoundScore[0] = points;
+                lowestRoundScore[1] = p;
             }
-            if (pointsOnBench > mostPointsOnBench) {
-                mostPointsOnBench = pointsOnBench;
-                playerMostPointsOnBench = p;
+            if (pointsOnBench > mostPointsOnBench[0]) {
+                mostPointsOnBench[0] = pointsOnBench;
+                mostPointsOnBench[1] = p;
             }
-            if (transfersUsed > mostTransfersUsed) {
-                mostTransfersUsed = transfersUsed;
-                playerMostTransfers = p;
+            if (totalPointsOnBench > mostTotalPointsOnBench[0]) {
+                mostTotalPointsOnBench[0] = totalPointsOnBench;
+                mostTotalPointsOnBench[1] = p;
+            }
+            if (transfersUsed > mostTransfersUsed[0]) {
+                mostTransfersUsed[0] = transfersUsed;
+                mostTransfersUsed[1] = p;
             }
         });
         return {
-            highestScorePlayer: playerHighest,
-            highestRoundScore: highestScore,
-            lowestScorePlayer: playerLowest,
-            lowestRoundScore: lowestScore,
+            highestRoundScore,
+            lowestRoundScore,
             mostPointsOnBench,
-            playerMostPointsOnBench,
+            mostTotalPointsOnBench,
             mostTransfersUsed,
-            playerMostTransfers,
         }
     }
 
     render() {
-        let score = this.highestRoundScore(this.state.selectedRound);
+        let score = this.calculateStats(this.state.selectedRound);
         return (
             <div className="ff-content-container">
                 <div className="ff-rundens-smell">
@@ -85,25 +84,26 @@ class App extends Component {
                 <div className="ff-round-facts">
                     <div className="ff-facts-header">Stats runde {this.state.selectedRound}</div>
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
-                    {normalFact('Høyest score', score.highestRoundScore, score.highestScorePlayer)}
-                    {normalFact('Lavest score', score.lowestRoundScore, score.lowestScorePlayer)}
-                    {normalFact('Flest poeng på benken', score.mostPointsOnBench, score.playerMostPointsOnBench)}
+                    {normalFact('Høyest score', score.highestRoundScore)}
+                    {normalFact('Lavest score', score.lowestRoundScore)}
+                    {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
                 </div>
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
-                    {normalFact('Flest totale bytter', score.mostTransfersUsed, score.playerMostTransfers)}
+                    {normalFact('Flest bytter', score.mostTransfersUsed)}
+                    {normalFact('Flest poeng på benk', score.mostTotalPointsOnBench)}
                 </div>
             </div>
         );
     }
 }
 
-function normalFact(text, score, player) {
+function normalFact(text, data, totalClass = '') {
     return (
-        <div className="ff-normal-fact-container">
+        <div className={"ff-normal-fact-container" + totalClass}>
             <div className="ff-normal-fact-text">{text}</div>
             <div className="ff-normal-fact-result">
-                {score + ' (' + players[player] + ')'}
+                {data[0] + ' (' + players[data[1]] + ')'}
             </div>
         </div>
     )

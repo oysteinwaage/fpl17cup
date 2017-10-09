@@ -10,11 +10,13 @@ export let groupData = {};
 export let currentRound = null;
 
 const reducer2 = (a, b) => {
+    const totalPointsOnBench =  (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
     Object.assign(a, {
         ['round' + b.event]: {
             points: b.points - b.event_transfers_cost,
             pointsOnBench: b.points_on_bench,
-        }
+        },
+        totalPointsOnBench,
     });
     return a;
 };
