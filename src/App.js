@@ -11,12 +11,15 @@ export let currentRound = null;
 
 const reducer2 = (a, b) => {
     const totalPointsOnBench =  (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
+    const totalHitsTaken =  (a.totalHitsTaken !== undefined ? a.totalHitsTaken : 0) + b.event_transfers_cost;
     Object.assign(a, {
         ['round' + b.event]: {
             points: b.points - b.event_transfers_cost,
             pointsOnBench: b.points_on_bench,
+            takenHit: b.event_transfers_cost,
         },
         totalPointsOnBench,
+        totalHitsTaken,
     });
     return a;
 };
@@ -119,6 +122,7 @@ class App extends Component {
     componentDidMount() {
         let that = this;
         $.get("/api/score").done(function (result) {
+            console.log('score-result: ', result);
             if (result || []) {
                 that.setCurrentRound(result[0].length);
                 dataz = transformData(result);
@@ -128,6 +132,7 @@ class App extends Component {
                 makeGroupData();
             }
             $.get("/api/players").done(function (result) {
+                console.log('players-result: ', result);
                 result.forEach(function (player) {
                     Object.assign(dataz[player.id], {
                         managerName: player.player_first_name + ' ' + player.player_last_name,
@@ -137,7 +142,6 @@ class App extends Component {
                 });
             });
             $.get("/api/chips").done(function (result) {
-                console.log('result: ', result);
                 result.forEach(function (x) {
                     x.forEach(function (chip) {
                         Object.assign(dataz[chip.entry]['round'+chip.event], {

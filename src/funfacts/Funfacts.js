@@ -39,13 +39,16 @@ class App extends Component {
         let mostPointsOnBench = [0, ''];
         let mostTotalPointsOnBench = [0, ''];
         let mostTransfersUsed = [0, ''];
+        let mostTotalHitsTaken = [0, ''];
         let chipsUsed = [];
+        let hitsTaken = [];
         playerIds.forEach(function (p) {
             const roundNullsafe = tempNullCheckRound(p, 'round' + round);
             const points = roundNullsafe.points;
             const pointsOnBench = roundNullsafe.pointsOnBench;
             const transfersUsed = tempNullCheck(p).totalTransfers;
             const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
+            const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
 
             if (points > highestRoundScore[0]) {
                 highestRoundScore[0] = points;
@@ -62,6 +65,10 @@ class App extends Component {
                 mostTotalPointsOnBench[0] = totalPointsOnBench;
                 mostTotalPointsOnBench[1] = p;
             }
+            if (totalHitsTaken > mostTotalHitsTaken[0]) {
+                mostTotalHitsTaken[0] = totalHitsTaken;
+                mostTotalHitsTaken[1] = p;
+            }
             if (transfersUsed > mostTransfersUsed[0]) {
                 mostTransfersUsed[0] = transfersUsed;
                 mostTransfersUsed[1] = p;
@@ -69,14 +76,19 @@ class App extends Component {
             if (roundNullsafe.chipsPlayed) {
                 chipsUsed.push([p, roundNullsafe.chipsPlayed.chipName]);
             }
+            if (roundNullsafe.takenHit > 0) {
+                hitsTaken.push([p, '-' + roundNullsafe.takenHit]);
+            }
         });
         return {
             highestRoundScore,
             lowestRoundScore,
             mostPointsOnBench,
             mostTotalPointsOnBench,
+            mostTotalHitsTaken,
             mostTransfersUsed,
             chipsUsed,
+            hitsTaken,
         }
     }
 
@@ -93,11 +105,13 @@ class App extends Component {
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
-                    {makeChipsPlayedRows('Brukt chips', score.chipsUsed)}
+                    {makeMultipleResultsRows('Brukt chips', score.chipsUsed)}
+                    {makeMultipleResultsRows('Tatt hit', score.hitsTaken)}
                 </div>
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
                     {normalFact('Flest bytter', score.mostTransfersUsed)}
+                    {normalFact('Mest hits tatt', score.mostTotalHitsTaken)}
                     {normalFact('Flest poeng på benk', score.mostTotalPointsOnBench)}
                 </div>
             </div>
@@ -105,15 +119,15 @@ class App extends Component {
     }
 }
 
-function makeChipsPlayedRows(text, chipsPlayed) {
-    return chipsPlayed.length === 0 ? null : (
+function makeMultipleResultsRows(text, data) {
+    return data.length === 0 ? null : (
         <div className={"ff-multiple-results-container"}>
             <div className="ff-normal-fact-text">{text}</div>
             <div className="ff-normal-fact-result">
-                {chipsPlayed.map(chip => {
+                {data.map(d => {
                     return (
-                        <div key={chip[0]} className="ff-multiple-result-facts">
-                            {players[chip[0]] + ' (' + chip[1] + ')'}
+                        <div key={d[0]} className="ff-multiple-result-facts">
+                            {players[d[0]] + ' (' + d[1] + ')'}
                         </div>
                     )
                 })}
@@ -123,7 +137,7 @@ function makeChipsPlayedRows(text, chipsPlayed) {
 }
 
 function normalFact(text, data) {
-    return (
+    return data[1] && (
         <div className={"ff-normal-fact-container"}>
             <div className="ff-normal-fact-text">{text}</div>
             <div className="ff-normal-fact-result">
