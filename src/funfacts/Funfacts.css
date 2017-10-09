@@ -13,7 +13,7 @@
 
 .ff-round-facts {
     width: 50%;
-    min-width: 280px;
+    min-width: 333px;
     background-color: #c1ead6;
 }
 .ff-facts-header {
@@ -24,7 +24,7 @@
 
 .ff-total-facts {
     width: 50%;
-    min-width: 280px;
+    min-width: 333px;
     background-color: #a7c8f2;
 }
 
