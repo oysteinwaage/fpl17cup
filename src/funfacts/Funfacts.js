@@ -79,8 +79,8 @@ class App extends Component {
         let score = this.highestRoundScore(this.state.selectedRound);
         return (
             <div className="ff-content-container">
-                <div className="ff-rundens-dale">
-                    Rundens Dale her?
+                <div className="ff-rundens-smell">
+                    "Rundens Smell"
                 </div>
                 <div className="ff-round-facts">
                     <div className="ff-facts-header">Stats runde {this.state.selectedRound}</div>
