@@ -9,7 +9,7 @@ function tempNullCheck(teamId) {
     return dataz[teamId] || {};
 }
 
-function tempNullCheck2(teamId, round) {
+function tempNullCheckRound(teamId, round) {
     return tempNullCheck(teamId) && tempNullCheck(teamId)[round] ? tempNullCheck(teamId)[round] : {};
 }
 
@@ -34,14 +34,16 @@ class App extends Component {
     };
 
     calculateStats(round) {
-        let highestRoundScore = [0,''];
+        let highestRoundScore = [0, ''];
         let lowestRoundScore = [666, ''];
         let mostPointsOnBench = [0, ''];
         let mostTotalPointsOnBench = [0, ''];
         let mostTransfersUsed = [0, ''];
+        let chipsUsed = [];
         playerIds.forEach(function (p) {
-            const points = tempNullCheck2(p, 'round' + round).points;
-            const pointsOnBench = tempNullCheck2(p, 'round' + round).pointsOnBench;
+            const roundNullsafe = tempNullCheckRound(p, 'round' + round);
+            const points = roundNullsafe.points;
+            const pointsOnBench = roundNullsafe.pointsOnBench;
             const transfersUsed = tempNullCheck(p).totalTransfers;
             const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
 
@@ -64,6 +66,9 @@ class App extends Component {
                 mostTransfersUsed[0] = transfersUsed;
                 mostTransfersUsed[1] = p;
             }
+            if (roundNullsafe.chipsPlayed) {
+                chipsUsed.push([p, roundNullsafe.chipsPlayed.chipName]);
+            }
         });
         return {
             highestRoundScore,
@@ -71,6 +76,7 @@ class App extends Component {
             mostPointsOnBench,
             mostTotalPointsOnBench,
             mostTransfersUsed,
+            chipsUsed,
         }
     }
 
@@ -87,6 +93,7 @@ class App extends Component {
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
+                    {makeChipsPlayedRows('Brukt chips', score.chipsUsed)}
                 </div>
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
@@ -98,9 +105,26 @@ class App extends Component {
     }
 }
 
-function normalFact(text, data, totalClass = '') {
+function makeChipsPlayedRows(text, chipsPlayed) {
+    return chipsPlayed.length === 0 ? null : (
+        <div className={"ff-multiple-results-container"}>
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {chipsPlayed.map(chip => {
+                    return (
+                        <div key={chip[0]} className="ff-multiple-result-facts">
+                            {players[chip[0]] + ' (' + chip[1] + ')'}
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+
+function normalFact(text, data) {
     return (
-        <div className={"ff-normal-fact-container" + totalClass}>
+        <div className={"ff-normal-fact-container"}>
             <div className="ff-normal-fact-text">{text}</div>
             <div className="ff-normal-fact-result">
                 {data[0] + ' (' + players[data[1]] + ')'}

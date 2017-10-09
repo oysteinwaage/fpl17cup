@@ -19,7 +19,8 @@
 }
 .ff-round-facts .select_style {
     width: 115px;
-    padding: 7px;
+    padding: 0;
+    margin-bottom: 9.8px;
     position: relative;
     border: 0;
     background-color: transparent;
@@ -33,6 +34,15 @@
     justify-content: space-between;
     padding: 5px 0;
     border-bottom: dashed 1px #a7c8f2;
+}
+.ff-round-facts .ff-multiple-results-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: dashed 1px #a7c8f2;
+}
+.ff-multiple-result-facts {
+    padding-bottom: 5px;
 }
 
 .ff-facts-header {
@@ -54,11 +64,10 @@
 }
 
 .ff-normal-fact-text {
-    width: 50%;
+    width: 40%;
     padding: 0 5px;
 }
 
 .ff-normal-fact-result {
-    width: 50%;
-    text-align: left;
+    width: 60%;
 }
