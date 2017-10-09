@@ -1,51 +1,50 @@
-@charset "UTF-8";
 .ff-content-container {
-  display: flex;
-  flex-wrap: wrap; }
+    display: flex;
+    flex-wrap: wrap; }
 
 .ff-rundens-smell {
-  text-align: center;
-  padding: 10px 0;
-  margin-top: -20px;
-  width: 100%;
-  min-width: 333px;
-  background-color: #e2d1c2; }
+    text-align: center;
+    padding: 10px 0;
+    margin-top: -20px;
+    width: 100%;
+    min-width: 333px;
+    background-color: #e2d1c2; }
 
 .ff-round-facts {
-  width: 50%;
-  min-width: 333px;
-  background-color: #c1ead6; }
-  .ff-round-facts .select_style {
+    width: 50%;
+    min-width: 333px;
+    background-color: #c1ead6; }
+.ff-round-facts .select_style {
     width: 115px;
     padding: 7px;
     position: relative;
     border: 0;
     background-color: transparent;
     border-bottom: solid black 1px; }
-  .ff-round-facts .select_style:hover {
+.ff-round-facts .select_style:hover {
     background-color: #a9eac4; }
 
 .ff-facts-header {
-  text-align: center;
-  font-weight: bold;
-  padding: 5px 0; }
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 0; }
 
 .ff-total-facts {
-  width: 50%;
-  min-width: 333px;
-  background-color: #a7c8f2; }
+    width: 50%;
+    min-width: 333px;
+    background-color: #a7c8f2; }
 
 .ff-normal-fact-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: dashed 1px #a7c8f2;
-  /*når SASS er inne, legg til bakgrunnsfarge på motsatt facts-felt som border-bottom farge*/ }
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: dashed 1px #a7c8f2;
+}
 
 .ff-normal-fact-text {
-  width: 50%;
-  padding: 0 5px; }
+    width: 50%;
+    padding: 0 5px; }
 
 .ff-normal-fact-result {
-  width: 50%;
-  text-align: left; }
+    width: 50%;
+    text-align: left; }

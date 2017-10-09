@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import '../App.scss';
+import '../App.css';
 import './Funfacts.css';
 import {playerIds, players, SelectBox, allRounds} from '../utils.js';
 import {currentRound, dataz} from '../App.js';
