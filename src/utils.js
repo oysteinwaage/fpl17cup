@@ -57,8 +57,7 @@ export const roundJackass = {
     round7: 'Etter å ha tatt den nette sum av 28p hit på de tre siste rundene skulle man tro at det hadde rablet fullstendig for Mr Sæthre, ' +
     'men den mannen har tydeligvis så intenst mye gullhår i ræven at eneste anbefaling må være å bruke alle pengene han har på lotto i tiden fremover!' +
     '<br /> MEN dette kan ikke fortsette, og då vil din sinnsyke taktikk dra deg ned i dritten der du hører hjemme!',
-    round8: 'Blablablabla',
-
+    round8: 'Hvem blir traspet denne runden...??',
 }
 
 export function Match(props) {

@@ -39,6 +39,8 @@ class App extends Component {
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
                     const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
+                        return tempNullCheck(b).difference - tempNullCheck(a).difference;
+                    }).sort(function (a, b) {
                         return tempNullCheck(b).points - tempNullCheck(a).points;
                     });
                     return (<div key={groupId}>
