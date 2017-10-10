@@ -81,7 +81,7 @@ class App extends Component {
             if (roundNullsafe.takenHit > 0) {
                 hitsTaken.push([p, '-' + roundNullsafe.takenHit + 'p']);
             }
-            if (round === currentRound + '') {
+            if (round +'' === currentRound + '') {
                 const leagueClimb = tempNullCheck(p).leagueClimb;
                 if (leagueClimb > highestLeagueClimber[0]) {
                     highestLeagueClimber[0] = leagueClimb;
