@@ -80,6 +80,9 @@ class App extends Component {
                 hitsTaken.push([p, '-' + roundNullsafe.takenHit + 'p']);
             }
         });
+        hitsTaken.sort(function (a, b) {
+            return b[1].slice(1, -1) - a[1].slice(1, -1);
+        });
         return {
             highestRoundScore,
             lowestRoundScore,
@@ -101,7 +104,8 @@ class App extends Component {
                 {roundJackasText &&
                 <div className="ff-rundens-smell">
                     <div className="ff-rundens-smell-header">"Rundens kuksuger"</div>
-                    <div className="ff-rundens-smell-content"><span dangerouslySetInnerHTML={{ __html: roundJackasText }}/></div>
+                    <div className="ff-rundens-smell-content"><span
+                        dangerouslySetInnerHTML={{__html: roundJackasText}}/></div>
                     <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. X</div>
                 </div>
                 }
@@ -127,30 +131,30 @@ class App extends Component {
 
 function makeMultipleResultsRows(text, data) {
     return data.length === 0 ? null : (
-            <div className={"ff-multiple-results-container"}>
-                <div className="ff-normal-fact-text">{text}</div>
-                <div className="ff-normal-fact-result">
-                    {data.map(d => {
-                        return (
-                            <div key={d[0]} className="ff-multiple-result-facts">
-                                {players[d[0]] + ' (' + d[1] + ')'}
-                            </div>
-                        )
-                    })}
-                </div>
+        <div className={"ff-multiple-results-container"}>
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {data.map(d => {
+                    return (
+                        <div key={d[0]} className="ff-multiple-result-facts">
+                            {players[d[0]] + ' (' + d[1] + ')'}
+                        </div>
+                    )
+                })}
             </div>
-        )
+        </div>
+    )
 }
 
 function normalFact(text, data) {
     return data[1] && (
-            <div className={"ff-normal-fact-container"}>
-                <div className="ff-normal-fact-text">{text}</div>
-                <div className="ff-normal-fact-result">
-                    {data[0] + ' (' + players[data[1]] + ')'}
-                </div>
+        <div className={"ff-normal-fact-container"}>
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {data[0] + ' (' + players[data[1]] + ')'}
             </div>
-        )
+        </div>
+    )
 }
 
 export default App;
