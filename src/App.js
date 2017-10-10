@@ -123,7 +123,7 @@ class App extends Component {
         let that = this;
         $.get("/api/score").done(function (result) {
             console.log('score-result: ', result);
-            if (result || []) {
+            if (result && result.length > 0) {
                 that.setCurrentRound(result[0].length);
                 dataz = transformData(result);
                 that.setData(dataz);
@@ -133,25 +133,29 @@ class App extends Component {
             }
             $.get("/api/players").done(function (result) {
                 console.log('players-result: ', result);
-                result.forEach(function (player) {
-                    Object.assign(dataz[player.id], {
-                        managerName: player.player_first_name + ' ' + player.player_last_name,
-                        teamName: player.name,
-                        totalTransfers: player.total_transfers,
+                if (result && result.length > 0) {
+                    result.forEach(function (player) {
+                        Object.assign(dataz[player.id], {
+                            managerName: player.player_first_name + ' ' + player.player_last_name,
+                            teamName: player.name,
+                            totalTransfers: player.total_transfers,
+                        });
                     });
-                });
+                }
             });
             $.get("/api/chips").done(function (result) {
-                result.forEach(function (x) {
-                    x.forEach(function (chip) {
-                        Object.assign(dataz[chip.entry]['round'+chip.event], {
-                            chipsPlayed: {
-                                chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
-                                playedTime: chip.played_time_formatted,
-                            }
+                if (result && result.length > 0) {
+                    result.forEach(function (x) {
+                        x.forEach(function (chip) {
+                            Object.assign(dataz[chip.entry]['round' + chip.event], {
+                                chipsPlayed: {
+                                    chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
+                                    playedTime: chip.played_time_formatted,
+                                }
+                            })
                         })
                     })
-                })
+                }
         console.log('dataz: ', dataz);
             });
         });

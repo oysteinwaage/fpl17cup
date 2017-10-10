@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../App.css';
 import './Funfacts.css';
-import {playerIds, players, SelectBox, allRounds} from '../utils.js';
+import {playerIds, players, SelectBox, allRounds, roundJackass} from '../utils.js';
 import {currentRound, dataz} from '../App.js';
 
 //TODO inntil jeg får fikset redux med state
@@ -95,11 +95,16 @@ class App extends Component {
     render() {
         let score = this.calculateStats(this.state.selectedRound);
         const totalHits = ['-' + score.mostTotalHitsTaken[0] + 'p', score.mostTotalHitsTaken[1]];
+        const roundJackasText = roundJackass['round' + this.state.selectedRound];
         return (
             <div className="ff-content-container">
+                {roundJackasText &&
                 <div className="ff-rundens-smell">
-                    "Rundens Smell"
+                    <div className="ff-rundens-smell-header">"Rundens kuksuger"</div>
+                    <div className="ff-rundens-smell-content"><span dangerouslySetInnerHTML={{ __html: roundJackasText }}/></div>
+                    <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. X</div>
                 </div>
+                }
                 <div className="ff-round-facts">
                     <div className="ff-facts-header">Stats runde {this.state.selectedRound}</div>
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
@@ -122,30 +127,30 @@ class App extends Component {
 
 function makeMultipleResultsRows(text, data) {
     return data.length === 0 ? null : (
-        <div className={"ff-multiple-results-container"}>
-            <div className="ff-normal-fact-text">{text}</div>
-            <div className="ff-normal-fact-result">
-                {data.map(d => {
-                    return (
-                        <div key={d[0]} className="ff-multiple-result-facts">
-                            {players[d[0]] + ' (' + d[1] + ')'}
-                        </div>
-                    )
-                })}
+            <div className={"ff-multiple-results-container"}>
+                <div className="ff-normal-fact-text">{text}</div>
+                <div className="ff-normal-fact-result">
+                    {data.map(d => {
+                        return (
+                            <div key={d[0]} className="ff-multiple-result-facts">
+                                {players[d[0]] + ' (' + d[1] + ')'}
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
-        </div>
-    )
+        )
 }
 
 function normalFact(text, data) {
     return data[1] && (
-        <div className={"ff-normal-fact-container"}>
-            <div className="ff-normal-fact-text">{text}</div>
-            <div className="ff-normal-fact-result">
-                {data[0] + ' (' + players[data[1]] + ')'}
+            <div className={"ff-normal-fact-container"}>
+                <div className="ff-normal-fact-text">{text}</div>
+                <div className="ff-normal-fact-result">
+                    {data[0] + ' (' + players[data[1]] + ')'}
+                </div>
             </div>
-        </div>
-    )
+        )
 }
 
 export default App;

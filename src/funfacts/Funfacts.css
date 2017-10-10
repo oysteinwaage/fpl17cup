@@ -4,12 +4,27 @@
 }
 
 .ff-rundens-smell {
-    text-align: center;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
     padding: 10px 0;
     margin-top: -20px;
     width: 100%;
     min-width: 333px;
     background-color: #e2d1c2;
+}
+.ff-rundens-smell-header {
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 5px;
+
+}
+.ff-rundens-smell-content {
+    padding: 0 30px;
+}
+.ff-rundens-smell-signature {
+    text-align: right;
+    font-style: italic;
+    padding:10px 30px 0 0;
+    font-size: small;
 }
 
 .ff-round-facts {
