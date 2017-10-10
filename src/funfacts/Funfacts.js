@@ -40,6 +40,8 @@ class App extends Component {
         let mostTotalPointsOnBench = [0, ''];
         let mostTransfersUsed = [0, ''];
         let mostTotalHitsTaken = [0, ''];
+        let highestLeagueClimber = [0, ''];
+        let largestLeageDrop = [0, ''];
         let chipsUsed = [];
         let hitsTaken = [];
         playerIds.forEach(function (p) {
@@ -79,7 +81,19 @@ class App extends Component {
             if (roundNullsafe.takenHit > 0) {
                 hitsTaken.push([p, '-' + roundNullsafe.takenHit + 'p']);
             }
+            if (round === currentRound + '') {
+                const leagueClimb = tempNullCheck(p).leagueClimb;
+                if (leagueClimb > highestLeagueClimber[0]) {
+                    highestLeagueClimber[0] = leagueClimb;
+                    highestLeagueClimber[1] = p;
+                } else if (leagueClimb < largestLeageDrop[0]) {
+                    largestLeageDrop[0] = leagueClimb;
+                    largestLeageDrop[1] = p;
+                }
+            }
         });
+        highestLeagueClimber[0] = this.convertForView(highestLeagueClimber);
+        largestLeageDrop[0] = this.convertForView(largestLeageDrop);
         hitsTaken.sort(function (a, b) {
             return b[1].slice(1, -1) - a[1].slice(1, -1);
         });
@@ -90,9 +104,15 @@ class App extends Component {
             mostTotalPointsOnBench,
             mostTotalHitsTaken,
             mostTransfersUsed,
+            highestLeagueClimber,
+            largestLeageDrop,
             chipsUsed,
             hitsTaken,
         }
+    }
+
+    convertForView(data) {
+        return tempNullCheck(data[1]).lastRoundLeagueRank + ' => ' + tempNullCheck(data[1]).leagueRank;
     }
 
     render() {
@@ -115,6 +135,8 @@ class App extends Component {
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
+                    {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
+                    {normalFact('Største fall i vår liga', score.largestLeageDrop)}
                     {makeMultipleResultsRows('Brukt chips', score.chipsUsed)}
                     {makeMultipleResultsRows('Tatt hit', score.hitsTaken)}
                 </div>

@@ -10,8 +10,8 @@ export let groupData = {};
 export let currentRound = null;
 
 const reducer2 = (a, b) => {
-    const totalPointsOnBench =  (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
-    const totalHitsTaken =  (a.totalHitsTaken !== undefined ? a.totalHitsTaken : 0) + b.event_transfers_cost;
+    const totalPointsOnBench = (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
+    const totalHitsTaken = (a.totalHitsTaken !== undefined ? a.totalHitsTaken : 0) + b.event_transfers_cost;
     Object.assign(a, {
         ['round' + b.event]: {
             points: b.points - b.event_transfers_cost,
@@ -76,7 +76,7 @@ function updateGroupData(team1, team2, round) {
             matchesWon: newMatchesWonFor(team1, winningTeam),
             matchesDrawn: newMatchesDrawnFor(team1, winningTeam),
             matchesLost: newMatchesLostFor(team1, winningTeam),
-            difference: groupData[team1] ? groupData[team1].difference + (team1Score-team2Score) : team1Score - team2Score,
+            difference: groupData[team1] ? groupData[team1].difference + (team1Score - team2Score) : team1Score - team2Score,
         },
         [team2]: {
             points: newPointsFor(team2, winningTeam),
@@ -84,7 +84,7 @@ function updateGroupData(team1, team2, round) {
             matchesWon: newMatchesWonFor(team2, winningTeam),
             matchesDrawn: newMatchesDrawnFor(team2, winningTeam),
             matchesLost: newMatchesLostFor(team2, winningTeam),
-            difference: groupData[team2] ? groupData[team2].difference + (team2Score-team1Score) : team2Score - team1Score,
+            difference: groupData[team2] ? groupData[team2].difference + (team2Score - team1Score) : team2Score - team1Score,
         }
     })
 }
@@ -103,18 +103,18 @@ function makeGroupData() {
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = { points: {}, currentRound: 3 };
+        this.state = {points: {}, currentRound: 3};
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
     };
 
     setData(data) {
-        this.setState({ points: data });
+        this.setState({points: data});
         // console.log(this.state);
     }
 
     setCurrentRound(cur) {
-        this.setState({ currentRound: cur });
+        this.setState({currentRound: cur});
         currentRound = cur;
         // console.log(this.state);
     }
@@ -156,9 +156,21 @@ class App extends Component {
                         })
                     })
                 }
-        console.log('dataz: ', dataz);
+            });
+            $.get("/api/league").done(function (result) {
+                if (result && result.length > 0) {
+                    result.forEach(function (player) {
+                        Object.assign(dataz[player.entry], {
+                            leagueClimb: player.last_rank - player.rank,
+                            leagueRank: player.rank,
+                            lastRoundLeagueRank: player.last_rank,
+                        })
+                    })
+                }
+                console.log('dataz: ', dataz);
             });
         });
+
 
         // console.log('state: ', this.state);
     }

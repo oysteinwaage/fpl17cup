@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const util = require('util');
 const fplapi = require('fpl-api-node');
-// const leagueId = 44713;
+const leagueId = 44713;
 const playerIds = [
     1727710, 1773168, 446195, 92124, 407749, 1261708, 1898765,
     2690627, 2547467, 144360, 1305123, 1331886, 3041546,
@@ -32,7 +32,7 @@ app.get('/api/score', function (req, res) {
         res.type('application/json')
             .send(values)
             .end();
-    }).catch((error) =>{
+    }).catch((error) => {
         res.type('application/json')
             .send(error)
             .end();
@@ -46,7 +46,7 @@ app.get('/api/players', function (req, res) {
         res.type('application/json')
             .send(values)
             .end();
-    }).catch((error) =>{
+    }).catch((error) => {
         res.type('application/json')
             .send(error)
             .end();
@@ -60,7 +60,20 @@ app.get('/api/chips', function (req, res) {
         res.type('application/json')
             .send(values)
             .end();
-    }).catch((error) =>{
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/league', function (req, res) {
+    fplapi.findLeagueStandings(leagueId)
+        .then(values => {
+            res.type('application/json')
+                .send(values)
+                .end();
+        }).catch((error) => {
         res.type('application/json')
             .send(error)
             .end();
@@ -68,9 +81,9 @@ app.get('/api/chips', function (req, res) {
 });
 
 app.get('/api/ping', function (req, res) {
-        res.type('application/json')
-            .send("pong")
-            .end();
+    res.type('application/json')
+        .send("pong")
+        .end();
 });
 
 const server = http.createServer(app);
