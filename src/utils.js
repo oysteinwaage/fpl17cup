@@ -56,7 +56,9 @@ export const roundJackass = {
     '<br /> En ikke-navngitt deltager i ligaen vår vil hver runde (fra runde 7) plukke ut en stakkar som får revet seg et nytt rævhål i denne spalten! Enjoy! :x',
     round7: 'Etter å ha tatt den nette sum av 28p hit på de tre siste rundene skulle man tro at det hadde rablet fullstendig for Mr Sæthre, ' +
     'men den mannen har tydeligvis så intenst mye gullhår i ræven at eneste anbefaling må være å bruke alle pengene han har på lotto i tiden fremover!' +
-    '<br /> MEN dette kan ikke fortsette, og då vil din sinnsyke taktikk dra deg ned i dritten der du hører hjemme!',
+    'Det at han også har svidd av både freehit og wildcard allerede er også et klart tegn på at mannen er en bytte-junkie av rang og det finnes ingen tegn på at ' +
+    'han har tenkt å roe seg med det første!' +
+    '<br /> MEN denne flaksen kan ikke fortsette, og då vil din sinnsyke taktikk dra deg ned i dritten der du hører hjemme!',
     round8: 'Hvem blir traspet denne runden...??',
 }
 
