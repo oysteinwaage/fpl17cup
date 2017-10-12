@@ -1,6 +1,7 @@
 label {
-    font-family: "PremierSans-Regular",Arial,"Helvetica Neue",Helvetica,sans-serif;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
+
 .selectBoxContainer {
     text-align: center;
 }
@@ -18,10 +19,16 @@ label {
     border-bottom: solid black 1px;
 }
 
-.select_style:hover{
+.select_style:hover {
     border-bottom: solid red 1px;
 }
 
 .select_style select {
     display: block;
+}
+
+.dialog-content {
+    /*flex-wrap: wrap;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
 }

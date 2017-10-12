@@ -6,7 +6,9 @@
     padding: 5px 0;
 }
 
-.match-score-container {
+.match-score-container a:hover {
+    cursor: pointer;
+    color: #00b75f;
 }
 
 .match-result {
@@ -19,6 +21,7 @@
     border-bottom: 1px solid #E8E8E8;
     padding: .7rem 0;
 }
+
 .team {
     width: 40%;
     font-weight: bold;

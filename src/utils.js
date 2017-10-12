@@ -1,5 +1,4 @@
 import React from 'react';
-import { score, dataz } from './App.js';
 
 export const players = {
 //Gruppe A
@@ -62,22 +61,10 @@ export const roundJackass = {
     round8: 'Hvem blir traspet denne runden...??',
 }
 
-export function Match(props) {
-    return (
-        <div className="match-score-container">
-            <div className="match-result">
-                <div className="homeTeam team">{players[props.team1]} <br/> <div className="subName">{dataz[props.team1] && dataz[props.team1].managerName}</div></div>
-                <div className="score">{score(props.team1, props.team2, props.round)}</div>
-                <div className="awayTeam team">{players[props.team2]} <br/> <div className="subName">{dataz[props.team2] && dataz[props.team2].managerName}</div></div>
-            </div>
-        </div>
-    );
-}
-
-export function SelectBox(values, onChange, extraClassName = ''){
+export function SelectBox(values, onChange, extraClassName = '', extraName = ''){
     return (
         <div className='selectBoxContainer'>
-            <select className={'select_style' + extraClassName} name="selectBox" id="selectBox"
+            <select className={'select_style' + extraClassName} name={"selectBox" + extraName} id="selectBox"
                     onChange={onChange}>
                 <option value={null}>Velg runde</option>
                 {values.map(val => {

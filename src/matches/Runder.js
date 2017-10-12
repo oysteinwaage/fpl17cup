@@ -1,6 +1,7 @@
 import React from 'react';
-import {Match} from '../utils.js'
 import './Runder.css';
+import {score, dataz} from '../App.js';
+import {players} from '../utils.js';
 
 export const gamesPrGroupAndRound = {
     round3_13: {
@@ -76,6 +77,28 @@ export function getRoundNr(round) {
     }
 }
 
+function Match(props) {
+    return (
+        <div className="match-score-container">
+            <div className="match-result">
+                <div className="homeTeam team">
+                    <a onClick={() => props.onToggleDialog(props.team1)}>
+                        {players[props.team1]}<br/>
+                        <div className="subName">{dataz[props.team1] && dataz[props.team1].managerName}</div>
+                    </a>
+                </div>
+                <div className="score">{score(props.team1, props.team2, props.round)}</div>
+                <div className="awayTeam team">
+                    <a onClick={() => props.onToggleDialog(props.team2)}>
+                        {players[props.team2]}<br/>
+                        <div className="subName">{dataz[props.team2] && dataz[props.team2].managerName}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function MatchesForGroup(props) {
     const round = getRoundNr(props.chosenRound);
     return (
@@ -89,7 +112,8 @@ export function MatchesForGroup(props) {
                             return <Match key={match[0] + match[1]}
                                           team1={match[0]}
                                           team2={match[1]}
-                                          round={'round' + props.chosenRound}/>;
+                                          round={'round' + props.chosenRound}
+                                          onToggleDialog={props.onToggleDialog}/>;
                         })}
                     </div>);
             })}
