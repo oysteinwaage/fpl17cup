@@ -71,7 +71,8 @@ class Kamper extends Component {
                         {statsOnPlayer &&
                         <div className="dialog-content">
                             <div className="ff-round-facts">
-                                <div className="ff-facts-header">Stats runde {this.state.selectedRoundDialog || this.state.selectedRound || currentRound}</div>
+                                <div className="ff-facts-header">
+                                    Stats runde {this.state.selectedRoundDialog || this.state.selectedRound || currentRound}</div>
                                 {SelectBox(allRounds, this.changeSelectedRoundDialog.bind(this), '', 'Dialog')}
                                 {normalFact('Score', statsOnPlayer.highestRoundScore, true)}
                                 {normalFact('Poeng på benken', statsOnPlayer.mostPointsOnBench, true)}
