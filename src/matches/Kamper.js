@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import {MatchesForGroup} from './Runder.js';
-import {SelectBox, participatingRounds, players, allRounds} from '../utils.js';
+import {SelectBox, participatingRounds, players, allRounds, MakeDropDownMenu} from '../utils.js';
 import {dataz, currentRound} from "../App.js";
 import {calculateStats, normalFact, makeMultipleResultsRows} from "../funfacts/Funfacts";
 
@@ -35,6 +35,12 @@ class Kamper extends Component {
         })
     };
 
+    // changeSelectedRoundUi(event, index, value) {
+    //     this.setState({
+    //         selectedRound: value
+    //     })
+    // };
+
     changeSelectedRoundDialog() {
         this.setState({
             selectedRoundDialog: document.getElementsByName('selectBoxDialog')[0].value
@@ -57,6 +63,9 @@ class Kamper extends Component {
             <div>
                 {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this))}
+                {/*<MuiThemeProvider>*/}
+                    {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
+                {/*</MuiThemeProvider>*/}
                 <MatchesForGroup chosenRound={this.state.selectedRound} onToggleDialog={this.toggleDialog}/>
                 <MuiThemeProvider>
                     <Dialog
