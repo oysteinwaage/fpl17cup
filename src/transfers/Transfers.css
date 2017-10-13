@@ -1,0 +1,28 @@
+.transfer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.transfer-team {
+    width: 100%;
+    font-weight: bold;
+}
+.transfer-list {
+
+}
+.transfer-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.transfer-player-out{
+    width: 33%;
+}
+.transfer-player-in{
+    width: 33%;
+
+}
+.transfer-player-time{
+    width: 33%;
+
+}

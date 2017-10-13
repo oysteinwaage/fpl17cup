@@ -8,6 +8,8 @@ import {playerIds, participatingRounds} from './utils.js';
 export let dataz = {};
 export let groupData = {};
 export let currentRound = null;
+export let transferlist = [];
+export let fplPlayers = [];
 
 const reducer2 = (a, b) => {
     const totalPointsOnBench = (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
@@ -103,18 +105,18 @@ function makeGroupData() {
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = { points: {}, currentRound: 3 };
+        this.state = {points: {}, currentRound: 3};
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
     };
 
     setData(data) {
-        this.setState({ points: data });
+        this.setState({points: data});
         // console.log(this.state);
     }
 
     setCurrentRound(cur) {
-        this.setState({ currentRound: cur });
+        this.setState({currentRound: cur});
         currentRound = cur;
         // console.log(this.state);
     }
@@ -173,24 +175,37 @@ class App extends Component {
                 if (result && result.length > 0) {
                     result.forEach(function (i) {
                         i.forEach(function (transfer) {
-                            if (dataz[transfer.entry]['round' + transfer.event].transfersIn) {
-                                dataz[transfer.entry]['round' + transfer.event].transfersIn.push([transfer.element_in, transfer.time_formatted]);
+                            if (transferlist.indexOf(transfer.element_in) === -1) {
+                                transferlist.push(transfer.element_in);
+                            }
+                            if (transferlist.indexOf(transfer.element_out) === -1) {
+                                transferlist.push(transfer.element_out);
+                            }
+                            if (dataz[transfer.entry]['round' + transfer.event].transfers) {
+                                dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, transfer.time_formatted]);
                             } else {
                                 Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-                                    transfersIn: [[transfer.element_in, transfer.time_formatted]]
+                                    transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
                                 })
                             }
-                            if (dataz[transfer.entry]['round' + transfer.event].transfersOut) {
-                                dataz[transfer.entry]['round' + transfer.event].transfersOut.push([transfer.element_out, transfer.time_formatted]);
-                            } else {
-                                Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-                                    transfersOut: [[transfer.element_out, transfer.time_formatted]]
-                                })
-                            }
+                            // if (dataz[transfer.entry]['round' + transfer.event].transfersOut) {
+                            //     dataz[transfer.entry]['round' + transfer.event].transfersOut.push([transfer.element_out, transfer.time_formatted]);
+                            // } else {
+                            //     Object.assign(dataz[transfer.entry]['round' + transfer.event], {
+                            //         transfersOut: [[transfer.element_out, transfer.time_formatted]]
+                            //     })
+                            // }
                         })
                     })
+                    console.log('transferList: ', transferlist);
                 }
                 console.log('dataz: ', dataz);
+            });
+            $.get("/api/fplplayers").done(function (result) {
+                console.log('alle spillere: ', result);
+                if (result && result.length > 0) {
+                    fplPlayers = result;
+                }
             });
         });
 

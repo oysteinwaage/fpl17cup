@@ -81,6 +81,18 @@ app.get('/api/transfers', function (req, res) {
     });
 });
 
+app.get('/api/fplplayers', function (req, res) {
+    fplapi.getElements().then(values => {
+        res.type('application/json')
+            .send(values)
+            .end();
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
 app.get('/api/league', function (req, res) {
     fplapi.findLeagueStandings(leagueId)
         .then(values => {
