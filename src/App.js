@@ -132,6 +132,8 @@ class App extends Component {
                 // this.setState({points: transformData(result)})
                 // that.forceUpdate();
                 makeGroupData();
+            } else if(result.name === 'GameUpdatingError'){
+                alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
             }
             $.get("/api/players").done(function (result) {
                 console.log('players-result: ', result);

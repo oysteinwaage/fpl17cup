@@ -21,12 +21,11 @@ class Transfers extends Component {
         const chosenRound = this.state.selectedRound || currentRound;
         return (
             <div>
-                <div className="transfer-header"> {chosenRound === currentRound && 'Runde ' + chosenRound}</div>
+                <div className="transfer-header"> {(chosenRound === currentRound && chosenRound !== null) && 'Runde ' + chosenRound}</div>
                 {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                 {/*<MuiThemeProvider>*/}
                 {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
                 {/*</MuiThemeProvider>*/}
-                <p>Her kommer plutselig en (forståelig) oversikt over hvilke spillere folk har byttet hver runde!</p>
                 {playerIds.map(player => {
                     return transfersForTeamAndRound(player, chosenRound);
                 })}
@@ -38,21 +37,24 @@ class Transfers extends Component {
 function transfersForTeamAndRound(teamId, round) {
     if (teamId && round) {
         const roundId = 'round' + round;
-        // const transfersOut = dataz[teamId][roundId].transfersOut;
-        // const transfersIn = dataz[teamId][roundId].transfersIn;
-        const transfers = dataz[teamId][roundId].transfers;
-        return teamId && round && (
+        const transfers = dataz[teamId][roundId] ? dataz[teamId][roundId].transfers : [];
+        return teamId && round && transfers && (
             <div key={teamId} className="transfer-container">
                 <div className="transfer-team">{players[teamId]}</div>
                 <div className="transfer-transferlist">
-                    {transfers && transfers.map(t => {
+                    <div className="transfer-row">
+                        <div className="transfer-player">Inn</div>
+                        <div className="transfer-player">Ut</div>
+                        <div className="transfer-player-time">Tidspunkt</div>
+                    </div>
+                    {transfers.map(t => {
                         return (
                             <div className="transfer-row">
-                                <div key={teamId + round + t +'out'} className="transfer-player-out">
-                                    {fplPlayers[t[0]-1].first_name + ' ' + fplPlayers[t[0]-1].second_name}
+                                <div key={teamId + round + t +'out'} className="transfer-player">
+                                    {fplPlayers[t[0]-1].web_name}
                                 </div>
-                                <div key={teamId + round + t + 'in'} className="transfer-player-in">
-                                    {fplPlayers[t[1]-1].first_name + ' ' + fplPlayers[t[1]-1].second_name}
+                                <div key={teamId + round + t + 'in'} className="transfer-player">
+                                    {fplPlayers[t[1]-1].web_name}
                                 </div>
                                 <div key={teamId + round + t + 'time'} className="transfer-player-time">
                                     {t[2]}
