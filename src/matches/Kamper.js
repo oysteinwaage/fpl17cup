@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import {MatchesForGroup} from './Runder.js';
-import {SelectBox, participatingRounds, players, allRounds, MakeDropDownMenu} from '../utils.js';
+import {SelectBox, participatingRounds, players, allRounds} from '../utils.js';
 import {dataz, currentRound} from "../App.js";
 import {calculateStats, normalFact, makeMultipleResultsRows} from "../funfacts/Funfacts";
 

@@ -190,13 +190,6 @@ class App extends Component {
                                     transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
                                 })
                             }
-                            // if (dataz[transfer.entry]['round' + transfer.event].transfersOut) {
-                            //     dataz[transfer.entry]['round' + transfer.event].transfersOut.push([transfer.element_out, transfer.time_formatted]);
-                            // } else {
-                            //     Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-                            //         transfersOut: [[transfer.element_out, transfer.time_formatted]]
-                            //     })
-                            // }
                         })
                     })
                     console.log('transferList: ', transferlist);

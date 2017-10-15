@@ -1,4 +1,5 @@
 const http = require('http');
+const url = require('url');
 const express = require('express');
 const util = require('util');
 const fplapi = require('fpl-api-node');
@@ -95,6 +96,20 @@ app.get('/api/fplplayers', function (req, res) {
 
 app.get('/api/league', function (req, res) {
     fplapi.findLeagueStandings(leagueId)
+        .then(values => {
+            res.type('application/json')
+                .send(values)
+                .end();
+        }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/test', function (req, res) {
+    const query = url.parse(req.url, true).query;
+    fplapi.findElementsByEvent(query.round)
         .then(values => {
             res.type('application/json')
                 .send(values)

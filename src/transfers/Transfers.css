@@ -1,31 +1,41 @@
 .transfer-header {
     text-align: center;
 }
+
 .transfer-container {
-    font-family: "PremierSans-Regular",Arial,"Helvetica Neue",Helvetica,sans-serif;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     padding-top: 10px;
 }
+
 .transfer-team {
     width: 100%;
     font-weight: bold;
 }
+
 .transfer-transferlist {
     width: 100%;
 }
+
 .transfer-row {
     display: flex;
     width: 100%;
     /*justify-content: space-between;*/
     border-bottom: .5px solid #c4c4c4;
 }
-.transfer-player{
+
+.transfer-player {
     text-align: left;
     width: 40%;
 }
 
-.transfer-player-time{
+.transfer-points {
+    font-style: italic;
+}
+
+.transfer-player-time {
     text-align: right;
+    width: 100px;
 }
