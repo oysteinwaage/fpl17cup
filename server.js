@@ -82,6 +82,24 @@ app.get('/api/transfers', function (req, res) {
     });
 });
 
+app.get('/api/captain', function (req, res) {
+    const query = url.parse(req.url, true).query;
+    Promise.all(
+        playerIds.map(p => fplapi.findEntryPicksByEvent(p, query.round))
+    ).then(values => {
+        const data = values.map(vals => {
+            return vals.filter(val => val.is_captain);
+        });
+        res.type('application/json')
+            .send(data)
+            .end();
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
 app.get('/api/fplplayers', function (req, res) {
     fplapi.getElements().then(values => {
         res.type('application/json')
@@ -107,7 +125,7 @@ app.get('/api/league', function (req, res) {
     });
 });
 
-app.get('/api/test', function (req, res) {
+app.get('/api/playerscores', function (req, res) {
     const query = url.parse(req.url, true).query;
     fplapi.findElementsByEvent(query.round)
         .then(values => {

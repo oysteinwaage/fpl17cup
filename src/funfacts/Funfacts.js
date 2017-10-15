@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
+import $ from 'jquery';
 import '../App.css';
 import './Funfacts.css';
 import {playerIds, players, SelectBox, allRounds, roundJackass} from '../utils.js';
 import {currentRound, dataz} from '../App.js';
 
-//TODO inntil jeg får fikset redux med state
 function tempNullCheck(teamId) {
     return dataz[teamId] || {};
 }
@@ -13,7 +13,7 @@ function tempNullCheckRound(teamId, round) {
     return tempNullCheck(teamId) && tempNullCheck(teamId)[round] ? tempNullCheck(teamId)[round] : {};
 }
 
-export function calculateStats(round, players) {
+export function calculateStats(round, players, playerPoints, captainData) {
     let highestRoundScore = [0, ''];
     let lowestRoundScore = [666, ''];
     let mostPointsOnBench = [0, ''];
@@ -22,15 +22,19 @@ export function calculateStats(round, players) {
     let mostTotalHitsTaken = [0, ''];
     let highestLeagueClimber = [0, ''];
     let largestLeageDrop = [0, ''];
+    let mostCaptainPoints = [0, []];
     let chipsUsed = [];
     let hitsTaken = [];
     players.forEach(function (p) {
+        console.log('playerpoints: ', playerPoints);
+        console.log('captData inni: ', captainData);
         const roundNullsafe = tempNullCheckRound(p, 'round' + round);
         const points = roundNullsafe.points;
         const pointsOnBench = roundNullsafe.pointsOnBench;
         const transfersUsed = tempNullCheck(p).totalTransfers;
         const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
+        // const captainPoints = playerPoints[captainData[p].player];
 
         if (points > highestRoundScore[0]) {
             highestRoundScore[0] = points;
@@ -61,7 +65,7 @@ export function calculateStats(round, players) {
         if (roundNullsafe.takenHit > 0) {
             hitsTaken.push([p, '-' + roundNullsafe.takenHit + 'p']);
         }
-        if (round +'' === currentRound + '') {
+        if (round + '' === currentRound + '') {
             const leagueClimb = tempNullCheck(p).leagueClimb;
             if (leagueClimb > highestLeagueClimber[0]) {
                 highestLeagueClimber[0] = leagueClimb;
@@ -104,8 +108,11 @@ class App extends Component {
             lowestScorePlayer: '?',
             lowestRoundScore: '?',
             selectedRound: currentRound,
+            captainData: {},
+            playerPoints: null,
         };
         // this.calculateStats = this.calculateStats.bind(this);
+        this.fetchCaptainData = this.fetchCaptainData.bind(this);
     };
 
     changeSelectedRound() {
@@ -113,10 +120,35 @@ class App extends Component {
             Object.assign(this.state, {
                 selectedRound: document.getElementsByName('selectBox')[0].value
             }));
+        this.fetchCaptainData(document.getElementsByName('selectBox')[0].value);
     };
 
+    fetchCaptainData(round) {
+        let that = this;
+        if (round) {
+            $.get("/api/captain?round=" + round).done(function (result) {
+                console.log('captain: ', result);
+                playerIds.forEach(pId => {
+                    const index = playerIds.indexOf(pId);
+                    Object.assign(that.state.captainData, {
+                        [pId] : {
+                            player: result[index][0].element,
+                            multiplier: result[index][0].multiplier,
+                        }
+                    })
+                });
+            });
+            $.get("/api/playerscores?round=" + round).done(function (result) {
+                that.setState({
+                    playerPoints: result,
+                })
+                console.log('state siste: ', that.state);
+            });
+        }
+    }
+
     render() {
-        let score = calculateStats(this.state.selectedRound, playerIds);
+        let score = calculateStats(this.state.selectedRound, playerIds, this.state.playerPoints, this.state.captainData);
         const totalHits = ['-' + score.mostTotalHitsTaken[0] + 'p', score.mostTotalHitsTaken[1]];
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
         return (

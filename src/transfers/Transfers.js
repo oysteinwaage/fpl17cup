@@ -25,7 +25,7 @@ class Transfers extends Component {
     fetchPlayerPoints(round) {
         let that = this;
         if (round) {
-            $.get("/api/test?round=" + round).done(function (result) {
+            $.get("/api/playerscores?round=" + round).done(function (result) {
                 that.setState({
                     playerPoints: result,
                 })

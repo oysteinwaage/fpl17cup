@@ -7,12 +7,13 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding-top: 10px;
+    padding-top: 30px;
 }
 
 .transfer-team {
     width: 100%;
     font-weight: bold;
+    padding-bottom: 5px;
 }
 
 .transfer-transferlist {
@@ -28,14 +29,12 @@
 
 .transfer-player {
     text-align: left;
+    padding: 2px 0;
     width: 40%;
-}
-
-.transfer-points {
-    font-style: italic;
 }
 
 .transfer-player-time {
     text-align: right;
+    padding: 2px 0;
     width: 100px;
 }
