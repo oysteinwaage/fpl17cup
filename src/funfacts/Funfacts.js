@@ -197,7 +197,7 @@ class App extends Component {
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
                     {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
-                    {makeMultipleResultsRowsWithSameScore('Ferrest kapteinspoeng', score.lowestCaptainPoints)}
+                    {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints)}
                     {makeMultipleResultsRows('Brukt chips', score.chipsUsed)}
                     {makeMultipleResultsRows('Tatt hit', score.hitsTaken)}
                 </div>
