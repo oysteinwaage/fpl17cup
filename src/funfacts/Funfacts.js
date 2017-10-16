@@ -22,7 +22,8 @@ export function calculateStats(round, players, playerPoints, captainData) {
     let mostTotalHitsTaken = [0, ''];
     let highestLeagueClimber = [0, ''];
     let largestLeageDrop = [0, ''];
-    let mostCaptainPoints = [0, []];
+    let mostCaptainPoints = [0, ''];
+    let lowestCaptainPoints = [666, ''];
     let chipsUsed = [];
     let hitsTaken = [];
     players.forEach(function (p) {
@@ -34,7 +35,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
         const transfersUsed = tempNullCheck(p).totalTransfers;
         const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
-        // const captainPoints = playerPoints[captainData[p].player];
+        const captainPoints = playerPoints && captainData && (playerPoints[captainData[p].player].stats.total_points * captainData[p].multiplier);
 
         if (points > highestRoundScore[0]) {
             highestRoundScore[0] = points;
@@ -58,6 +59,18 @@ export function calculateStats(round, players, playerPoints, captainData) {
         if (transfersUsed > mostTransfersUsed[0]) {
             mostTransfersUsed[0] = transfersUsed;
             mostTransfersUsed[1] = p;
+        }
+        if(captainPoints && captainPoints > mostCaptainPoints[0]){
+            // TODO - få inn hvilken spiller som var kaptein - og liste over alle med lik kapteinspoeng!
+            // const captainName = fplPlayers[captainData[p].player].web_name;
+            mostCaptainPoints[0] = captainPoints;
+            mostCaptainPoints[1] = p;
+        }
+        if(captainPoints && captainPoints < lowestCaptainPoints[0]){
+            // TODO - få inn hvilken spiller som var kaptein - og liste over alle med lik kapteinspoeng!
+            // const captainName = fplPlayers[captainData[p].player].web_name;
+            lowestCaptainPoints[0] = captainPoints;
+            lowestCaptainPoints[1] = p;
         }
         if (roundNullsafe.chipsPlayed) {
             chipsUsed.push([p, roundNullsafe.chipsPlayed.chipName]);
@@ -90,6 +103,8 @@ export function calculateStats(round, players, playerPoints, captainData) {
         mostTransfersUsed,
         highestLeagueClimber,
         largestLeageDrop,
+        mostCaptainPoints,
+        lowestCaptainPoints,
         chipsUsed,
         hitsTaken,
     }
@@ -166,6 +181,8 @@ class App extends Component {
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
+                    {normalFact('Flest kapteinspoeng', score.mostCaptainPoints)}
+                    {normalFact('Ferrest kapteinspoeng', score.lowestCaptainPoints)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
