@@ -59,6 +59,17 @@
 .ff-multiple-result-facts {
     padding-bottom: 5px;
 }
+.ff-multiple-result-facts-2 {
+    padding-bottom: 5px;
+    display: flex;
+}
+.ff-multiple-result-facts-points{
+    width: 15px;
+    padding-right: 5px;
+}
+.ff-multiple-result-facts-player{
+
+}
 
 .ff-facts-header {
     text-align: center;

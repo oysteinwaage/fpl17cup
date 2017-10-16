@@ -3,7 +3,7 @@ import $ from 'jquery';
 import '../App.css';
 import './Funfacts.css';
 import {playerIds, players, SelectBox, allRounds, roundJackass} from '../utils.js';
-import {currentRound, dataz} from '../App.js';
+import {currentRound, dataz, fplPlayers} from '../App.js';
 
 function tempNullCheck(teamId) {
     return dataz[teamId] || {};
@@ -22,20 +22,18 @@ export function calculateStats(round, players, playerPoints, captainData) {
     let mostTotalHitsTaken = [0, ''];
     let highestLeagueClimber = [0, ''];
     let largestLeageDrop = [0, ''];
-    let mostCaptainPoints = [0, ''];
-    let lowestCaptainPoints = [666, ''];
+    let mostCaptainPoints = [];
+    let lowestCaptainPoints = [];
     let chipsUsed = [];
     let hitsTaken = [];
     players.forEach(function (p) {
-        console.log('playerpoints: ', playerPoints);
-        console.log('captData inni: ', captainData);
         const roundNullsafe = tempNullCheckRound(p, 'round' + round);
         const points = roundNullsafe.points;
         const pointsOnBench = roundNullsafe.pointsOnBench;
         const transfersUsed = tempNullCheck(p).totalTransfers;
         const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
-        const captainPoints = playerPoints && captainData && (playerPoints[captainData[p].player].stats.total_points * captainData[p].multiplier);
+        const captainPoints = playerPoints && captainData[p] && (playerPoints[captainData[p].player].stats.total_points * captainData[p].multiplier);
 
         if (points > highestRoundScore[0]) {
             highestRoundScore[0] = points;
@@ -60,17 +58,21 @@ export function calculateStats(round, players, playerPoints, captainData) {
             mostTransfersUsed[0] = transfersUsed;
             mostTransfersUsed[1] = p;
         }
-        if(captainPoints && captainPoints > mostCaptainPoints[0]){
-            // TODO - få inn hvilken spiller som var kaptein - og liste over alle med lik kapteinspoeng!
-            // const captainName = fplPlayers[captainData[p].player].web_name;
-            mostCaptainPoints[0] = captainPoints;
-            mostCaptainPoints[1] = p;
+        if (captainPoints) {
+            const captainName = fplPlayers[captainData[p].player - 1].web_name;
+            if ((mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0])) {
+                mostCaptainPoints = [[captainPoints, [p, captainName]]];
+            } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
+                mostCaptainPoints.push([captainPoints, [p, captainName]])
+            }
         }
-        if(captainPoints && captainPoints < lowestCaptainPoints[0]){
-            // TODO - få inn hvilken spiller som var kaptein - og liste over alle med lik kapteinspoeng!
-            // const captainName = fplPlayers[captainData[p].player].web_name;
-            lowestCaptainPoints[0] = captainPoints;
-            lowestCaptainPoints[1] = p;
+        if (captainPoints) {
+            const captainName = fplPlayers[captainData[p].player - 1].web_name;
+            if ((lowestCaptainPoints.length === 0 || captainPoints < lowestCaptainPoints[0][0])) {
+                lowestCaptainPoints = [[captainPoints, [p, captainName]]];
+            } else if (lowestCaptainPoints.length > 0 && captainPoints === lowestCaptainPoints[0][0]) {
+                lowestCaptainPoints.push([captainPoints, [p, captainName]])
+            }
         }
         if (roundNullsafe.chipsPlayed) {
             chipsUsed.push([p, roundNullsafe.chipsPlayed.chipName]);
@@ -146,7 +148,7 @@ class App extends Component {
                 playerIds.forEach(pId => {
                     const index = playerIds.indexOf(pId);
                     Object.assign(that.state.captainData, {
-                        [pId] : {
+                        [pId]: {
                             player: result[index][0].element,
                             multiplier: result[index][0].multiplier,
                         }
@@ -181,8 +183,8 @@ class App extends Component {
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
-                    {normalFact('Flest kapteinspoeng', score.mostCaptainPoints)}
-                    {normalFact('Ferrest kapteinspoeng', score.lowestCaptainPoints)}
+                    {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
+                    {makeMultipleResultsRowsWithSameScore('Ferrest kapteinspoeng', score.lowestCaptainPoints)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
@@ -210,6 +212,29 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
                     return (
                         <div key={d[0]} className="ff-multiple-result-facts">
                             {text}
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+
+export function makeMultipleResultsRowsWithSameScore(text, data) {
+    let firstRow = true;
+    console.log('---', data);
+    return data.length === 0 ? null : (
+        <div className={"ff-multiple-results-container"}>
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {data.map(d => {
+                    const points = firstRow ? d[0] : '';
+                    const player = players[d[1][0]] + ' (' + d[1][1] + ')';
+                    firstRow = false;
+                    return (
+                        <div key={d[1][0] + 'r'} className="ff-multiple-result-facts-2">
+                            <div key={d[1][0] + 'p'} className="ff-multiple-result-facts-points">{points}</div>
+                            <div key={d[1][0] + 'p2'} className="ff-multiple-result-facts-player">{player}</div>
                         </div>
                     )
                 })}
