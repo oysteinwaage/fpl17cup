@@ -132,6 +132,22 @@ class App extends Component {
         this.fetchCaptainData = this.fetchCaptainData.bind(this);
     };
 
+    componentDidMount() {
+        let round = 1;
+        let totalCaptainPoints = {};
+        while (round <= currentRound) {
+            $.get("/api/captain?round=" + round).done(function (result) {
+                playerIds.forEach(pId => {
+                Object.assign(totalCaptainPoints, {
+                    playerId: pId,
+                    totalCapPoints: totalCaptainPoints.totalCapPoints + result[pId]
+                })
+                })
+            });
+            round++;
+        }
+    }
+
     changeSelectedRound() {
         this.setState(
             Object.assign(this.state, {
@@ -144,16 +160,7 @@ class App extends Component {
         let that = this;
         if (round) {
             $.get("/api/captain?round=" + round).done(function (result) {
-                console.log('captain: ', result);
-                playerIds.forEach(pId => {
-                    const index = playerIds.indexOf(pId);
-                    Object.assign(that.state.captainData, {
-                        [pId]: {
-                            player: result[index][0].element,
-                            multiplier: result[index][0].multiplier,
-                        }
-                    })
-                });
+                Object.assign(that.state.captainData, result)
             });
             $.get("/api/playerscores?round=" + round).done(function (result) {
                 that.setState({
@@ -165,6 +172,9 @@ class App extends Component {
     }
 
     render() {
+        if (this.state.playerPoints === null) {
+            this.fetchCaptainData(this.state.selectedRound);
+        }
         let score = calculateStats(this.state.selectedRound, playerIds, this.state.playerPoints, this.state.captainData);
         const totalHits = ['-' + score.mostTotalHitsTaken[0] + 'p', score.mostTotalHitsTaken[1]];
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
@@ -172,7 +182,7 @@ class App extends Component {
             <div className="ff-content-container">
                 {roundJackasText &&
                 <div className="ff-rundens-smell">
-                    <div className="ff-rundens-smell-header">"Rundens kuksuger"</div>
+                    <div className="ff-rundens-smell-header">"Rundens drittfyr"</div>
                     <div className="ff-rundens-smell-content"><span
                         dangerouslySetInnerHTML={{__html: roundJackasText}}/></div>
                     <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. X</div>
@@ -183,11 +193,11 @@ class App extends Component {
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
-                    {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
-                    {makeMultipleResultsRowsWithSameScore('Ferrest kapteinspoeng', score.lowestCaptainPoints)}
                     {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
+                    {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
+                    {makeMultipleResultsRowsWithSameScore('Ferrest kapteinspoeng', score.lowestCaptainPoints)}
                     {makeMultipleResultsRows('Brukt chips', score.chipsUsed)}
                     {makeMultipleResultsRows('Tatt hit', score.hitsTaken)}
                 </div>
@@ -222,7 +232,6 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
 
 export function makeMultipleResultsRowsWithSameScore(text, data) {
     let firstRow = true;
-    console.log('---', data);
     return data.length === 0 ? null : (
         <div className={"ff-multiple-results-container"}>
             <div className="ff-normal-fact-text">{text}</div>

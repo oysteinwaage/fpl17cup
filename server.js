@@ -90,8 +90,18 @@ app.get('/api/captain', function (req, res) {
         const data = values.map(vals => {
             return vals.filter(val => val.is_captain);
         });
+        const formattedData = {};
+        playerIds.forEach(pId => {
+            const index = playerIds.indexOf(pId);
+            Object.assign(formattedData, {
+                [pId]: {
+                    player: data[index][0].element,
+                    multiplier: data[index][0].multiplier,
+                }
+            })
+        });
         res.type('application/json')
-            .send(data)
+            .send(formattedData)
             .end();
     }).catch((error) => {
         res.type('application/json')
