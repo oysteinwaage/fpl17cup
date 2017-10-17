@@ -60,7 +60,10 @@ export const roundJackass = {
     'Det at han også har svidd av både freehit og wildcard allerede er også et klart tegn på at mannen er en bytte-junkie av rang og det finnes ingen tegn på at ' +
     'han har tenkt å roe seg med det første!' +
     '<br /> MEN denne flaksen kan ikke fortsette, og då vil din sinnsyke taktikk dra deg ned i dritten der du hører hjemme!',
-    round8: 'Hvem blir traspet denne runden...??',
+    round8: 'Rundens store taper må jo bli Cuencanos med imponerende 18 poeng og jumbo plass etter 8 runder. Riktig nok ble det 22 poeng, men det er ikke inkludert hits.' +
+    '18 poeng er så imponerende elendig at det ikke kan gå upåaktet hen. Poeng fangsten gir ett pent snitt på 1,6 poeng pr spiller som må være verdensrekord for en aktiv spiller.<br />' +
+    'En kan undres i om det er grunnet Liverpool sin middelmådige seriestart. Det kan se ut som det er en slags sammenheng mellom fantasy spillere og Liverpool supportere. <br />' +
+    'Men vi får håpe du kommer sterkere tilbake for ingenting kan jo bli værre enn dette!',
 }
 
 export function SelectBox(values, onChange, extraClassName = '', extraName = '') {

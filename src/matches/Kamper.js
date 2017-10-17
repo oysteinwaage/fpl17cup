@@ -62,7 +62,7 @@ class Kamper extends Component {
         return (
             <div>
                 {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
-                <p style={{'text-align': 'center', 'font-size': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
+                <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this))}
                 {/*<MuiThemeProvider>*/}
                     {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
