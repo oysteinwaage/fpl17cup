@@ -23,6 +23,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
     let highestLeagueClimber = [0, ''];
     let largestLeageDrop = [0, ''];
     let mostCaptainPoints = [];
+    let mostCaptainPointsTest = []
     let lowestCaptainPoints = [];
     let chipsUsed = [];
     let hitsTaken = [];
@@ -58,9 +59,19 @@ export function calculateStats(round, players, playerPoints, captainData) {
             mostTransfersUsed[0] = transfersUsed;
             mostTransfersUsed[1] = p;
         }
+        // test ny måte å lage multilinjeMedÉnScore
+        if(captainPoints){
+            const captainName = fplPlayers[captainData[p].player - 1].web_name;
+            if(mostCaptainPointsTest.length === 0 || captainPoints > mostCaptainPointsTest[0][0]){
+                mostCaptainPointsTest.push([captainPoints, p, captainName]);
+            } else if(mostCaptainPointsTest.length > 0 && captainPoints === mostCaptainPointsTest[0][0]){
+                mostCaptainPointsTest = [[captainPoints, p, captainName]];
+            }
+        }
+
         if (captainPoints) {
             const captainName = fplPlayers[captainData[p].player - 1].web_name;
-            if ((mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0])) {
+            if (mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0]) {
                 mostCaptainPoints = [[captainPoints, [p, captainName]]];
             } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
                 mostCaptainPoints.push([captainPoints, [p, captainName]])
@@ -68,7 +79,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
         }
         if (captainPoints) {
             const captainName = fplPlayers[captainData[p].player - 1].web_name;
-            if ((lowestCaptainPoints.length === 0 || captainPoints < lowestCaptainPoints[0][0])) {
+            if (lowestCaptainPoints.length === 0 || captainPoints < lowestCaptainPoints[0][0]) {
                 lowestCaptainPoints = [[captainPoints, [p, captainName]]];
             } else if (lowestCaptainPoints.length > 0 && captainPoints === lowestCaptainPoints[0][0]) {
                 lowestCaptainPoints.push([captainPoints, [p, captainName]])
@@ -106,6 +117,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
         highestLeagueClimber,
         largestLeageDrop,
         mostCaptainPoints,
+        mostCaptainPointsTest,
         lowestCaptainPoints,
         chipsUsed,
         hitsTaken,
@@ -244,6 +256,28 @@ export function makeMultipleResultsRowsWithSameScore(text, data) {
                         <div key={d[1][0] + 'r'} className="ff-multiple-result-facts-2">
                             <div key={d[1][0] + 'p'} className="ff-multiple-result-facts-points">{points}</div>
                             <div key={d[1][0] + 'p2'} className="ff-multiple-result-facts-player">{player}</div>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+//TODO fortsett med dette
+export function makeMultipleResultsRowsWithSameScoreTest(text, data) {
+    let firstRow = true;
+    return data.length === 0 ? null : (
+        <div className={"ff-multiple-results-container"}>
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {data.map(d => {
+                    const points = firstRow ? d[0] : '';
+                    const player = players[d[1]] + ' (' + d[2] + ')';
+                    firstRow = false;
+                    return (
+                        <div key={d[1] + 'r'} className="ff-multiple-result-facts-2">
+                            <div key={d[1] + 'p'} className="ff-multiple-result-facts-points">{points}</div>
+                            <div key={d[1] + 'p2'} className="ff-multiple-result-facts-player">{player}</div>
                         </div>
                     )
                 })}
