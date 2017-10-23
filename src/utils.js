@@ -64,6 +64,12 @@ export const roundJackass = {
     '18 poeng er så imponerende elendig at det ikke kan gå upåaktet hen. Poeng fangsten gir ett pent snitt på 1,6 poeng pr spiller som må være verdensrekord for en aktiv spiller.<br />' +
     'En kan undres i om det er grunnet Liverpool sin middelmådige seriestart. Det kan se ut som det er en slags sammenheng mellom fantasy spillere og Liverpool supportere. <br />' +
     'Men vi får håpe du kommer sterkere tilbake for ingenting kan jo bli værre enn dette!',
+    round9: 'Regjerende mester. Selvproklamert ekspert. Et ego til å matche Niklas Bendtner. Og ferdigheter på samme nivå som Lord Bendtner. 25 poeng! <br /> ' +
+    'Rundens drittfyr kan kun være en mann: Øksen! Har levert elendige prestasjoner i hele år, og det topper seg i denne runden her. ' +
+    'Bytter ut Lacazette for Morata før runden, får ikke til nokke som helst. Med urokkelig tro på Failmino så er vel ikke dette mer enn han fortjener. ' +
+    'Blanket i 7 av 9 runder, med det e alltid plass på Øksen sitt lag. Spissrekken kompletteres med Jesus, som var kaptein for runden. ' +
+    'Ingen Frelse å hente hos Jesus, så det ble kun 5 poeng på spissrekken. <br />' +
+    'Løpet e kjørt for Øksen i år, men siden han e Liverpool supporter e d vel passende å si; «neste år blir ditt år»',
 }
 
 export function SelectBox(values, onChange, extraClassName = '', extraName = '') {
