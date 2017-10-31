@@ -70,6 +70,11 @@ export const roundJackass = {
     'Blanket i 7 av 9 runder, med det e alltid plass på Øksen sitt lag. Spissrekken kompletteres med Jesus, som var kaptein for runden. ' +
     'Ingen Frelse å hente hos Jesus, så det ble kun 5 poeng på spissrekken. <br />' +
     'Løpet e kjørt for Øksen i år, men siden han e Liverpool supporter e d vel passende å si; «neste år blir ditt år»',
+    round10: 'ordtaket sier; "det er lov å ha flaks" Tror likevel ikke at dette er gjeldende i de episke proposjonene når det kommer til Rundens drittfyr. <br />' +
+    'Etter å ha kapteinet Aguero (seriøst, kem gjør sånt? han spilte 120 min på onsdag... Stevie Wonder kunne sett at han måtte bli benket), ' +
+    'har han satt visekaptein på Sané, og fikk dermed 12 ekstra poeng for sin dumskap. OG ikke nok me d(!), ' +
+    'han fikk faen meg inn Davis me 10 poeng fra benken og! <br />Bare for å gjøre fadesen komplett så tok han inn Aguero til denne runden, ' +
+    'og fikk altså betalt med 22 ekstra poeng og delt best score for et elendi bytte denne runden! <br /><br /> Gratulerer Flakka Kickerz som Rundens drittfyr',
 }
 
 export function SelectBox(values, onChange, extraClassName = '', extraName = '') {
