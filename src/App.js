@@ -4,6 +4,9 @@ import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {playerIds, participatingRounds} from './utils.js';
+import Dialog from 'material-ui/Dialog';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import FlatButton from 'material-ui/FlatButton';
 
 export let dataz = {};
 export let groupData = {};
@@ -105,9 +108,14 @@ function makeGroupData() {
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {points: {}, currentRound: 3};
+        this.state = {
+            points: {},
+            currentRound: 3,
+            dialogOpen: false
+        };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
+        this.toggleEasteregg = this.toggleEasteregg.bind(this);
     };
 
     setData(data) {
@@ -202,18 +210,38 @@ class App extends Component {
                     fplPlayers = result;
                 }
             });
+            // $.get("/api/captaintest").done(function (result) {
+            //     console.log('test: ', result);
+            // });
+            // $.get("/api/captain2").done(function (result) {
+            //     console.log('alle kapteiner2222: ', result);
+            // });
         });
 
 
         // console.log('state: ', this.state);
     }
 
+    toggleEasteregg = () => {
+        this.setState({
+            dialogOpen: !this.state.dialogOpen,
+        });
+    };
+
     render() {
+        const actions = [
+            <FlatButton
+                label="Fjern dette stygge trynet!"
+                primary={true}
+                onClick={() => this.toggleEasteregg()}
+            />,
+        ];
         return (
             <div>
                 <div className="overHeader">
                     <div className="headerText">
-                        <h1>For Fame And Glory FPL'17 Cup-O-Rama</h1>
+                        <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'17 Cup-O-Rama</h1>
+
                     </div>
                     <div className="headerArt"/>
                 </div>
@@ -223,6 +251,19 @@ class App extends Component {
                     <li><Link to="/funfacts" activeClassName="active">Funfacts</Link></li>
                     <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
                 </ul>
+                <MuiThemeProvider>
+                    <Dialog
+                        title={"ALL HAIL KING EIVIND"}
+                        actions={actions}
+                        modal={false}
+                        open={this.state.dialogOpen}
+                        onRequestClose={() => this.toggleEasteregg()}
+                        contentStyle={customContentStyle}
+                        autoScrollBodyContent={true}
+                    >
+                        <img src="http://www.erstad-lekven.no/sitefiles/4057/bilder/ansatteBergen/EivindThane.jpg" alt="Kongen"></img>
+                    </Dialog>
+                </MuiThemeProvider>
                 <div className="content">
                     {this.props.children}
                 </div>
@@ -230,5 +271,10 @@ class App extends Component {
         );
     }
 }
-
+const customContentStyle = {
+    width: '90%',
+    maxWidth: '90%',
+    height: '90%',
+    maxHeight: '90%',
+};
 export default App;
