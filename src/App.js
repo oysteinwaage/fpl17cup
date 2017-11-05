@@ -210,9 +210,6 @@ class App extends Component {
                     fplPlayers = result;
                 }
             });
-            // $.get("/api/captaintest").done(function (result) {
-            //     console.log('test: ', result);
-            // });
             // $.get("/api/captain2").done(function (result) {
             //     console.log('alle kapteiner2222: ', result);
             // });

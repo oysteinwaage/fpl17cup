@@ -13,6 +13,16 @@ function tempNullCheckRound(teamId, round) {
     return tempNullCheck(teamId) && tempNullCheck(teamId)[round] ? tempNullCheck(teamId)[round] : {};
 }
 
+function hasCaptainPlayed(playerPoints, captainId) {
+    return playerPoints[captainId].explain[0][0].minutes.value !== 0;
+}
+
+function calculateCaptainPointsForPlayer(playerPoints, captainData, p) {
+    return hasCaptainPlayed(playerPoints, captainData[p].player) ?
+        (playerPoints[captainData[p].player].stats.total_points * captainData[p].multiplier) :
+        (playerPoints[captainData[p].vicePlayer].stats.total_points * captainData[p].multiplierVice);
+}
+
 export function calculateStats(round, players, playerPoints, captainData) {
     let highestRoundScore = [0, ''];
     let lowestRoundScore = [666, ''];
@@ -33,7 +43,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
         const transfersUsed = tempNullCheck(p).totalTransfers;
         const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
-        const captainPoints = playerPoints && captainData[p] && (playerPoints[captainData[p].player].stats.total_points * captainData[p].multiplier);
+        const captainPoints = playerPoints && captainData[p] && calculateCaptainPointsForPlayer(playerPoints, captainData, p);
 
         if (points > highestRoundScore[0]) {
             highestRoundScore[0] = points;
@@ -58,9 +68,11 @@ export function calculateStats(round, players, playerPoints, captainData) {
             mostTransfersUsed[0] = transfersUsed;
             mostTransfersUsed[1] = p;
         }
-        // test ny måte å lage multilinjeMedÉnScore
+
         if (captainPoints) {
-            const captainName = fplPlayers[captainData[p].player - 1].web_name;
+            const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
+                fplPlayers[captainData[p].player - 1].web_name :
+                fplPlayers[captainData[p].vicePlayer - 1].web_name;
             if (mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0]) {
                 mostCaptainPoints = [[captainPoints, p, captainName]];
             } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
@@ -69,7 +81,9 @@ export function calculateStats(round, players, playerPoints, captainData) {
         }
 
         if (captainPoints) {
-            const captainName = fplPlayers[captainData[p].player - 1].web_name;
+            const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
+                fplPlayers[captainData[p].player - 1].web_name :
+                fplPlayers[captainData[p].vicePlayer - 1].web_name;
             if (lowestCaptainPoints.length === 0 || captainPoints < lowestCaptainPoints[0][0]) {
                 lowestCaptainPoints = [[captainPoints, p, captainName]];
             } else if (lowestCaptainPoints.length > 0 && captainPoints === lowestCaptainPoints[0][0]) {
@@ -164,6 +178,7 @@ class App extends Component {
         if (round) {
             $.get("/api/captain?round=" + round).done(function (result) {
                 Object.assign(that.state.captainData, result)
+                console.log("kapteinData: ", result);
             });
             $.get("/api/playerscores?round=" + round).done(function (result) {
                 that.setState({

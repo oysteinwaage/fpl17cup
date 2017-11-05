@@ -90,6 +90,39 @@ app.get('/api/captain', function (req, res) {
         const data = values.map(vals => {
             return vals.filter(val => val.is_captain);
         });
+        const dataVice = values.map(vals => {
+            return vals.filter(val => val.is_vice_captain);
+        });
+        const formattedData = {};
+        playerIds.forEach(pId => {
+            const index = playerIds.indexOf(pId);
+            Object.assign(formattedData, {
+                [pId]: {
+                    player: data[index][0].element,
+                    vicePlayer: dataVice[index][0].element,
+                    multiplier: data[index][0].multiplier,
+                    multiplierVice: dataVice[index][0].multiplier,
+                }
+            })
+        });
+        res.type('application/json')
+            .send(formattedData)
+            .end();
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/captain2', function (req, res) {
+    const rounds = [1,2,3,4,5,6,7,8,9];
+    Promise.all(
+        playerIds.map(p => rounds.map(r => fplapi.findEntryPicksByEvent(p, r)))
+    ).then(values => {
+        const data = values.map(vals => {
+            return vals.filter(val => val.is_captain);
+        });
         const formattedData = {};
         playerIds.forEach(pId => {
             const index = playerIds.indexOf(pId);
