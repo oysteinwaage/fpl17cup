@@ -14,7 +14,7 @@ function tempNullCheckRound(teamId, round) {
 }
 
 function hasCaptainPlayed(playerPoints, captainId) {
-    return playerPoints[captainId].explain[0][0].minutes.value !== 0;
+    return playerPoints[captainId] && playerPoints[captainId].explain[0][0].minutes.value > 0;
 }
 
 function calculateCaptainPointsForPlayer(playerPoints, captainData, p) {
@@ -27,7 +27,7 @@ function calculateCaptainPointsForPlayer(playerPoints, captainData, p) {
 export function calculateStats(round, players, playerPoints, captainData) {
     let highestRoundScore = [0, ''];
     let lowestRoundScore = [666, ''];
-    let mostPointsOnBench = [0, ''];
+    let mostPointsOnBench2 = [];
     let mostTotalPointsOnBench = [0, ''];
     let mostTransfersUsed = [0, ''];
     let mostTotalHitsTaken = [0, ''];
@@ -44,7 +44,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
         const transfersUsed = tempNullCheck(p).totalTransfers;
         const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
-        const captainPoints = playerPoints && captainData[p] && calculateCaptainPointsForPlayer(playerPoints, captainData, p);
+        const captainPoints = playerPoints && playerPoints[1] && captainData[p] && calculateCaptainPointsForPlayer(playerPoints, captainData, p);
 
         if (points > highestRoundScore[0]) {
             highestRoundScore[0] = points;
@@ -53,9 +53,12 @@ export function calculateStats(round, players, playerPoints, captainData) {
             lowestRoundScore[0] = points;
             lowestRoundScore[1] = p;
         }
-        if (pointsOnBench > mostPointsOnBench[0]) {
-            mostPointsOnBench[0] = pointsOnBench;
-            mostPointsOnBench[1] = p;
+        if (pointsOnBench) {
+            if (mostPointsOnBench2.length === 0 || pointsOnBench > mostPointsOnBench2[0][0]) {
+                mostPointsOnBench2 = [[pointsOnBench, p]];
+            } else if (mostPointsOnBench2.length > 0 && pointsOnBench === mostPointsOnBench2[0][0]) {
+                mostPointsOnBench2.push([pointsOnBench, p]);
+            }
         }
         if (totalPointsOnBench > mostTotalPointsOnBench[0]) {
             mostTotalPointsOnBench[0] = totalPointsOnBench;
@@ -116,7 +119,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
     return {
         highestRoundScore,
         lowestRoundScore,
-        mostPointsOnBench,
+        mostPointsOnBench2,
         mostTotalPointsOnBench,
         mostTotalHitsTaken,
         mostTransfersUsed,
@@ -199,6 +202,10 @@ class App extends Component {
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
         return (
             <div className="ff-content-container">
+                {!roundJackasText &&
+                <p style={{'textAlign': 'center', 'fontSize': 'small', 'width': '100%'}}>(Kun kapteinspoeng oppdateres
+                    live, resten oppdateres når FPL oppdaterer sine data)</p>
+                }
                 {roundJackasText &&
                 <div className="ff-rundens-smell">
                     <div className="ff-rundens-smell-header">"Rundens drittfyr"</div>
@@ -212,7 +219,7 @@ class App extends Component {
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                     {normalFact('Høyest score', score.highestRoundScore)}
                     {normalFact('Lavest score', score.lowestRoundScore)}
-                    {normalFact('Flest poeng på benken', score.mostPointsOnBench)}
+                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench2)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
                     {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
@@ -279,7 +286,7 @@ export function makeMultipleResultsRowsWithSameScore(text, data) {
             <div className="ff-normal-fact-result">
                 {data.map(d => {
                     const points = firstRow ? d[0] : '';
-                    const player = players[d[1]] + ' (' + d[2] + ')';
+                    const player = players[d[1]] + (d[2] ? ' (' + d[2] + ')' : '');
                     firstRow = false;
                     return (
                         <div key={d[1] + 'r'} className="ff-multiple-result-facts-2">
