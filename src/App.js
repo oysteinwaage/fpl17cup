@@ -261,7 +261,7 @@ class App extends Component {
                         contentStyle={customContentStyle}
                         autoScrollBodyContent={true}
                     >
-                        <img src="http://www.erstad-lekven.no/sitefiles/4057/bilder/ansatteBergen/EivindThane.jpg" alt="Kongen"></img>
+                        <img src="http://www.erstad-lekven.no/sitefiles/4057/bilder/ansatteBergen/EivindThane.jpg" alt="Kongen" width="250" height="300"></img>
                     </Dialog>
                 </MuiThemeProvider>
                 <div className="content">
@@ -276,5 +276,6 @@ const customContentStyle = {
     maxWidth: '90%',
     height: '90%',
     maxHeight: '90%',
+    textAlign: 'center',
 };
 export default App;
