@@ -24,19 +24,36 @@ function calculateCaptainPointsForPlayer(playerPoints, captainData, p) {
         (playerPoints[captainData[p].vicePlayer].stats.total_points * multiplier);
 }
 
+function populateHighestValueListFor(list, value, player){
+    if (list.length === 0 || value > list[0][0]) {
+        list = [[value, player]];
+    } else if (list.length > 0 && value === list[0][0]) {
+        list.push([value, player]);
+    }
+    return list;
+}
+function populateLowestValueListFor(list, value, player){
+    if (list.length === 0 || value < list[0][0]) {
+        list = [[value, player]];
+    } else if (list.length > 0 && value === list[0][0]) {
+        list.push([value, player]);
+    }
+    return list;
+}
+
 export function calculateStats(round, players, playerPoints, captainData) {
-    let highestRoundScore = [0, ''];
-    let lowestRoundScore = [666, ''];
-    let mostPointsOnBench2 = [];
-    let mostTotalPointsOnBench = [0, ''];
-    let mostTransfersUsed = [0, ''];
-    let mostTotalHitsTaken = [0, ''];
+    let highestRoundScore = [];
+    let lowestRoundScore = [];
+    let mostPointsOnBench = [];
     let highestLeagueClimber = [0, ''];
     let largestLeageDrop = [0, ''];
     let mostCaptainPoints = [];
     let lowestCaptainPoints = [];
     let chipsUsed = [];
     let hitsTaken = [];
+    let mostTotalPointsOnBench = [];
+    let mostTransfersUsed = [];
+    let mostTotalHitsTaken = [];
     players.forEach(function (p) {
         const roundNullsafe = tempNullCheckRound(p, 'round' + round);
         const points = roundNullsafe.points;
@@ -46,33 +63,13 @@ export function calculateStats(round, players, playerPoints, captainData) {
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
         const captainPoints = playerPoints && playerPoints[1] && captainData[p] && calculateCaptainPointsForPlayer(playerPoints, captainData, p);
 
-        if (points > highestRoundScore[0]) {
-            highestRoundScore[0] = points;
-            highestRoundScore[1] = p;
-        } else if (points < lowestRoundScore[0]) {
-            lowestRoundScore[0] = points;
-            lowestRoundScore[1] = p;
+        if(points){
+            highestRoundScore = populateHighestValueListFor(highestRoundScore, points, p);
+            lowestRoundScore = populateLowestValueListFor(lowestRoundScore, points, p);
         }
         if (pointsOnBench) {
-            if (mostPointsOnBench2.length === 0 || pointsOnBench > mostPointsOnBench2[0][0]) {
-                mostPointsOnBench2 = [[pointsOnBench, p]];
-            } else if (mostPointsOnBench2.length > 0 && pointsOnBench === mostPointsOnBench2[0][0]) {
-                mostPointsOnBench2.push([pointsOnBench, p]);
-            }
+            mostPointsOnBench = populateHighestValueListFor(mostPointsOnBench, pointsOnBench, p);
         }
-        if (totalPointsOnBench > mostTotalPointsOnBench[0]) {
-            mostTotalPointsOnBench[0] = totalPointsOnBench;
-            mostTotalPointsOnBench[1] = p;
-        }
-        if (totalHitsTaken > mostTotalHitsTaken[0]) {
-            mostTotalHitsTaken[0] = totalHitsTaken;
-            mostTotalHitsTaken[1] = p;
-        }
-        if (transfersUsed > mostTransfersUsed[0]) {
-            mostTransfersUsed[0] = transfersUsed;
-            mostTransfersUsed[1] = p;
-        }
-
         if (captainPoints) {
             const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
                 fplPlayers[captainData[p].player - 1].web_name :
@@ -83,7 +80,6 @@ export function calculateStats(round, players, playerPoints, captainData) {
                 mostCaptainPoints.push([captainPoints, p, captainName]);
             }
         }
-
         if (captainPoints) {
             const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
                 fplPlayers[captainData[p].player - 1].web_name :
@@ -110,6 +106,16 @@ export function calculateStats(round, players, playerPoints, captainData) {
                 largestLeageDrop[1] = p;
             }
         }
+
+        if(totalPointsOnBench){
+            mostTotalPointsOnBench = populateHighestValueListFor(mostTotalPointsOnBench, totalPointsOnBench, p);
+        }
+        if(totalHitsTaken){
+            mostTotalHitsTaken = populateHighestValueListFor(mostTotalHitsTaken, totalHitsTaken, p);
+        }
+        if(transfersUsed){
+            mostTransfersUsed = populateHighestValueListFor(mostTransfersUsed, transfersUsed, p);
+        }
     });
     highestLeagueClimber[0] = convertForView(highestLeagueClimber);
     largestLeageDrop[0] = convertForView(largestLeageDrop);
@@ -119,7 +125,7 @@ export function calculateStats(round, players, playerPoints, captainData) {
     return {
         highestRoundScore,
         lowestRoundScore,
-        mostPointsOnBench2,
+        mostPointsOnBench,
         mostTotalPointsOnBench,
         mostTotalHitsTaken,
         mostTransfersUsed,
@@ -198,7 +204,10 @@ class App extends Component {
             this.fetchCaptainData(this.state.selectedRound);
         }
         let score = calculateStats(this.state.selectedRound, playerIds, this.state.playerPoints, this.state.captainData);
-        const totalHits = ['-' + score.mostTotalHitsTaken[0] + 'p', score.mostTotalHitsTaken[1]];
+        let totalHits = score.mostTotalHitsTaken || [];
+        if(totalHits[0]){
+            totalHits[0] = ['-' + score.mostTotalHitsTaken[0][0] + 'p', score.mostTotalHitsTaken[0][1]];
+        }
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
         return (
             <div className="ff-content-container">
@@ -217,9 +226,9 @@ class App extends Component {
                 <div className="ff-round-facts">
                     <div className="ff-facts-header">Stats runde {this.state.selectedRound}</div>
                     {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
-                    {normalFact('Høyest score', score.highestRoundScore)}
-                    {normalFact('Lavest score', score.lowestRoundScore)}
-                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench2)}
+                    {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore)}
+                    {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore)}
+                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
                     {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
@@ -229,9 +238,9 @@ class App extends Component {
                 </div>
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
-                    {normalFact('Flest bytter', score.mostTransfersUsed)}
-                    {normalFact('Mest hits tatt', totalHits)}
-                    {normalFact('Flest poeng på benk', score.mostTotalPointsOnBench)}
+                    {makeMultipleResultsRowsWithSameScore('Flest bytter', score.mostTransfersUsed)}
+                    {makeMultipleResultsRowsWithSameScore('Mest hits tatt', totalHits)}
+                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench)}
                 </div>
             </div>
         );
