@@ -18,9 +18,10 @@ function hasCaptainPlayed(playerPoints, captainId) {
 }
 
 function calculateCaptainPointsForPlayer(playerPoints, captainData, p) {
+    const multiplier = captainData[p].multiplier >= captainData[p].multiplierVice ? captainData[p].multiplier : captainData[p].multiplierVice;
     return hasCaptainPlayed(playerPoints, captainData[p].player) ?
-        (playerPoints[captainData[p].player].stats.total_points * captainData[p].multiplier) :
-        (playerPoints[captainData[p].vicePlayer].stats.total_points * captainData[p].multiplierVice);
+        (playerPoints[captainData[p].player].stats.total_points * multiplier) :
+        (playerPoints[captainData[p].vicePlayer].stats.total_points * multiplier);
 }
 
 export function calculateStats(round, players, playerPoints, captainData) {
