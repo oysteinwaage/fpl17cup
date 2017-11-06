@@ -71,7 +71,6 @@
     padding-left: 5px;
 }
 
-
 .ff-facts-header {
     text-align: center;
     font-weight: bold;
@@ -87,6 +86,9 @@
     display: flex;
     justify-content: space-between;
     padding: 5px 0;
+    border-bottom: dashed 1px #a9eac4;
+}
+.ff-total-facts .ff-multiple-results-container{
     border-bottom: dashed 1px #a9eac4;
 }
 .ff-total-facts .ff-multiple-result-facts-player{

@@ -6,7 +6,10 @@ import FlatButton from 'material-ui/FlatButton';
 import {MatchesForGroup} from './Runder.js';
 import {SelectBox, participatingRounds, players, allRounds} from '../utils.js';
 import {dataz, currentRound} from "../App.js";
-import {calculateStats, normalFact, makeMultipleResultsRows} from "../funfacts/Funfacts";
+import {
+    calculateStats, normalFact, makeMultipleResultsRows,
+    makeMultipleResultsRowsWithSameScore
+} from "../funfacts/Funfacts";
 
 class Kamper extends Component {
     constructor(props) {
@@ -58,7 +61,7 @@ class Kamper extends Component {
         const managerName = dataz[this.state.dialogPlayer] ? dataz[this.state.dialogPlayer].managerName : '';
         const statsOnPlayer = this.state.dialogPlayer ? calculateStats(this.state.selectedRoundDialog || this.state.selectedRound || currentRound, [this.state.dialogPlayer]) : null;
         console.log('stats: ', statsOnPlayer);
-        const totalHits = statsOnPlayer && ['-' + statsOnPlayer.mostTotalHitsTaken[0] + 'p', statsOnPlayer.mostTotalHitsTaken[1]];
+        const totalHits = statsOnPlayer && ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]];
         return (
             <div>
                 {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
@@ -84,8 +87,8 @@ class Kamper extends Component {
                                 <div className="ff-facts-header">
                                     Stats runde {this.state.selectedRoundDialog || this.state.selectedRound || currentRound}</div>
                                 {SelectBox(allRounds, this.changeSelectedRoundDialog.bind(this), '', 'Dialog')}
-                                {normalFact('Score', statsOnPlayer.highestRoundScore, true)}
-                                {normalFact('Poeng på benken', statsOnPlayer.mostPointsOnBench, true)}
+                                {makeMultipleResultsRowsWithSameScore('Score', statsOnPlayer.highestRoundScore, true)}
+                                {makeMultipleResultsRowsWithSameScore('Poeng på benken', statsOnPlayer.mostPointsOnBench, true)}
                                 {normalFact('Klatring i ligaen', statsOnPlayer.highestLeagueClimber, true)}
                                 {normalFact('Fall i ligaen', statsOnPlayer.largestLeageDrop, true)}
                                 {makeMultipleResultsRows('Brukt chips', statsOnPlayer.chipsUsed, true)}
@@ -93,9 +96,9 @@ class Kamper extends Component {
                             </div>
                             <div className="ff-total-facts">
                                 <div className="ff-facts-header">Stats totalt</div>
-                                {normalFact('Antall bytter', statsOnPlayer.mostTransfersUsed, true)}
+                                {makeMultipleResultsRowsWithSameScore('Antall bytter', statsOnPlayer.mostTransfersUsed, true)}
                                 {normalFact('Hits tatt', totalHits, true)}
-                                {normalFact('Poeng på benken', statsOnPlayer.mostTotalPointsOnBench, true)}
+                                {makeMultipleResultsRowsWithSameScore('Poeng på benken', statsOnPlayer.mostTotalPointsOnBench, true)}
                             </div>
                         </div>
                         }

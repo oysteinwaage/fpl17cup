@@ -287,7 +287,7 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
 //     )
 // }
 
-export function makeMultipleResultsRowsWithSameScore(text, data) {
+export function makeMultipleResultsRowsWithSameScore(text, data, onlyScore = false) {
     let firstRow = true;
     return data.length === 0 ? null : (
         <div className={"ff-multiple-results-container"}>
@@ -295,7 +295,7 @@ export function makeMultipleResultsRowsWithSameScore(text, data) {
             <div className="ff-normal-fact-result">
                 {data.map(d => {
                     const points = firstRow ? d[0] : '';
-                    const player = players[d[1]] + (d[2] ? ' (' + d[2] + ')' : '');
+                    const player = onlyScore ? '' : (players[d[1]] + (d[2] ? ' (' + d[2] + ')' : ''));
                     firstRow = false;
                     return (
                         <div key={d[1] + 'r'} className="ff-multiple-result-facts-2">
