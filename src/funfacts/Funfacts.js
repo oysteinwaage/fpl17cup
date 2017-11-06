@@ -52,8 +52,11 @@ export function calculateStats(round, players, playerPoints, captainData) {
     let chipsUsed = [];
     let hitsTaken = [];
     let mostTotalPointsOnBench = [];
+    let lowestTotalPointsOnBench = [];
     let mostTransfersUsed = [];
+    let fewestTransfersUsed = [];
     let mostTotalHitsTaken = [];
+    let lowestTotalHitsTaken = [];
     players.forEach(function (p) {
         const roundNullsafe = tempNullCheckRound(p, 'round' + round);
         const points = roundNullsafe.points;
@@ -109,12 +112,15 @@ export function calculateStats(round, players, playerPoints, captainData) {
 
         if(totalPointsOnBench){
             mostTotalPointsOnBench = populateHighestValueListFor(mostTotalPointsOnBench, totalPointsOnBench, p);
+            lowestTotalPointsOnBench = populateLowestValueListFor(lowestTotalPointsOnBench, totalPointsOnBench, p);
         }
         if(totalHitsTaken){
             mostTotalHitsTaken = populateHighestValueListFor(mostTotalHitsTaken, totalHitsTaken, p);
+            lowestTotalHitsTaken = populateLowestValueListFor(lowestTotalHitsTaken, totalHitsTaken, p);
         }
         if(transfersUsed){
             mostTransfersUsed = populateHighestValueListFor(mostTransfersUsed, transfersUsed, p);
+            fewestTransfersUsed = populateLowestValueListFor(fewestTransfersUsed, transfersUsed, p);
         }
     });
     highestLeagueClimber[0] = convertForView(highestLeagueClimber);
@@ -127,8 +133,11 @@ export function calculateStats(round, players, playerPoints, captainData) {
         lowestRoundScore,
         mostPointsOnBench,
         mostTotalPointsOnBench,
+        lowestTotalPointsOnBench,
         mostTotalHitsTaken,
+        lowestTotalHitsTaken,
         mostTransfersUsed,
+        fewestTransfersUsed,
         highestLeagueClimber,
         largestLeageDrop,
         mostCaptainPoints,
@@ -208,6 +217,10 @@ class App extends Component {
         if(totalHits[0]){
             totalHits[0] = ['-' + score.mostTotalHitsTaken[0][0] + 'p', score.mostTotalHitsTaken[0][1]];
         }
+        let totalFewestHits = score.lowestTotalHitsTaken || [];
+        if(totalFewestHits[0]){
+            totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' :'-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
+        }
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
         return (
             <div className="ff-content-container">
@@ -239,8 +252,11 @@ class App extends Component {
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
                     {makeMultipleResultsRowsWithSameScore('Flest bytter', score.mostTransfersUsed)}
+                    {makeMultipleResultsRowsWithSameScore('Færrest bytter', score.fewestTransfersUsed)}
                     {makeMultipleResultsRowsWithSameScore('Mest hits tatt', totalHits)}
+                    {makeMultipleResultsRowsWithSameScore('Minst hits tatt', totalFewestHits)}
                     {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench)}
+                    {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench)}
                 </div>
             </div>
         );
