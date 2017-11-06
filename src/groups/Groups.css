@@ -4,6 +4,10 @@
     font-weight: bold;
 }
 
+.group-content {
+    width: 100%;
+    max-width: 700px;
+}
 .gruppeRadHeader {
     display: flex;
     justify-content: space-between;

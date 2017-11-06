@@ -35,7 +35,7 @@ function tempNullCheck(teamId) {
 class App extends Component {
     render() {
         return (
-            <div>
+            <div className="group-content">
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
                     const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
