@@ -60,7 +60,7 @@ class Kamper extends Component {
         ];
         const managerName = dataz[this.state.dialogPlayer] ? dataz[this.state.dialogPlayer].managerName : '';
         const statsOnPlayer = this.state.dialogPlayer ? calculateStats(this.state.selectedRoundDialog || this.state.selectedRound || currentRound, [this.state.dialogPlayer]) : null;
-        console.log('stats: ', statsOnPlayer);
+
         const totalHits = statsOnPlayer && ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]];
         return (
             <div>

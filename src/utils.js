@@ -75,6 +75,13 @@ export const roundJackass = {
     'har han satt visekaptein på Sané, og fikk dermed 12 ekstra poeng for sin dumskap. OG ikke nok me d(!), ' +
     'han fikk faen meg inn Davis me 10 poeng fra benken og! <br />Bare for å gjøre fadesen komplett så tok han inn Aguero til denne runden, ' +
     'og fikk altså betalt med 22 ekstra poeng og delt best score for et elendi bytte denne runden! <br /><br /> Gratulerer Flakka Kickerz som Rundens drittfyr',
+    round11: 'D e lett å sparke de som ligger nede og d e lett å "ta" de i toppen, men dette e en hyllest til "dritten i midten".' +
+    ' Med en runde helt på det jevne, en tabellplassering helt på det jevne, skulle man tro at Man-utd slapp unna. ' +
+    '<br />MEN DEN GANG EI! En hel haug med feilvurderingen i egen tropp har klart å gjøre ham til "rundens drittfyr". ' +
+    'Han byttet inn Sané og Kane til denne runden, tok ut KDB og Jesus. 11 poeng i minus der altså. ' +
+    'På tross av at wembley spøkelset, alle voodoo forhekselser og snåsamannen har sagt at Kane sliter på ' +
+    'wembley klarte han å kaste bort trippel captain på Kane denne runden.... ' +
+    '<br /> <br />Gratulerer! Du vant prisen for de 3 dårligste avgjørelsene denne runden!'
 }
 
 export function SelectBox(values, onChange, extraClassName = '', extraName = '') {
