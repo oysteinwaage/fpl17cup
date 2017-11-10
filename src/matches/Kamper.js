@@ -65,7 +65,8 @@ class Kamper extends Component {
         const managerName = dataz[this.state.dialogPlayer] ? dataz[this.state.dialogPlayer].managerName : '';
         const statsOnPlayer = this.state.dialogPlayer ? calculateStats(this.state.selectedRoundDialog || this.state.selectedRound || currentRound, [this.state.dialogPlayer]) : null;
 
-        const totalHits = statsOnPlayer && ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]];
+        const totalHits = statsOnPlayer && statsOnPlayer.mostTotalHitsTaken &&
+            ( statsOnPlayer.mostTotalHitsTaken.length === 0 ? ['0p', 12345] : ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]]);
         return (
             <div className="matches-content">
                 {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
