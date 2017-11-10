@@ -66,14 +66,14 @@ export function calculateStats(round, players, playerPoints, captainData) {
         const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
         const captainPoints = playerPoints && playerPoints[1] && captainData[p] && calculateCaptainPointsForPlayer(playerPoints, captainData, p);
 
-        if(points){
+        if(points !== null && points !== undefined){
             highestRoundScore = populateHighestValueListFor(highestRoundScore, points, p);
             lowestRoundScore = populateLowestValueListFor(lowestRoundScore, points, p);
         }
-        if (pointsOnBench) {
+        if (pointsOnBench !== null && pointsOnBench !== undefined) {
             mostPointsOnBench = populateHighestValueListFor(mostPointsOnBench, pointsOnBench, p);
         }
-        if (captainPoints) {
+        if (captainPoints !== null && captainPoints !== undefined) {
             const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
                 fplPlayers[captainData[p].player - 1].web_name :
                 fplPlayers[captainData[p].vicePlayer - 1].web_name;
@@ -82,11 +82,6 @@ export function calculateStats(round, players, playerPoints, captainData) {
             } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
                 mostCaptainPoints.push([captainPoints, p, captainName]);
             }
-        }
-        if (captainPoints) {
-            const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
-                fplPlayers[captainData[p].player - 1].web_name :
-                fplPlayers[captainData[p].vicePlayer - 1].web_name;
             if (lowestCaptainPoints.length === 0 || captainPoints < lowestCaptainPoints[0][0]) {
                 lowestCaptainPoints = [[captainPoints, p, captainName]];
             } else if (lowestCaptainPoints.length > 0 && captainPoints === lowestCaptainPoints[0][0]) {
@@ -110,15 +105,15 @@ export function calculateStats(round, players, playerPoints, captainData) {
             }
         }
 
-        if(totalPointsOnBench){
+        if(totalPointsOnBench !== null && totalPointsOnBench !== undefined){
             mostTotalPointsOnBench = populateHighestValueListFor(mostTotalPointsOnBench, totalPointsOnBench, p);
             lowestTotalPointsOnBench = populateLowestValueListFor(lowestTotalPointsOnBench, totalPointsOnBench, p);
         }
-        if(totalHitsTaken){
+        if(totalHitsTaken !== null && totalHitsTaken !== undefined){
             mostTotalHitsTaken = populateHighestValueListFor(mostTotalHitsTaken, totalHitsTaken, p);
             lowestTotalHitsTaken = populateLowestValueListFor(lowestTotalHitsTaken, totalHitsTaken, p);
         }
-        if(transfersUsed){
+        if(transfersUsed !== null && transfersUsed !== undefined){
             mostTransfersUsed = populateHighestValueListFor(mostTransfersUsed, transfersUsed, p);
             fewestTransfersUsed = populateLowestValueListFor(fewestTransfersUsed, transfersUsed, p);
         }
