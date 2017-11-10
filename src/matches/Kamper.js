@@ -50,6 +50,10 @@ class Kamper extends Component {
         })
     };
 
+    lastCupRound(){
+        return currentRound % 2 === 0 ? currentRound - 1 : currentRound;
+    }
+
     render() {
         const actions = [
             <FlatButton
@@ -66,11 +70,11 @@ class Kamper extends Component {
             <div className="matches-content">
                 {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
                 <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
-                {SelectBox(participatingRounds, this.changeSelectedRound.bind(this))}
+                {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
                 {/*<MuiThemeProvider>*/}
                     {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
                 {/*</MuiThemeProvider>*/}
-                <MatchesForGroup chosenRound={this.state.selectedRound} onToggleDialog={this.toggleDialog}/>
+                <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()} onToggleDialog={this.toggleDialog}/>
                 <MuiThemeProvider>
                     <Dialog
                         title={players[this.state.dialogPlayer] + ' - ' + managerName}

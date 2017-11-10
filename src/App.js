@@ -7,6 +7,7 @@ import {playerIds, participatingRounds} from './utils.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
 
 export let dataz = {};
 export let groupData = {};
@@ -111,7 +112,8 @@ class App extends Component {
         this.state = {
             points: {},
             currentRound: 3,
-            dialogOpen: false
+            dialogOpen: false,
+            loadingData: true,
         };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
@@ -203,6 +205,7 @@ class App extends Component {
                     console.log('transferList: ', transferlist);
                 }
                 console.log('dataz: ', dataz);
+                that.setState({loadingData: false});
             });
             $.get("/api/fplplayers").done(function (result) {
                 console.log('alle spillere: ', result);
@@ -261,8 +264,20 @@ class App extends Component {
                         <img src={require('./images/helligeThane.jpg')} alt="Kongen" width="250" height="300"></img>
                     </Dialog>
                 </MuiThemeProvider>
+
                 <div className="content">
-                    {this.props.children}
+                    {this.state.loadingData &&
+                    <MuiThemeProvider>
+                        <Dialog
+                            title={"Laster og kalkulerer data"}
+                            open={this.state.loadingData}
+                            contentStyle={customContentStyle}
+                        >
+                            <CircularProgress size={80} thickness={5}/>
+                        </Dialog>
+                    </MuiThemeProvider>
+                    }
+                    {!this.state.loadingData && this.props.children}
                 </div>
             </div>
         );

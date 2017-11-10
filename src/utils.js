@@ -84,11 +84,11 @@ export const roundJackass = {
     '<br /> <br />Gratulerer! Du vant prisen for de 3 dårligste avgjørelsene denne runden!'
 }
 
-export function SelectBox(values, onChange, extraClassName = '', extraName = '') {
+export function SelectBox(values, onChange, extraClassName = '', extraName = '', startRound) {
     return (
         <div className='selectBoxContainer'>
             <select className={'select_style' + extraClassName} name={"selectBox" + extraName} id="selectBox"
-                    onChange={onChange}>
+                    onChange={onChange} value={startRound}>
                 <option value={null}>Velg runde</option>
                 {values.map(val => {
                     return <option key={val} value={val}>{'Runde' + val}</option>;
