@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
 import './Transfers.css';
-import {SelectBox, allRounds, playerIds, players} from '../utils.js';
-import {dataz, currentRound, fplPlayers} from '../App.js';
+import {SelectBox, allRounds, players} from '../utils.js';
+import {dataz, currentRound, fplPlayers, loadedPlayerIds} from '../App.js';
 
 class Transfers extends Component {
     constructor(props) {
@@ -87,14 +87,13 @@ class Transfers extends Component {
             this.fetchPlayerPoints(chosenRound);
         }
         return (
-            <div>
-                <div
-                    className="transfer-header"> {(chosenRound === currentRound && chosenRound !== null) && 'Runde ' + chosenRound}</div>
+            <div className="transfer-content">
+                <div className="transfer-header"> {(chosenRound === currentRound && chosenRound !== null) && 'Runde ' + chosenRound}</div>
                 {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
                 {/*<MuiThemeProvider>*/}
                 {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
                 {/*</MuiThemeProvider>*/}
-                {playerIds.map(player => {
+                {loadedPlayerIds.map(player => {
                     return this.transfersForTeamAndRound(player, chosenRound);
                 })}
             </div>

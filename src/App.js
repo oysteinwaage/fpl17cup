@@ -3,17 +3,23 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
-import {playerIds, participatingRounds} from './utils.js';
+import {participatingRounds, updatePlayerListWithNewLEagueData} from './utils.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
+import TextField from 'material-ui/TextField';
 
 export let dataz = {};
 export let groupData = {};
 export let currentRound = null;
 export let transferlist = [];
 export let fplPlayers = [];
+export let loadedPlayerIds = [];
+
+export function isForFameAndGloryLeague(){
+    return true;
+}
 
 const reducer2 = (a, b) => {
     const totalPointsOnBench = (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
@@ -36,7 +42,7 @@ const reducer1 = data => (acc, current) => {
 };
 
 const transformData = data =>
-    playerIds.reduce(reducer1(data), {});
+    loadedPlayerIds.reduce(reducer1(data), {});
 
 export function score(t1, t2, round) {
     return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ' - ' + roundScore(t2, round) : ' - ';
@@ -113,7 +119,9 @@ class App extends Component {
             points: {},
             currentRound: 3,
             dialogOpen: false,
-            loadingData: true,
+            loadingData: false,
+            chosenLeagueId: false,
+            leagueId: 44713,
         };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
@@ -132,94 +140,110 @@ class App extends Component {
     }
 
     componentDidMount() {
+    }
+
+    fetchDataFromServer(){
         let that = this;
-        $.get("/api/score").done(function (result) {
-            console.log('score-result: ', result);
-            if (result && result.length > 0) {
-                that.setCurrentRound(result[0].length);
-                dataz = transformData(result);
-                that.setData(dataz);
-                // this.setState({points: transformData(result)})
-                // that.forceUpdate();
-                makeGroupData();
-            } else if(result.name === 'GameUpdatingError'){
-                alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
-            }
-            $.get("/api/players").done(function (result) {
-                console.log('players-result: ', result);
-                if (result && result.length > 0) {
-                    result.forEach(function (player) {
-                        Object.assign(dataz[player.id], {
-                            managerName: player.player_first_name + ' ' + player.player_last_name,
-                            teamName: player.name,
-                            totalTransfers: player.total_transfers,
-                        });
+        console.log('state ved opphenting:', this.state);
+        $.get("/api/getManagerList?leagueId=" + this.state.leagueId).done(function (managerListForLeague) {
+            if (managerListForLeague && managerListForLeague.length > 0) {
+                loadedPlayerIds = managerListForLeague;
+
+                $.get("/api/score").done(function (result) {
+                    console.log('score-result: ', result);
+                    if (result && result.length > 0) {
+                        that.setCurrentRound(result[0].length);
+                        dataz = transformData(result);
+                        that.setData(dataz);
+                        // this.setState({points: transformData(result)})
+                        // that.forceUpdate();
+                        makeGroupData();
+                    } else if (result.name === 'GameUpdatingError') {
+                        alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
+                    }
+                    $.get("/api/players").done(function (result) {
+                        console.log('players-result: ', result);
+                        if (result && result.length > 0) {
+                            result.forEach(function (player) {
+                                Object.assign(dataz[player.id], {
+                                    managerName: player.player_first_name + ' ' + player.player_last_name,
+                                    teamName: player.name,
+                                    totalTransfers: player.total_transfers,
+                                });
+                            });
+                        }
                     });
-                }
-            });
-            $.get("/api/chips").done(function (result) {
-                if (result && result.length > 0) {
-                    result.forEach(function (x) {
-                        x.forEach(function (chip) {
-                            Object.assign(dataz[chip.entry]['round' + chip.event], {
-                                chipsPlayed: {
-                                    chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
-                                    playedTime: chip.played_time_formatted,
-                                }
-                            })
-                        })
-                    })
-                }
-            });
-            $.get("/api/league").done(function (result) {
-                if (result && result.length > 0) {
-                    result.forEach(function (player) {
-                        Object.assign(dataz[player.entry], {
-                            leagueClimb: player.last_rank - player.rank,
-                            leagueRank: player.rank,
-                            lastRoundLeagueRank: player.last_rank,
-                        })
-                    })
-                }
-            });
-            $.get("/api/transfers").done(function (result) {
-                console.log('transfers: ', result);
-                if (result && result.length > 0) {
-                    result.forEach(function (i) {
-                        i.forEach(function (transfer) {
-                            if (transferlist.indexOf(transfer.element_in) === -1) {
-                                transferlist.push(transfer.element_in);
-                            }
-                            if (transferlist.indexOf(transfer.element_out) === -1) {
-                                transferlist.push(transfer.element_out);
-                            }
-                            if (dataz[transfer.entry]['round' + transfer.event].transfers) {
-                                dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, transfer.time_formatted]);
-                            } else {
-                                Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-                                    transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
+                    $.get("/api/chips").done(function (result) {
+                        if (result && result.length > 0) {
+                            result.forEach(function (x) {
+                                x.forEach(function (chip) {
+                                    Object.assign(dataz[chip.entry]['round' + chip.event], {
+                                        chipsPlayed: {
+                                            chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
+                                            playedTime: chip.played_time_formatted,
+                                        }
+                                    })
                                 })
-                            }
-                        })
-                    })
-                    console.log('transferList: ', transferlist);
-                }
-                console.log('dataz: ', dataz);
-                that.setState({loadingData: false});
-            });
-            $.get("/api/fplplayers").done(function (result) {
-                console.log('alle spillere: ', result);
-                if (result && result.length > 0) {
-                    fplPlayers = result;
-                }
-            });
-            // $.get("/api/captain2").done(function (result) {
-            //     console.log('alle kapteiner2222: ', result);
-            // });
+                            })
+                        }
+                    });
+                    $.get("/api/league").done(function (result) {
+                        console.log('-----> league data:', result);
+                        if (result && result.length > 0) {
+                            result.forEach(function (player) {
+                                Object.assign(dataz[player.entry], {
+                                    leagueClimb: player.last_rank - player.rank,
+                                    leagueRank: player.rank,
+                                    lastRoundLeagueRank: player.last_rank,
+                                })
+                            })
+                            let teamNameToIdMap = {};
+                            result.forEach(function (player) {
+                                Object.assign(teamNameToIdMap, {
+                                    [player.entry]: player.entry_name,
+                                });
+                            });
+                            console.log('--------> teamIdToName: ', teamNameToIdMap);
+                            updatePlayerListWithNewLEagueData(teamNameToIdMap);
+                        }
+                    });
+                    $.get("/api/transfers").done(function (result) {
+                        console.log('transfers: ', result);
+                        if (result && result.length > 0) {
+                            result.forEach(function (i) {
+                                i.forEach(function (transfer) {
+                                    if (transferlist.indexOf(transfer.element_in) === -1) {
+                                        transferlist.push(transfer.element_in);
+                                    }
+                                    if (transferlist.indexOf(transfer.element_out) === -1) {
+                                        transferlist.push(transfer.element_out);
+                                    }
+                                    if (dataz[transfer.entry]['round' + transfer.event].transfers) {
+                                        dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, transfer.time_formatted]);
+                                    } else {
+                                        Object.assign(dataz[transfer.entry]['round' + transfer.event], {
+                                            transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
+                                        })
+                                    }
+                                })
+                            })
+                            console.log('transferList: ', transferlist);
+                        }
+                        console.log('dataz: ', dataz);
+                        that.setState({loadingData: false});
+                    });
+                    $.get("/api/fplplayers").done(function (result) {
+                        console.log('alle spillere: ', result);
+                        if (result && result.length > 0) {
+                            fplPlayers = result;
+                        }
+                    });
+                    // $.get("/api/captain2").done(function (result) {
+                    //     console.log('alle kapteiner2222: ', result);
+                    // });
+                });
+            }
         });
-
-
-        // console.log('state: ', this.state);
     }
 
     toggleEasteregg = () => {
@@ -228,12 +252,43 @@ class App extends Component {
         });
     };
 
+    updateLeagueId = (newId) => {
+        console.log("nyId: ", newId);
+        this.setState({
+            leagueId: newId,
+        });
+    };
+
+    useOurLeague = () => {
+        this.state.leagueId = 44713;
+        this.triggerFetchDataFromServer();
+    }
+    triggerFetchDataFromServer = () => {
+        this.setState({
+            loadingData: true,
+            chosenLeagueId: true,
+        });
+        this.fetchDataFromServer();
+    };
+
     render() {
         const actions = [
             <FlatButton
                 label="Fjern dette stygge trynet!"
                 primary={true}
                 onClick={() => this.toggleEasteregg()}
+            />,
+        ];
+        const brukVaarLigaKnapp = [
+            <FlatButton
+                label="Bruk For Fame And Glory Ligaen"
+                primary={false}
+                onClick={() => this.useOurLeague()}
+            />,
+            <FlatButton
+                label="Gå videre med din liga"
+                primary={true}
+                onClick={() => this.triggerFetchDataFromServer()}
             />,
         ];
         return (
@@ -277,12 +332,29 @@ class App extends Component {
                         </Dialog>
                     </MuiThemeProvider>
                     }
-                    {!this.state.loadingData && this.props.children}
+                    {!this.state.chosenLeagueId &&
+                    <MuiThemeProvider>
+                        <Dialog
+                            title={"Fyll inn id'en på din FPL liga"}
+                            open={!this.state.chosenLeagueId}
+                            contentStyle={customContentStyle}
+                            actions={brukVaarLigaKnapp}
+                        >
+                        <TextField
+                            hintText="eks: 44713"
+                            floatingLabelText="Fyll inn ID for din liga her"
+                            onChange={(event, newValue) => this.updateLeagueId(newValue)}
+                        /><br />
+                        </Dialog>
+                    </MuiThemeProvider>
+                    }
+                    {!this.state.loadingData && this.state.chosenLeagueId && this.props.children}
                 </div>
             </div>
         );
     }
 }
+
 const customContentStyle = {
     width: '90%',
     maxWidth: '90%',

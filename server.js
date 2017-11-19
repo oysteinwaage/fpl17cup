@@ -3,14 +3,9 @@ const url = require('url');
 const express = require('express');
 const util = require('util');
 const fplapi = require('fpl-api-node');
-const leagueId = 44713;
-const playerIds = [
-    1727710, 1773168, 446195, 92124, 407749, 1261708, 1898765,
-    2690627, 2547467, 144360, 1305123, 1331886, 3041546,
-    26900, 1969508, 454412, 2003531, 1083723, 546878, 188947,
-    1136421, 159488, 1499253, 86070, 94232, 1413504, 552058,
-    276910, 71962, 2287279
-];
+let leagueId = 44713;
+
+let loadedPlayerIds = [];
 
 let app = express();
 app.use(express.static('build'));
@@ -28,7 +23,7 @@ app.use(function (err, req, res, next) {
 
 app.get('/api/score', function (req, res) {
     Promise.all(
-        playerIds.map(fplapi.findEntryEvents)
+        loadedPlayerIds.map(fplapi.findEntryEvents)
     ).then(values => {
         res.type('application/json')
             .send(values)
@@ -42,7 +37,7 @@ app.get('/api/score', function (req, res) {
 
 app.get('/api/players', function (req, res) {
     Promise.all(
-        playerIds.map(fplapi.findEntry)
+        loadedPlayerIds.map(fplapi.findEntry)
     ).then(values => {
         res.type('application/json')
             .send(values)
@@ -56,7 +51,7 @@ app.get('/api/players', function (req, res) {
 
 app.get('/api/chips', function (req, res) {
     Promise.all(
-        playerIds.map(fplapi.findEntryChips)
+        loadedPlayerIds.map(fplapi.findEntryChips)
     ).then(values => {
         res.type('application/json')
             .send(values)
@@ -70,7 +65,7 @@ app.get('/api/chips', function (req, res) {
 
 app.get('/api/transfers', function (req, res) {
     Promise.all(
-        playerIds.map(fplapi.findEntryTransferHistory)
+        loadedPlayerIds.map(fplapi.findEntryTransferHistory)
     ).then(values => {
         res.type('application/json')
             .send(values)
@@ -85,7 +80,7 @@ app.get('/api/transfers', function (req, res) {
 app.get('/api/captain', function (req, res) {
     const query = url.parse(req.url, true).query;
     Promise.all(
-        playerIds.map(p => fplapi.findEntryPicksByEvent(p, query.round))
+        loadedPlayerIds.map(p => fplapi.findEntryPicksByEvent(p, query.round))
     ).then(values => {
         const data = values.map(vals => {
             return vals.filter(val => val.is_captain);
@@ -94,8 +89,8 @@ app.get('/api/captain', function (req, res) {
             return vals.filter(val => val.is_vice_captain);
         });
         const formattedData = {};
-        playerIds.forEach(pId => {
-            const index = playerIds.indexOf(pId);
+        loadedPlayerIds.forEach(pId => {
+            const index = loadedPlayerIds.indexOf(pId);
             Object.assign(formattedData, {
                 [pId]: {
                     player: data[index][0].element,
@@ -118,14 +113,14 @@ app.get('/api/captain', function (req, res) {
 app.get('/api/captain2', function (req, res) {
     const rounds = [1,2,3,4,5,6,7,8,9];
     Promise.all(
-        playerIds.map(p => rounds.map(r => fplapi.findEntryPicksByEvent(p, r)))
+        loadedPlayerIds.map(p => rounds.map(r => fplapi.findEntryPicksByEvent(p, r)))
     ).then(values => {
         const data = values.map(vals => {
             return vals.filter(val => val.is_captain);
         });
         const formattedData = {};
-        playerIds.forEach(pId => {
-            const index = playerIds.indexOf(pId);
+        loadedPlayerIds.forEach(pId => {
+            const index = loadedPlayerIds.indexOf(pId);
             Object.assign(formattedData, {
                 [pId]: {
                     player: data[index][0].element,
@@ -158,8 +153,25 @@ app.get('/api/fplplayers', function (req, res) {
 app.get('/api/league', function (req, res) {
     fplapi.findLeagueStandings(leagueId)
         .then(values => {
+            loadedPlayerIds = values.map(p => p.entry)
             res.type('application/json')
                 .send(values)
+                .end();
+        }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/getManagerList', function (req, res) {
+    const query = url.parse(req.url, true).query;
+    leagueId = query.leagueId;
+    fplapi.findLeagueStandings(query.leagueId)
+        .then(values => {
+            loadedPlayerIds = values.map(p => p.entry)
+            res.type('application/json')
+                .send(loadedPlayerIds)
                 .end();
         }).catch((error) => {
         res.type('application/json')

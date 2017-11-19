@@ -38,3 +38,15 @@
     padding: 2px 0;
     width: 100px;
 }
+
+.transfer-content .selectBoxContainer .select_style {
+    font-size: 16px;
+    border-radius: 0;
+    padding: 7px;
+    position: relative;
+    border: 0;
+    cursor: pointer;
+    z-index: 10;
+    background-color: #dfdfdf;
+    border-bottom: solid black 1px;
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
-export const players = {
+export let players = {
 //Gruppe A
     1083723: "Dompa IL",
     94232: "Herrems utvalgte",
@@ -40,13 +40,9 @@ export const players = {
     2547467: "FK Hoggormene",
 };
 
-export const playerIds = [
-    1727710, 1773168, 446195, 92124, 407749, 1261708, 1898765,
-    2690627, 2547467, 144360, 1305123, 1331886, 3041546,
-    26900, 1969508, 454412, 2003531, 1083723, 546878, 188947,
-    1136421, 159488, 1499253, 86070, 94232, 1413504, 552058,
-    276910, 71962, 2287279
-];
+export function updatePlayerListWithNewLEagueData(newPlayersMap){
+    players = newPlayersMap;
+}
 
 export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
 export const allRounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38];

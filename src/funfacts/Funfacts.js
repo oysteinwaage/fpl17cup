@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import $ from 'jquery';
 import '../App.css';
 import './Funfacts.css';
-import {playerIds, players, SelectBox, allRounds, roundJackass} from '../utils.js';
-import {currentRound, dataz, fplPlayers} from '../App.js';
+import {players, SelectBox, allRounds, roundJackass} from '../utils.js';
+import {currentRound, dataz, fplPlayers, loadedPlayerIds} from '../App.js';
 
 function tempNullCheck(teamId) {
     return dataz[teamId] || {};
@@ -168,7 +168,7 @@ class App extends Component {
         let totalCaptainPoints = {};
         while (round <= currentRound) {
             $.get("/api/captain?round=" + round).done(function (result) {
-                playerIds.forEach(pId => {
+                loadedPlayerIds.forEach(pId => {
                     Object.assign(totalCaptainPoints, {
                         playerId: pId,
                         totalCapPoints: totalCaptainPoints.totalCapPoints + result[pId]
@@ -207,7 +207,7 @@ class App extends Component {
         if (this.state.playerPoints === null) {
             this.fetchCaptainData(this.state.selectedRound);
         }
-        let score = calculateStats(this.state.selectedRound, playerIds, this.state.playerPoints, this.state.captainData);
+        let score = calculateStats(this.state.selectedRound, loadedPlayerIds, this.state.playerPoints, this.state.captainData);
         let totalHits = score.mostTotalHitsTaken || [];
         if(totalHits[0]){
             totalHits[0] = ['-' + score.mostTotalHitsTaken[0][0] + 'p', score.mostTotalHitsTaken[0][1]];
