@@ -203,6 +203,11 @@ class App extends Component {
                             updatePlayerListWithNewLEagueData(teamNameToIdMap);
                         }
                     });
+                    $.get("/api/fplplayers").done(function (result) {
+                        if (result && result.length > 0) {
+                            fplPlayers = result;
+                        }
+                    });
                     $.get("/api/transfers").done(function (result) {
                         console.log('transfers: ', result);
                         if (result && result.length > 0) {
@@ -226,11 +231,6 @@ class App extends Component {
                         }
                         console.log('dataz: ', dataz);
                         that.setState({loadingData: false});
-                    });
-                    $.get("/api/fplplayers").done(function (result) {
-                        if (result && result.length > 0) {
-                            fplPlayers = result;
-                        }
                     });
                     // $.get("/api/captain2").done(function (result) {
                     //     console.log('alle kapteiner2222: ', result);

@@ -170,22 +170,22 @@ app.get('/api/getManagerList', function (req, res) {
     fplapi.findLeague(leagueId)
         .then(values => {
             leagueName = values.name
+            fplapi.findLeagueStandings(query.leagueId)
+                .then(values => {
+                    loadedPlayerIds = values.map(p => p.entry)
+                    const data = {
+                        managers: loadedPlayerIds,
+                        leagueName
+                    }
+                    res.type('application/json')
+                        .send(data)
+                        .end();
+                }).catch((error) => {
+                res.type('application/json')
+                    .send(error)
+                    .end();
+            });
         });
-    fplapi.findLeagueStandings(query.leagueId)
-        .then(values => {
-            loadedPlayerIds = values.map(p => p.entry)
-            const data = {
-                managers: loadedPlayerIds,
-                leagueName
-            }
-            res.type('application/json')
-                .send(data)
-                .end();
-        }).catch((error) => {
-        res.type('application/json')
-            .send(error)
-            .end();
-    });
 });
 
 app.get('/api/playerscores', function (req, res) {
