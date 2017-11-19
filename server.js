@@ -153,7 +153,6 @@ app.get('/api/fplplayers', function (req, res) {
 app.get('/api/league', function (req, res) {
     fplapi.findLeagueStandings(leagueId)
         .then(values => {
-            loadedPlayerIds = values.map(p => p.entry)
             res.type('application/json')
                 .send(values)
                 .end();
@@ -167,11 +166,20 @@ app.get('/api/league', function (req, res) {
 app.get('/api/getManagerList', function (req, res) {
     const query = url.parse(req.url, true).query;
     leagueId = query.leagueId;
+    let leagueName = "leagueName";
+    fplapi.findLeague(leagueId)
+        .then(values => {
+            leagueName = values.name
+        });
     fplapi.findLeagueStandings(query.leagueId)
         .then(values => {
             loadedPlayerIds = values.map(p => p.entry)
+            const data = {
+                managers: loadedPlayerIds,
+                leagueName
+            }
             res.type('application/json')
-                .send(loadedPlayerIds)
+                .send(data)
                 .end();
         }).catch((error) => {
         res.type('application/json')

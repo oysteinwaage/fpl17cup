@@ -16,9 +16,10 @@ export let currentRound = null;
 export let transferlist = [];
 export let fplPlayers = [];
 export let loadedPlayerIds = [];
+let leagueIdChosenByUser = 44713;
 
-export function isForFameAndGloryLeague(){
-    return true;
+export function isForFameAndGloryLeague() {
+    return leagueIdChosenByUser === 44713;
 }
 
 const reducer2 = (a, b) => {
@@ -122,6 +123,7 @@ class App extends Component {
             loadingData: false,
             chosenLeagueId: false,
             leagueId: 44713,
+            leagueName: 'Liganavn',
         };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
@@ -130,24 +132,22 @@ class App extends Component {
 
     setData(data) {
         this.setState({points: data});
-        // console.log(this.state);
     }
 
     setCurrentRound(cur) {
         this.setState({currentRound: cur});
         currentRound = cur;
-        // console.log(this.state);
     }
 
     componentDidMount() {
     }
 
-    fetchDataFromServer(){
+    fetchDataFromServer() {
         let that = this;
-        console.log('state ved opphenting:', this.state);
-        $.get("/api/getManagerList?leagueId=" + this.state.leagueId).done(function (managerListForLeague) {
-            if (managerListForLeague && managerListForLeague.length > 0) {
-                loadedPlayerIds = managerListForLeague;
+        $.get("/api/getManagerList?leagueId=" + this.state.leagueId).done(function (data) {
+            if (data && data.managers && data.managers.length > 0) {
+                loadedPlayerIds = data.managers;
+                that.state.leagueName = data.leagueName;
 
                 $.get("/api/score").done(function (result) {
                     console.log('score-result: ', result);
@@ -155,8 +155,6 @@ class App extends Component {
                         that.setCurrentRound(result[0].length);
                         dataz = transformData(result);
                         that.setData(dataz);
-                        // this.setState({points: transformData(result)})
-                        // that.forceUpdate();
                         makeGroupData();
                     } else if (result.name === 'GameUpdatingError') {
                         alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
@@ -188,7 +186,6 @@ class App extends Component {
                         }
                     });
                     $.get("/api/league").done(function (result) {
-                        console.log('-----> league data:', result);
                         if (result && result.length > 0) {
                             result.forEach(function (player) {
                                 Object.assign(dataz[player.entry], {
@@ -203,7 +200,6 @@ class App extends Component {
                                     [player.entry]: player.entry_name,
                                 });
                             });
-                            console.log('--------> teamIdToName: ', teamNameToIdMap);
                             updatePlayerListWithNewLEagueData(teamNameToIdMap);
                         }
                     });
@@ -253,7 +249,7 @@ class App extends Component {
     };
 
     updateLeagueId = (newId) => {
-        console.log("nyId: ", newId);
+        leagueIdChosenByUser = newId;
         this.setState({
             leagueId: newId,
         });
@@ -261,8 +257,10 @@ class App extends Component {
 
     useOurLeague = () => {
         this.state.leagueId = 44713;
+        leagueIdChosenByUser = 44713;
         this.triggerFetchDataFromServer();
     }
+
     triggerFetchDataFromServer = () => {
         this.setState({
             loadingData: true,
@@ -295,16 +293,31 @@ class App extends Component {
             <div>
                 <div className="overHeader">
                     <div className="headerText">
+                        {isForFameAndGloryLeague() &&
                         <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'17 Cup-O-Rama</h1>
+                        }
+                        {!isForFameAndGloryLeague() &&
+                            <h1>{this.state.leagueName}</h1>
+                        }
 
                     </div>
                     <div className="headerArt"/>
                 </div>
                 <ul className="header">
-                    <li><IndexLink to="/" activeClassName="active">Kamper</IndexLink></li>
-                    <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
-                    <li><Link to="/funfacts" activeClassName="active">Funfacts</Link></li>
-                    <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
+                    {isForFameAndGloryLeague() &&
+                    <div>
+                        <li><Link to="/kamper" activeClassName="active">Kamper</Link></li>
+                        <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
+                        <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
+                        <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
+                    </div>
+                    }
+                    {!isForFameAndGloryLeague() &&
+                    <div>
+                        <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
+                        <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
+                    </div>
+                    }
                 </ul>
                 <MuiThemeProvider>
                     <Dialog
@@ -340,11 +353,11 @@ class App extends Component {
                             contentStyle={customContentStyle}
                             actions={brukVaarLigaKnapp}
                         >
-                        <TextField
-                            hintText="eks: 44713"
-                            floatingLabelText="Fyll inn ID for din liga her"
-                            onChange={(event, newValue) => this.updateLeagueId(newValue)}
-                        /><br />
+                            <TextField
+                                hintText="eks: 44713"
+                                floatingLabelText="Fyll inn ID for din liga her"
+                                onChange={(event, newValue) => this.updateLeagueId(newValue)}
+                            /><br/>
                         </Dialog>
                     </MuiThemeProvider>
                     }

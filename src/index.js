@@ -9,12 +9,13 @@ import Funfacts from './funfacts/Funfacts';
 import Transfers from './transfers/Transfers';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<Router history={hashHistory}>
-    <Route path="/" component={App}>
-        <IndexRoute component={Kamper}/>
-        <Route path="grupper" component={Grupper}/>
-        <Route path="funfacts" component={Funfacts}/>
-        <Route path="transfers" component={Transfers}/>
-    </Route>
-</Router>, document.getElementById('root'));
+ReactDOM.render(
+    <Router history={hashHistory}>
+        <Route path="/" component={App}>
+            <Route path="kamper" component={Kamper}/>
+            <Route path="grupper" component={Grupper}/>
+            <IndexRoute component={Funfacts}/>
+            <Route path="transfers" component={Transfers}/>
+        </Route>
+    </Router>, document.getElementById('root'));
 registerServiceWorker();

@@ -3,7 +3,7 @@ import $ from 'jquery';
 import '../App.css';
 import './Funfacts.css';
 import {players, SelectBox, allRounds, roundJackass} from '../utils.js';
-import {currentRound, dataz, fplPlayers, loadedPlayerIds} from '../App.js';
+import {currentRound, dataz, fplPlayers, loadedPlayerIds, isForFameAndGloryLeague} from '../App.js';
 
 function tempNullCheck(teamId) {
     return dataz[teamId] || {};
@@ -219,11 +219,11 @@ class App extends Component {
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
         return (
             <div className="ff-content-container">
-                {!roundJackasText &&
+                {(!roundJackasText || !isForFameAndGloryLeague()) &&
                 <p style={{'textAlign': 'center', 'fontSize': 'small', 'width': '100%'}}>(Kun kapteinspoeng oppdateres
                     live, resten oppdateres når FPL oppdaterer sine data)</p>
                 }
-                {roundJackasText &&
+                {roundJackasText && isForFameAndGloryLeague() &&
                 <div className="ff-rundens-smell">
                     <div className="ff-rundens-smell-header">"Rundens drittfyr"</div>
                     <div className="ff-rundens-smell-content"><span
