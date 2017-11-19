@@ -16,7 +16,7 @@ export let currentRound = null;
 export let transferlist = [];
 export let fplPlayers = [];
 export let loadedPlayerIds = [];
-let leagueIdChosenByUser = 44713;
+let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
     return leagueIdChosenByUser === 44713;
@@ -144,7 +144,7 @@ class App extends Component {
 
     fetchDataFromServer() {
         let that = this;
-        $.get("/api/getManagerList?leagueId=" + this.state.leagueId).done(function (data) {
+        $.get("/api/getManagerList?leagueId=" + leagueIdChosenByUser).done(function (data) {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
@@ -223,13 +223,11 @@ class App extends Component {
                                     }
                                 })
                             })
-                            console.log('transferList: ', transferlist);
                         }
                         console.log('dataz: ', dataz);
                         that.setState({loadingData: false});
                     });
                     $.get("/api/fplplayers").done(function (result) {
-                        console.log('alle spillere: ', result);
                         if (result && result.length > 0) {
                             fplPlayers = result;
                         }
@@ -250,13 +248,9 @@ class App extends Component {
 
     updateLeagueId = (newId) => {
         leagueIdChosenByUser = newId;
-        this.setState({
-            leagueId: newId,
-        });
     };
 
     useOurLeague = () => {
-        this.state.leagueId = 44713;
         leagueIdChosenByUser = 44713;
         this.triggerFetchDataFromServer();
     }
