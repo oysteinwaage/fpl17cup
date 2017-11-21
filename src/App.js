@@ -9,6 +9,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
+import ActionInfo from 'material-ui/svg-icons/action/info';
+import Popover from 'material-ui/Popover/Popover';
 
 export let dataz = {};
 export let groupData = {};
@@ -124,10 +126,12 @@ class App extends Component {
             chosenLeagueId: false,
             leagueId: 44713,
             leagueName: 'Liganavn',
+            showLeagueIdInfo: false,
         };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
         this.toggleEasteregg = this.toggleEasteregg.bind(this);
+        this.toggleShowLeagueIdInfo = this.toggleShowLeagueIdInfo.bind(this);
     };
 
     setData(data) {
@@ -263,6 +267,17 @@ class App extends Component {
         this.fetchDataFromServer();
     };
 
+    toggleShowLeagueIdInfo(event) {
+        this.setState({
+            showLeagueIdInfo: !this.state.showLeagueIdInfo,
+            anchorEl: event.currentTarget,
+        });
+    };
+
+    handleTouchTap = (event) => {
+        // This prevents ghost click.
+    };
+
     render() {
         const actions = [
             <FlatButton
@@ -351,7 +366,21 @@ class App extends Component {
                                 hintText="eks: 44713"
                                 floatingLabelText="Fyll inn ID for din liga her"
                                 onChange={(event, newValue) => this.updateLeagueId(newValue)}
-                            /><br/>
+                            />
+                            <ActionInfo
+                                style={actionInfoStyle}
+                                onClick={(event) => this.toggleShowLeagueIdInfo(event)} />
+                            <br/>
+                            <Popover
+                                open={this.state.showLeagueIdInfo}
+                                anchorEl={this.state.anchorEl}
+                                anchorOrigin={{"horizontal":"middle","vertical":"top"}}
+                                targetOrigin={{"horizontal":"middle","vertical":"bottom"}}
+                                onRequestClose={(event) => this.toggleShowLeagueIdInfo(event)}
+                            >
+                                Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i URL'en.
+                                Det ser typisk slik ut: https://fantasy.premierleague.com/a/leagues/standings/976245/classic
+                            </Popover>
                         </Dialog>
                     </MuiThemeProvider>
                     }
@@ -369,4 +398,10 @@ const customContentStyle = {
     maxHeight: '90%',
     textAlign: 'center',
 };
+const actionInfoStyle = {
+    // TODO funker ikke med hover. sjekk ut.
+    '&:hover': {
+        color: 'yellow'
+    }
+}
 export default App;
