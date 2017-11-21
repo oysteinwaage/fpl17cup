@@ -379,7 +379,7 @@ class App extends Component {
                                 onRequestClose={(event) => this.toggleShowLeagueIdInfo(event)}
                             >
                                 Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i URL'en.
-                                Det ser typisk slik ut: https://fantasy.premierleague.com/a/leagues/standings/976245/classic
+                                Det ser typisk slik ut: https://fantasy.premierleague.com/a/leagues/standings/<a style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</a>/classic
                             </Popover>
                         </Dialog>
                     </MuiThemeProvider>
