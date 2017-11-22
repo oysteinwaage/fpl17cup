@@ -293,7 +293,7 @@ class App extends Component {
                 onClick={() => this.useOurLeague()}
             />,
             <FlatButton
-                label="Gå videre med din liga"
+                label="Gå videre med valgt liga"
                 primary={true}
                 onClick={() => this.triggerFetchDataFromServer()}
             />,
@@ -377,9 +377,10 @@ class App extends Component {
                                 anchorOrigin={{"horizontal":"middle","vertical":"top"}}
                                 targetOrigin={{"horizontal":"middle","vertical":"bottom"}}
                                 onRequestClose={(event) => this.toggleShowLeagueIdInfo(event)}
+                                contentStyle={customContentStyle}
                             >
-                                Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i URL'en.
-                                Det ser typisk slik ut: https://fantasy.premierleague.com/a/leagues/standings/<a style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</a>/classic
+                                Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i URL'en.<br/>
+                                Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/a/ leagues/standings/<a style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</a>/classic
                             </Popover>
                         </Dialog>
                     </MuiThemeProvider>
