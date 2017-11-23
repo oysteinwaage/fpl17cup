@@ -170,7 +170,7 @@ app.get('/api/getManagerList', function (req, res) {
     fplapi.findLeague(leagueId)
         .then(values => {
             leagueName = values.name
-            fplapi.findLeagueStandings(query.leagueId)
+            fplapi.findLeagueStandings(leagueId)
                 .then(values => {
                     loadedPlayerIds = values.map(p => p.entry)
                     const data = {

@@ -362,6 +362,7 @@ class App extends Component {
                             contentStyle={customContentStyle}
                             actions={brukVaarLigaKnapp}
                         >
+                            <p style={{color: 'red', fontSize: 'small'}}>Pga begrensninger i API'et til FPL får man pr. nå kun med data for de 50 beste i ligaen :/</p>
                             <TextField
                                 hintText="eks: 44713"
                                 floatingLabelText="Fyll inn ID for din liga her"
