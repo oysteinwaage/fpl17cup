@@ -6,7 +6,7 @@ const fplapi = require('fpl-api-node');
 let leagueId = 44713;
 
 let loadedPlayerIds = [];
-const megOgSvenO = [972780, 1727710];
+const megOgSvenO = [972780, 1727710, 26724];
 
 let app = express();
 app.use(express.static('build'));

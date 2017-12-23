@@ -148,15 +148,13 @@ class App extends Component {
 
     fetchDataForPilsMedSvenO() {
         $.get("/api/pilsmedsveno").done(function (result) {
-            console.log('pilsmedsveno-result: ', result);
             let score = "";
             if (result && result.length > 0) {
-                result.forEach(function (player) {
-                    if (score === "") {
-                        score += player.player_first_name + "  " + player.summary_overall_points + " - ";
-                    } else {
-                        score += player.summary_overall_points + '  ' + player.player_first_name;
-                    }
+                const sortedResult = result.sort(function (a, b) {
+                    return b.summary_overall_points - a.summary_overall_points;
+                });
+                sortedResult.forEach(function (player) {
+                    score += player.player_first_name + "  " + player.summary_overall_points + "\n";
                 });
             }
             alert(score);
@@ -268,7 +266,7 @@ class App extends Component {
     };
 
     updateLeagueId = (newId) => {
-        if (newId === "pils") {
+        if (newId === "pils" || newId === 'Pils') {
             this.fetchDataForPilsMedSvenO();
         }
         leagueIdChosenByUser = newId;
