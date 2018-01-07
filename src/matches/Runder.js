@@ -39,6 +39,13 @@ export const gamesPrGroupAndRound = {
         groupD: [[446195, 1969508], [1499253, 159488], [1136421, 454412]],
         groupE: [[188947, 2547467], [1261708, 1331886], [1898765, 1305123]],
     },
+    extraround: {
+        groupA: [[92124, 552058]],
+        groupB: [[1727710, 0], [1083723, 0], [446195, 0]],
+        groupC: [],
+        groupD: [],
+        groupE: [],
+    },
     utslagning: {
         groupA: [],
         groupB: [],
@@ -79,15 +86,17 @@ export function getRoundNr(round) {
         case '21':
         case 21:
             return 'round11_21';
+        case 23:
+        case 'Playoff':
+            return 'extraround';
         case 'Utslagningsrunder':
             return 'utslagning';
         default:
-            return 'round3_13';
+            return 'utslagning';
     }
 }
 
 function Match(props) {
-    console.log('props.round: ', props.round);
     return (
         <div className="match-score-container">
             <div className="match-result">
@@ -119,18 +128,16 @@ function roundForCupPlay(groupHeader) {
     }
 }
 
-function lagKampoppsettSemifinale(){
+function lagKampoppsettSemifinale() {
 
 }
 
 export function MatchesForGroup(props) {
     const round = getRoundNr(props.chosenRound);
-    console.log('round: ', round);
     return (
         <div>
             {groups.map(function (groupLetter) {
                 const groupId = 'group' + groupLetter;
-                console.log('groupId: ', groupId);
                 let groupHeader = 'Gruppe ' + groupLetter;
                 if (round === 'utslagning') {
                     if (groupLetter === 'A') {
@@ -142,9 +149,17 @@ export function MatchesForGroup(props) {
                     } else {
                         groupHeader = false;
                     }
+                } else if (round === 'extraround') {
+                    if (groupLetter === 'A') {
+                        groupHeader = 'Playoff gruppe B';
+                    } else if (groupLetter === 'B') {
+                        groupHeader = 'Playoff gruppetoere på 18p';
+                    } else {
+                        groupHeader = false;
+                    }
                 }
-                console.log('chosenRound: ', props.chosenRound);
-                const roundNr = props.chosenRound === 'Utslagningsrunder' && groupHeader ? roundForCupPlay(groupHeader) : props.chosenRound;
+                const roundNr = props.chosenRound === 'Utslagningsrunder' && groupHeader ? roundForCupPlay(groupHeader) :
+                    props.chosenRound === 'Playoff' && groupHeader ? 23 : props.chosenRound;
                 return groupHeader && (
                     <div key={groupId}>
                         <div className='groupName'>{groupHeader}</div>
