@@ -104,6 +104,7 @@ function updateGroupData(team1, team2, round) {
     })
 }
 
+
 function makeGroupData() {
     participatingRounds.filter(pr => pr <= currentRound).forEach(function (r) {
         groups.forEach(function (groupLetter) {
