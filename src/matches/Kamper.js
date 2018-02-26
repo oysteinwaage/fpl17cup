@@ -50,7 +50,7 @@ class Kamper extends Component {
         })
     };
 
-    lastCupRound(){
+    lastCupRound() {
         let roundNr = currentRound % 2 === 0 ? currentRound - 1 : currentRound;
         return roundNr === 23 ? 'Playoff' : roundNr === 25 || roundNr === 27 || roundNr === 29 ? 'Utslagningsrunder' : roundNr;
     }
@@ -71,12 +71,14 @@ class Kamper extends Component {
         return (
             <div className="matches-content">
                 {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
-                <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
+                <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp
+                    info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
                 {/*<MuiThemeProvider>*/}
-                    {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
+                {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
                 {/*</MuiThemeProvider>*/}
-                <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()} onToggleDialog={this.toggleDialog}/>
+                <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
+                                 onToggleDialog={this.toggleDialog}/>
                 <MuiThemeProvider>
                     <Dialog
                         title={players[this.state.dialogPlayer] + ' - ' + managerName}
@@ -91,7 +93,8 @@ class Kamper extends Component {
                         <div className="dialog-content">
                             <div className="ff-round-facts">
                                 <div className="ff-facts-header">
-                                    Stats runde {this.state.selectedRoundDialog || this.state.selectedRound || currentRound}</div>
+                                    Stats
+                                    runde {this.state.selectedRoundDialog || this.state.selectedRound || currentRound}</div>
                                 {SelectBox(allRounds, this.changeSelectedRoundDialog.bind(this), '', 'Dialog')}
                                 {makeMultipleResultsRowsWithSameScore('Score', statsOnPlayer.highestRoundScore, true)}
                                 {makeMultipleResultsRowsWithSameScore('Poeng på benken', statsOnPlayer.mostPointsOnBench, true)}

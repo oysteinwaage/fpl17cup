@@ -6,6 +6,7 @@ const fplapi = require('fpl-api-node');
 let leagueId = 44713;
 
 let loadedPlayerIds = [];
+const megOgSvenO = [972780, 1727710, 26724];
 
 let app = express();
 app.use(express.static('build'));
@@ -38,6 +39,20 @@ app.get('/api/score', function (req, res) {
 app.get('/api/players', function (req, res) {
     Promise.all(
         loadedPlayerIds.map(fplapi.findEntry)
+    ).then(values => {
+        res.type('application/json')
+            .send(values)
+            .end();
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/pilsmedsveno', function (req, res) {
+    Promise.all(
+        megOgSvenO.map(fplapi.findEntry)
     ).then(values => {
         res.type('application/json')
             .send(values)

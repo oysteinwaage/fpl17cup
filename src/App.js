@@ -104,6 +104,7 @@ function updateGroupData(team1, team2, round) {
     })
 }
 
+
 function makeGroupData() {
     participatingRounds.filter(pr => pr <= currentRound).forEach(function (r) {
         groups.forEach(function (groupLetter) {
@@ -144,6 +145,21 @@ class App extends Component {
     }
 
     componentDidMount() {
+    }
+
+    fetchDataForPilsMedSvenO() {
+        $.get("/api/pilsmedsveno").done(function (result) {
+            let score = "";
+            if (result && result.length > 0) {
+                const sortedResult = result.sort(function (a, b) {
+                    return b.summary_overall_points - a.summary_overall_points;
+                });
+                sortedResult.forEach(function (player) {
+                    score += player.player_first_name + "  " + player.summary_overall_points + "\n";
+                });
+            }
+            alert(score);
+        });
     }
 
     fetchDataFromServer() {
@@ -251,6 +267,9 @@ class App extends Component {
     };
 
     updateLeagueId = (newId) => {
+        if (newId === "pils" || newId === 'Pils') {
+            this.fetchDataForPilsMedSvenO();
+        }
         leagueIdChosenByUser = newId;
     };
 
@@ -306,7 +325,7 @@ class App extends Component {
                         <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'17 Cup-O-Rama</h1>
                         }
                         {!isForFameAndGloryLeague() &&
-                            <h1>{this.state.leagueName}</h1>
+                        <h1>{this.state.leagueName}</h1>
                         }
 
                     </div>
@@ -362,7 +381,8 @@ class App extends Component {
                             contentStyle={customContentStyle}
                             actions={brukVaarLigaKnapp}
                         >
-                            <p style={{color: 'red', fontSize: 'small'}}>Pga begrensninger i API'et til FPL får man pr. nå kun med data for de 50 beste i ligaen :/</p>
+                            <p style={{color: 'red', fontSize: 'small'}}>Pga begrensninger i API'et til FPL får man pr.
+                                nå kun med data for de 50 beste i ligaen :/</p>
                             <TextField
                                 hintText="eks: 44713"
                                 floatingLabelText="Fyll inn ID for din liga her"
@@ -370,18 +390,20 @@ class App extends Component {
                             />
                             <ActionInfo
                                 style={actionInfoStyle}
-                                onClick={(event) => this.toggleShowLeagueIdInfo(event)} />
+                                onClick={(event) => this.toggleShowLeagueIdInfo(event)}/>
                             <br/>
                             <Popover
                                 open={this.state.showLeagueIdInfo}
                                 anchorEl={this.state.anchorEl}
-                                anchorOrigin={{"horizontal":"middle","vertical":"top"}}
-                                targetOrigin={{"horizontal":"middle","vertical":"bottom"}}
+                                anchorOrigin={{"horizontal": "middle", "vertical": "top"}}
+                                targetOrigin={{"horizontal": "middle", "vertical": "bottom"}}
                                 onRequestClose={(event) => this.toggleShowLeagueIdInfo(event)}
                                 contentStyle={customContentStyle}
                             >
-                                Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i URL'en.<br/>
-                                Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/a/ leagues/standings/<a style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</a>/classic
+                                Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i
+                                URL'en.<br/>
+                                Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/a/ leagues/standings/<a
+                                style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</a>/classic
                             </Popover>
                         </Dialog>
                     </MuiThemeProvider>

@@ -55,6 +55,8 @@ export const gamesPrGroupAndRound = {
     }
 };
 
+
+
 export const groups = ['A', 'B', 'C', 'D', 'E'];
 
 //TODO Flytt alle disse felles-funksjonene til utils. Brukes av mange
