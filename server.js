@@ -145,8 +145,9 @@ app.get('/api/captain2', function (req, res) {
 
 app.get('/api/fplplayers', function (req, res) {
     fplapi.getElements().then(values => {
+        const playersSortedById = values.sort(function(a,b){ return a.id - b.id });
         res.type('application/json')
-            .send(values)
+            .send(playersSortedById)
             .end();
     }).catch((error) => {
         res.type('application/json')
