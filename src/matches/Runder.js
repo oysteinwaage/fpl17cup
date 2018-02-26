@@ -38,6 +38,20 @@ export const gamesPrGroupAndRound = {
         groupC: [[1727710, 2003531], [2287279, 2690627], [26900, 407749]],
         groupD: [[446195, 1969508], [1499253, 159488], [1136421, 454412]],
         groupE: [[188947, 2547467], [1261708, 1331886], [1898765, 1305123]],
+    },
+    extraround: {
+        groupA: [[92124, 552058]],
+        groupB: [[1727710, 0], [1083723, 0], [446195, 0]],
+        groupC: [],
+        groupD: [],
+        groupE: [],
+    },
+    utslagning: {
+        groupA: [[144360, 94232], [92124, 1136421], [1331886, 1261708], [1727710, 2003531]],
+        groupB: [[144360, 1331886], [92124, 1727710]],
+        groupC: [[1727710, 1331886]],
+        groupD: [],
+        groupE: [],
     }
 };
 
@@ -72,8 +86,13 @@ export function getRoundNr(round) {
         case '21':
         case 21:
             return 'round11_21';
+        case 23:
+        case 'Playoff':
+            return 'extraround';
+        case 'Utslagningsrunder':
+            return 'utslagning';
         default:
-            return 'round3_13';
+            return 'utslagning';
     }
 }
 
@@ -99,20 +118,56 @@ function Match(props) {
     );
 }
 
+function roundForCupPlay(groupHeader) {
+    if (groupHeader.startsWith('Kvartfinale')) {
+        return 25;
+    } else if (groupHeader.startsWith('Semifinale')) {
+        return 27;
+    } else if (groupHeader.startsWith('Finale')) {
+        return 29;
+    }
+}
+
+function lagKampoppsettSemifinale() {
+
+}
+
 export function MatchesForGroup(props) {
     const round = getRoundNr(props.chosenRound);
     return (
         <div>
             {groups.map(function (groupLetter) {
                 const groupId = 'group' + groupLetter;
-                return (
+                let groupHeader = 'Gruppe ' + groupLetter;
+                if (round === 'utslagning') {
+                    if (groupLetter === 'A') {
+                        groupHeader = 'Kvartfinaler (runde 25)';
+                    } else if (groupLetter === 'B') {
+                        groupHeader = 'Semifinaler (runde 27)';
+                    } else if (groupLetter === 'C') {
+                        groupHeader = 'Finale (runde 29)';
+                    } else {
+                        groupHeader = false;
+                    }
+                } else if (round === 'extraround') {
+                    if (groupLetter === 'A') {
+                        groupHeader = 'Playoff gruppe B';
+                    } else if (groupLetter === 'B') {
+                        groupHeader = 'Playoff gruppetoere på 18p';
+                    } else {
+                        groupHeader = false;
+                    }
+                }
+                const roundNr = props.chosenRound === 'Utslagningsrunder' && groupHeader ? roundForCupPlay(groupHeader) :
+                    props.chosenRound === 'Playoff' && groupHeader ? 23 : props.chosenRound;
+                return groupHeader && (
                     <div key={groupId}>
-                        <div className='groupName'>{'Gruppe ' + groupLetter}</div>
+                        <div className='groupName'>{groupHeader}</div>
                         {gamesPrGroupAndRound[round][groupId].map(function (match) {
                             return <Match key={match[0] + match[1]}
                                           team1={match[0]}
                                           team2={match[1]}
-                                          round={'round' + props.chosenRound}
+                                          round={'round' + roundNr}
                                           onToggleDialog={props.onToggleDialog}/>;
                         })}
                     </div>);
