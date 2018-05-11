@@ -167,6 +167,7 @@ class App extends Component {
         $.get("/api/getManagerList?leagueId=" + leagueIdChosenByUser).done(function (data) {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
+                console.log('loadedPlayers: ', loadedPlayerIds);
                 that.state.leagueName = data.leagueName;
 
                 $.get("/api/score").done(function (result) {
@@ -180,6 +181,7 @@ class App extends Component {
                         alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
                     }
                     $.get("/api/players").done(function (result) {
+                        console.log('dataz', dataz);
                         console.log('players-result: ', result);
                         if (result && result.length > 0) {
                             result.forEach(function (player) {
@@ -384,7 +386,7 @@ class App extends Component {
                             <p style={{color: 'red', fontSize: 'small'}}>Pga begrensninger i API'et til FPL får man pr.
                                 nå kun med data for de 50 beste i ligaen :/</p>
                             <TextField
-                                hintText="eks: 44713"
+                                hintText="eks: 424576"
                                 floatingLabelText="Fyll inn ID for din liga her"
                                 onChange={(event, newValue) => this.updateLeagueId(newValue)}
                             />

@@ -4,6 +4,10 @@ import './Transfers.css';
 import {SelectBox, allRounds, players} from '../utils.js';
 import {dataz, currentRound, fplPlayers, loadedPlayerIds} from '../App.js';
 
+function tempNullCheck(teamId) {
+    return dataz[teamId] || {};
+}
+
 class Transfers extends Component {
     constructor(props) {
         super(props);
@@ -66,7 +70,7 @@ class Transfers extends Component {
             })
             return teamId && round && transfers && (
                 <div key={teamId} className="transfer-container">
-                    <div className="transfer-team">{players[teamId]}</div>
+                    <div className="transfer-team">{tempNullCheck(teamId).teamName}</div>
                     <div className="transfer-transferlist">
                         <div className="transfer-row">
                             <div className="transfer-player">{'Inn (' + totalPointsIn + 'p)'}</div>

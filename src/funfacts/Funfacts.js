@@ -264,7 +264,7 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
             <div className="ff-normal-fact-text">{text}</div>
             <div className="ff-normal-fact-result">
                 {data.map(d => {
-                    const text = onlyScore ? d[1] : players[d[0]] + ' (' + d[1] + ')';
+                    const text = onlyScore ? d[1] : tempNullCheck(d[0]).teamName + ' (' + d[1] + ')';
                     return (
                         <div key={d[0]} className="ff-multiple-result-facts">
                             {text}
@@ -300,18 +300,20 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
 
 export function makeMultipleResultsRowsWithSameScore(text, data, onlyScore = false) {
     let firstRow = true;
+    let uniqueKeyId = 0;
     return data.length === 0 ? null : (
         <div className={"ff-multiple-results-container"}>
             <div className="ff-normal-fact-text">{text}</div>
             <div className="ff-normal-fact-result">
                 {data.map(d => {
                     const points = firstRow ? d[0] : '';
-                    const player = onlyScore ? '' : (players[d[1]] + (d[2] ? ' (' + d[2] + ')' : ''));
+                    const player = onlyScore ? '' : (tempNullCheck(d[1]).teamName + (d[2] ? ' (' + d[2] + ')' : ''));
                     firstRow = false;
+                    uniqueKeyId++;
                     return (
-                        <div key={d[1] + 'r'} className="ff-multiple-result-facts-2">
-                            <div key={d[1] + 'p'} className="ff-multiple-result-facts-points">{points}</div>
-                            <div key={d[1] + 'p2'} className="ff-multiple-result-facts-player">{player}</div>
+                        <div key={d[1] + uniqueKeyId + 'r'} className="ff-multiple-result-facts-2">
+                            <div key={d[1] + uniqueKeyId + 'p'} className="ff-multiple-result-facts-points">{points}</div>
+                            <div key={d[1] + uniqueKeyId + 'p2'} className="ff-multiple-result-facts-player">{player}</div>
                         </div>
                     )
                 })}
@@ -321,7 +323,7 @@ export function makeMultipleResultsRowsWithSameScore(text, data, onlyScore = fal
 }
 
 export function normalFact(text, data, onlyScore) {
-    const teamName = onlyScore ? '' : ' (' + players[data[1]] + ')';
+    const teamName = onlyScore ? '' : ' (' + tempNullCheck(data[1]).teamName + ')';
     return data[1] && (
         <div className={"ff-normal-fact-container"}>
             <div className="ff-normal-fact-text">{text}</div>

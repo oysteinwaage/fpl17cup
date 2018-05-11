@@ -126,7 +126,7 @@ app.get('/api/captain', function (req, res) {
 });
 
 app.get('/api/captain2', function (req, res) {
-    const rounds = [1,2,3,4,5,6,7,8,9];
+    const rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     Promise.all(
         loadedPlayerIds.map(p => rounds.map(r => fplapi.findEntryPicksByEvent(p, r)))
     ).then(values => {
@@ -184,17 +184,22 @@ app.get('/api/getManagerList', function (req, res) {
     let leagueName = "leagueName";
     fplapi.findLeague(leagueId)
         .then(values => {
-            leagueName = values.name
-            fplapi.findLeagueStandings(leagueId)
+            leagueName = values.name;
+            fplapi.findLeagueStandings(leagueId, 0)
                 .then(values => {
-                    loadedPlayerIds = values.map(p => p.entry)
+                    loadedPlayerIds = values.results.map(p => p.entry);
                     const data = {
                         managers: loadedPlayerIds,
-                        leagueName
+                        leagueName,
+                        values
                     }
-                    res.type('application/json')
-                        .send(data)
-                        .end();
+                    if (values.has_next) {
+                        updateManagersList(data, 1, res)
+                    } else {
+                        res.type('application/json')
+                            .send(data)
+                            .end();
+                    }
                 }).catch((error) => {
                 res.type('application/json')
                     .send(error)
@@ -202,6 +207,22 @@ app.get('/api/getManagerList', function (req, res) {
             });
         });
 });
+
+function updateManagersList(data, pageId, res) {
+    fplapi.findLeagueStandings(leagueId, pageId)
+        .then(values => {
+            values.results.map(p => loadedPlayerIds.push(p.entry));
+            if (values.has_next) {
+                updateManagersList(data, pageId + 1, res)
+            } else {
+                data.managers = loadedPlayerIds;
+                res.type('application/json')
+                    .send(data)
+                    .end();
+            }
+        }).catch((error) => {
+    });
+}
 
 app.get('/api/playerscores', function (req, res) {
     const query = url.parse(req.url, true).query;
