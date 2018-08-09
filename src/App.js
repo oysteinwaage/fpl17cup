@@ -21,7 +21,7 @@ export let loadedPlayerIds = [];
 let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
-    return leagueIdChosenByUser === 44713;
+    return leagueIdChosenByUser === 61858;
 }
 
 const reducer2 = (a, b) => {
@@ -125,7 +125,7 @@ class App extends Component {
             dialogOpen: false,
             loadingData: false,
             chosenLeagueId: false,
-            leagueId: 44713,
+            leagueId: 61858,
             leagueName: 'Liganavn',
             showLeagueIdInfo: false,
         };
@@ -274,7 +274,7 @@ class App extends Component {
     };
 
     useOurLeague = () => {
-        leagueIdChosenByUser = 44713;
+        leagueIdChosenByUser = 61858;
         this.triggerFetchDataFromServer();
     }
 
@@ -384,7 +384,7 @@ class App extends Component {
                             <p style={{color: 'red', fontSize: 'small'}}>Pga begrensninger i API'et til FPL får man pr.
                                 nå kun med data for de 50 beste i ligaen :/</p>
                             <TextField
-                                hintText="eks: 44713"
+                                hintText="eks: 61858"
                                 floatingLabelText="Fyll inn ID for din liga her"
                                 onChange={(event, newValue) => this.updateLeagueId(newValue)}
                             />
