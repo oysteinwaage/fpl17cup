@@ -256,6 +256,8 @@ class App extends Component {
                     //     console.log('alle kapteiner2222: ', result);
                     // });
                 });
+            } else if (data && data.managers && data.managers.length == 0) {
+                that.setState({ loadingData: false });
             }
         });
     }
