@@ -225,10 +225,10 @@ class App extends Component {
                 }
                 {roundJackasText && isForFameAndGloryLeague() &&
                 <div className="ff-rundens-smell">
-                    <div className="ff-rundens-smell-header">"Rundens drittfyr"</div>
+                    <div className="ff-rundens-smell-header">"Velkommen folkens!!"</div>
                     <div className="ff-rundens-smell-content"><span
                         dangerouslySetInnerHTML={{__html: roundJackasText}}/></div>
-                    <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. X</div>
+                    <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. Waage</div>
                 </div>
                 }
                 <div className="ff-round-facts">
