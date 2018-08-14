@@ -188,7 +188,7 @@ app.get('/api/getManagerList', function (req, res) {
             leagueName = values.name
             fplapi.findLeagueStandings(leagueId)
                 .then(values => {
-                    loadedPlayerIds = values.map(p => p.entry)
+                    loadedPlayerIds = values.map(p => p.entry);
                     const data = {
                         managers: loadedPlayerIds,
                         leagueName

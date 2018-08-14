@@ -18,6 +18,7 @@ export let currentRound = null;
 export let transferlist = [];
 export let fplPlayers = [];
 export let loadedPlayerIds = [];
+export let leagueStandings = [];
 let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
@@ -207,6 +208,7 @@ class App extends Component {
                     });
                     $.get("/api/league").done(function (result) {
                         if (result && result.length > 0) {
+                            leagueStandings = result;
                             result.forEach(function (player) {
                                 Object.assign(dataz[player.entry], {
                                     leagueClimb: player.last_rank - player.rank,
@@ -324,7 +326,7 @@ class App extends Component {
                 <div className="overHeader">
                     <div className="headerText">
                         {isForFameAndGloryLeague() &&
-                        <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'17 Cup-O-Rama</h1>
+                        <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'18 Cup-O-Rama</h1>
                         }
                         {!isForFameAndGloryLeague() &&
                         <h1>{this.state.leagueName}</h1>
@@ -340,12 +342,14 @@ class App extends Component {
                         <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
                         <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
                         <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
+                        <li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>
                     </div>
                     }
                     {!isForFameAndGloryLeague() &&
                     <div>
                         <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
                         <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
+                        <li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>
                     </div>
                     }
                 </ul>

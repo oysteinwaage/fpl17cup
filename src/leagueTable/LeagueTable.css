@@ -1,0 +1,35 @@
+.table-content {
+    width: 100%;
+    max-width: 750px;
+}
+
+.tabellRad {
+    display: flex;
+    justify-content: space-between;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    width: 100%;
+    border-bottom: dashed darkgrey 1px;
+    padding-top:10px;
+    background-color: #38003C;
+    color: #00FF87;
+
+    /*@media only screen and (max-width: 600px){*/
+    /*}*/
+}
+.tableRank {
+    padding-left: 15px;
+    min-width: 50px;
+}
+.tableTeamAndManager {
+    min-width: 50px;
+    text-align: left;
+}
+.tableGwScore {
+    min-width: 50px;
+    text-align: right;
+}
+.tableTotalScore {
+    min-width: 50px;
+    text-align: right;
+    padding-right: 15px;
+}
