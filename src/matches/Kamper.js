@@ -38,12 +38,6 @@ class Kamper extends Component {
         })
     };
 
-    // changeSelectedRoundUi(event, index, value) {
-    //     this.setState({
-    //         selectedRound: value
-    //     })
-    // };
-
     changeSelectedRoundDialog() {
         this.setState({
             selectedRoundDialog: document.getElementsByName('selectBoxDialog')[0].value
