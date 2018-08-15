@@ -85,7 +85,7 @@ export function MakeDropDownMenu(values, chosenValue, onchange) {
     return (
         <div className='selectBoxContainer'>
             <DropDownMenu
-                value={parseInt(chosenValue) || null}
+                value={parseInt(chosenValue, 10) || null}
                 onChange={onchange}
                 style={dropDownStyle}
                 autoWidth={false}

@@ -70,13 +70,9 @@ class Kamper extends Component {
             ( statsOnPlayer.mostTotalHitsTaken.length === 0 ? ['0p', 12345] : ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]]);
         return (
             <div className="matches-content">
-                {/*<h2>{this.state.selectedRound && 'Runde ' + this.state.selectedRound}</h2>*/}
                 <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp
                     info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
-                {/*<MuiThemeProvider>*/}
-                {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
-                {/*</MuiThemeProvider>*/}
                 <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
                                  onToggleDialog={this.toggleDialog}/>
                 <MuiThemeProvider>
@@ -118,7 +114,7 @@ class Kamper extends Component {
     }
 }
 
-const customContentStyle = {
+export const customContentStyle = {
     width: '90%',
     maxWidth: 'none',
     height: '90%',

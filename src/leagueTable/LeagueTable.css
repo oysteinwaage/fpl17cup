@@ -2,14 +2,24 @@
     width: 100%;
     max-width: 750px;
 }
-
+.tabellRadHeader {
+    display: flex;
+    justify-content: space-between;
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    width: 100%;
+    padding-top:5px;
+    padding-bottom:5px;
+    font-weight: bold;
+    background-color: #dfdfdf;
+}
 .tabellRad {
     display: flex;
     justify-content: space-between;
     font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
     width: 100%;
     border-bottom: dashed darkgrey 1px;
-    padding-top:10px;
+    padding-top:5px;
+    padding-bottom:5px;
     background-color: #38003C;
     color: #00FF87;
 
@@ -18,18 +28,30 @@
 }
 .tableRank {
     padding-left: 15px;
-    min-width: 50px;
+    width: 20px;
 }
 .tableTeamAndManager {
-    min-width: 50px;
+    min-width: 50%;
     text-align: left;
+    justify-content: flex-start;
 }
 .tableGwScore {
-    min-width: 50px;
+    width: 50px;
     text-align: right;
 }
 .tableTotalScore {
     min-width: 50px;
     text-align: right;
     padding-right: 15px;
+}
+.teamName {
+    text-align: left;
+}
+.managerName {
+    font-size: small;
+}
+
+a:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }

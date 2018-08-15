@@ -130,10 +130,6 @@ function roundForCupPlay(groupHeader) {
     }
 }
 
-function lagKampoppsettSemifinale() {
-
-}
-
 export function MatchesForGroup(props) {
     const round = getRoundNr(props.chosenRound);
     return (
