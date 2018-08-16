@@ -3,12 +3,14 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
-import {participatingRounds, updatePlayerListWithNewLEagueData} from './utils.js';
+import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdown} from './utils.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Popover from 'material-ui/Popover/Popover';
 
@@ -129,6 +131,7 @@ class App extends Component {
             leagueId: 61858,
             leagueName: 'Liganavn',
             showLeagueIdInfo: false,
+            leagueIdChosenByUser: '',
         };
         this.setData = this.setData.bind(this);
         this.setCurrentRound = this.setCurrentRound.bind(this);
@@ -165,7 +168,7 @@ class App extends Component {
 
     fetchDataFromServer() {
         let that = this;
-        $.get("/api/getManagerList?leagueId=" + leagueIdChosenByUser).done(function (data) {
+        $.get("/api/getManagerList?leagueId=" + this.state.leagueIdChosenByUser).done(function (data) {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
@@ -274,13 +277,10 @@ class App extends Component {
         if (newId === "pils" || newId === 'Pils') {
             this.fetchDataForPilsMedSvenO();
         }
-        leagueIdChosenByUser = newId;
+        this.setState({
+            leagueIdChosenByUser: newId,
+        });
     };
-
-    useOurLeague = () => {
-        leagueIdChosenByUser = 61858;
-        this.triggerFetchDataFromServer();
-    }
 
     triggerFetchDataFromServer = () => {
         this.setState({
@@ -301,24 +301,23 @@ class App extends Component {
         // This prevents ghost click.
     };
 
+    handleLigavalgFraDropdown = (event, index, value) => {
+        this.updateLeagueId(value);
+    };
+
     render() {
         const actions = [
-            <FlatButton
+            <RaisedButton
                 label="Fjern dette stygge trynet!"
                 primary={true}
                 onClick={() => this.toggleEasteregg()}
             />,
         ];
         const brukVaarLigaKnapp = [
-            <FlatButton
-                label="Bruk For Fame And Glory Ligaen"
-                primary={false}
-                onClick={() => this.useOurLeague()}
-            />,
-            <FlatButton
+            <RaisedButton
                 label="Gå videre med valgt liga"
-                primary={true}
                 onClick={() => this.triggerFetchDataFromServer()}
+                disabled={this.state.leagueIdChosenByUser === ''}
             />,
         ];
         return (
@@ -392,12 +391,24 @@ class App extends Component {
                             <TextField
                                 hintText="eks: 61858"
                                 floatingLabelText="Fyll inn ID for din liga her"
+                                value={this.state.leagueIdChosenByUser}
                                 onChange={(event, newValue) => this.updateLeagueId(newValue)}
                             />
                             <ActionInfo
                                 style={actionInfoStyle}
-                                onClick={(event) => this.toggleShowLeagueIdInfo(event)}/>
+                                onClick={(event) => this.toggleShowLeagueIdInfo(event)}
+                            />
                             <br/>
+                            <DropDownMenu value={leaguesInDropdown[this.state.leagueIdChosenByUser] ? this.state.leagueIdChosenByUser : ''}
+                                          onChange={this.handleLigavalgFraDropdown}
+                                          autoWidth={false}
+                                          className="dropdownLeagues"
+                            >
+                                <MenuItem value={61858} primaryText="For Fame And Glory" />
+                                <MenuItem value={191593} primaryText="Graduates 2012" />
+                                <MenuItem value={588841} primaryText="Arctic Invitational" />
+                                <MenuItem value={''} primaryText="Eller velg liga her" />
+                            </DropDownMenu>
                             <Popover
                                 open={this.state.showLeagueIdInfo}
                                 anchorEl={this.state.anchorEl}
