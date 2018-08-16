@@ -11,7 +11,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import ActionInfo from 'material-ui/svg-icons/action/info';
+import ActionInfo from 'material-ui/svg-icons/action/help';
 import Popover from 'material-ui/Popover/Popover';
 
 export let dataz = {};
@@ -287,6 +287,7 @@ class App extends Component {
             loadingData: true,
             chosenLeagueId: true,
         });
+        leagueIdChosenByUser = this.state.leagueIdChosenByUser;
         this.fetchDataFromServer();
     };
 
