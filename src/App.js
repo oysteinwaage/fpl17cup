@@ -54,7 +54,7 @@ const transformData = data =>
 export function score(t1, t2, round) {
     // TODO usikker på hvorfor eg hadde med denne t2 === 0 ? ''...?
     // return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ( t2 === 0 ? '' : ' - ' + roundScore(t2, round)) : ' - ';
-    return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ( ' - ' + roundScore(t2, round)) : ' - ';
+    return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round]) ? roundScore(t1, round) + ( ' - ' + roundScore(t2, round)) : ' - ';
 }
 
 function roundScore(team, round) {
