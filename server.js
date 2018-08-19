@@ -166,6 +166,24 @@ app.get('/api/fplplayers', function (req, res) {
     });
 });
 
+app.get('/api/stats', function (req, res) {
+    fplapi.getEvents().then(values => {
+        const averagePoints = {};
+        values.forEach(round => {
+            Object.assign(averagePoints, {
+                [round.id]: round.average_entry_score
+            })
+        });
+        res.type('application/json')
+            .send(averagePoints)
+            .end();
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
 app.get('/api/league', function (req, res) {
     fplapi.findLeagueStandings(leagueId)
         .then(values => {

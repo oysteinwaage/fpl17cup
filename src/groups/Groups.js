@@ -6,11 +6,11 @@ import {groupData} from '../App.js';
 import {players} from '../utils.js';
 
 const groupsMenmbers = {
-    groupA: [1083723, 94232, 3041546, 86070, 1773168, 276910],
-    groupB: [546878, 552058, 1413504, 144360, 92124, 71962],
-    groupC: [1727710, 407749, 26900, 2287279, 2690627, 2003531],
-    groupD: [446195, 454412, 1136421, 1499253, 159488, 1969508],
-    groupE: [188947, 1305123, 1898765, 1261708, 1331886, 2547467],
+    groupA: [326355, 2081049, 1076386, 450858, 81709, 1540895],
+    groupB: [2042669, 250493, 295316, 785974, 264768, 1552181],
+    groupC: [61352, 364415, 564738, 394579, 422738, 369455],
+    groupD: [74819, 415753, 922352, 187450, 1067641, 1598415],
+    groupE: [75546, 2601781, 855540, 0, 1259874, 2678280],
 };
 
 function makeRow(team, matches, wins, draws, lost, goalDiff, points, extraClassname = "") {
@@ -50,7 +50,7 @@ class App extends Component {
                             const teamData = tempNullCheck(team);
                             const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
                             return makeRow(
-                                players[team],
+                                team === 0 ? "Fantasy Average" : players[team],
                                 teamData.matches,
                                 teamData.matchesWon,
                                 teamData.matchesDrawn,

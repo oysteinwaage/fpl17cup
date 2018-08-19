@@ -21,6 +21,7 @@ export let transferlist = [];
 export let fplPlayers = [];
 export let loadedPlayerIds = [];
 export let leagueStandings = [];
+export let averageRoundScore = {};
 let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
@@ -51,10 +52,15 @@ const transformData = data =>
     loadedPlayerIds.reduce(reducer1(data), {});
 
 export function score(t1, t2, round) {
-    return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ( t2 === 0 ? '' : ' - ' + roundScore(t2, round)) : ' - ';
+    // TODO usikker på hvorfor eg hadde med denne t2 === 0 ? ''...?
+    // return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ( t2 === 0 ? '' : ' - ' + roundScore(t2, round)) : ' - ';
+    return dataz[t1] && dataz[t1][round] ? roundScore(t1, round) + ( ' - ' + roundScore(t2, round)) : ' - ';
 }
 
 function roundScore(team, round) {
+    if(team === 0){
+        return averageRoundScore[round.slice(5)];
+    }
     return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
 }
 
@@ -172,6 +178,9 @@ class App extends Component {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
+                $.get("/api/stats").done(function (result) {
+                    averageRoundScore = result;
+                });
 
                 $.get("/api/score").done(function (result) {
                     console.log('score-result: ', result);
