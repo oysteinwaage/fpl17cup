@@ -198,7 +198,6 @@ class App extends Component {
                 that.setState({
                     playerPoints: result,
                 })
-                console.log('-d-d-d-d-d-d--------> state siste: ', that.state);
             });
         }
     }
