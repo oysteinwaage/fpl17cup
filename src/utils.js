@@ -48,6 +48,7 @@ export const leaguesInDropdown = {
     61858: "For Fame And Glory",
     191593: "Graduates 2012",
     588841: "Arctic Invitational",
+    277260: "Tikka Cup Edition LIGA",
 };
 
 export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 'Playoff', 'Utslagningsrunder'];
