@@ -3,7 +3,7 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
-import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdown} from './utils.js';
+import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdown, leaguesInDropdownList} from './utils.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -330,6 +330,9 @@ class App extends Component {
                 disabled={this.state.leagueIdChosenByUser === ''}
             />,
         ];
+       // leaguesInDropdownList.forEach(league => {
+       //     return (league);
+       // })
         return (
             <div>
                 <div className="overHeader">
@@ -417,6 +420,7 @@ class App extends Component {
                                 <MenuItem value={61858} primaryText="For Fame And Glory" />
                                 <MenuItem value={191593} primaryText="Graduates 2012" />
                                 <MenuItem value={588841} primaryText="Arctic Invitational" />
+                                <MenuItem value={277260} primaryText="Tikka Cup Edition LIGA" />
                                 <MenuItem value={''} primaryText="Eller velg liga her" />
                             </DropDownMenu>
                             <Popover
