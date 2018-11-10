@@ -49,12 +49,14 @@ export const leaguesInDropdown = {
     191593: "Graduates 2012",
     588841: "Arctic Invitational",
     277260: "Tikka Cup Edition LIGA",
+    87090: "Adreas Liga",
 };
 export const leaguesInDropdownList = [
     {id: 61858, name: "For Fame And Glory",},
     {id: 191593, name: "Graduates 2012",},
     {id: 588841, name: "Arctic Invitational",},
     {id: 277260, name: "Tikka Cup Edition LIGA",},
+    {id: 87090, name: "Andreas Liga",},
 ];
 
 export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 'Playoff', 'Utslagningsrunder'];
