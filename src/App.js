@@ -3,7 +3,7 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
-import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdown, leaguesInDropdownList} from './utils.js';
+import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList} from './utils.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -412,15 +412,12 @@ class App extends Component {
                                 onClick={(event) => this.toggleShowLeagueIdInfo(event)}
                             />
                             <br/>
-                            <DropDownMenu value={leaguesInDropdown[this.state.leagueIdChosenByUser] ? this.state.leagueIdChosenByUser : ''}
+                            <DropDownMenu value={leaguesInDropdownList.find(l => l.id === this.state.leagueIdChosenByUser) ? this.state.leagueIdChosenByUser : ''}
                                           onChange={this.handleLigavalgFraDropdown}
                                           autoWidth={false}
                                           className="dropdownLeagues"
                             >
-                                <MenuItem value={61858} primaryText="For Fame And Glory" />
-                                <MenuItem value={191593} primaryText="Graduates 2012" />
-                                <MenuItem value={588841} primaryText="Arctic Invitational" />
-                                <MenuItem value={277260} primaryText="Tikka Cup Edition LIGA" />
+                                {leaguesInDropdownList.map(league => <MenuItem key={league.id} value={league.id} primaryText={league.name} />)}
                                 <MenuItem value={''} primaryText="Eller velg liga her" />
                             </DropDownMenu>
                             <Popover

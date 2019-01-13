@@ -44,12 +44,6 @@ export function updatePlayerListWithNewLEagueData(newPlayersMap){
     players = newPlayersMap;
 }
 
-export const leaguesInDropdown = {
-    61858: "For Fame And Glory",
-    191593: "Graduates 2012",
-    588841: "Arctic Invitational",
-    277260: "Tikka Cup Edition LIGA",
-};
 export const leaguesInDropdownList = [
     {id: 61858, name: "For Fame And Glory",},
     {id: 191593, name: "Graduates 2012",},
