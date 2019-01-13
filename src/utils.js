@@ -49,24 +49,19 @@ export const leaguesInDropdown = {
     191593: "Graduates 2012",
     588841: "Arctic Invitational",
     277260: "Tikka Cup Edition LIGA",
-    87090: "Adreas Liga",
 };
 export const leaguesInDropdownList = [
     {id: 61858, name: "For Fame And Glory",},
     {id: 191593, name: "Graduates 2012",},
     {id: 588841, name: "Arctic Invitational",},
     {id: 277260, name: "Tikka Cup Edition LIGA",},
-    {id: 87090, name: "Andreas Liga",},
 ];
 
 export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 'Playoff', 'Utslagningsrunder'];
 export const allRounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38];
 
 export const roundJackass = {
-    roundnull: 'ENDELIG er PL tilbake igjen, og med det også FPL <3 <br /> Jeg (Øystein) er bortreist denne helgen, så hvis vi er så heldig ' +
-    'at Fantasy ikke har gjort noen endringer som ødelegger måten jeg henter og regner ut statistikken på så fungerer denne siden allerede fra første avspark fredag kveld :) ' +
-    'MEN all min erfaring tilsier at det alltid endres på noe, så i så fall vil det begynne å fungere plutselig!' +
-    '<br /> Lykke til alle sammen, og måtte den beste manager vinne! (ikke den med mest flaks slik som ifjor ;) )',
+    roundnull: 'Får du opp denne siden her så er det fordi server driver og starter opp. Refresh siden igjen og prøv på nytt så funker det nok :D',
 }
 
 export function SelectBox(values, onChange, extraClassName = '', extraName = '', startRound) {

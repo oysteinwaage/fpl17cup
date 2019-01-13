@@ -40,8 +40,8 @@ export const gamesPrGroupAndRound = {
         groupE: [[75546, 2678280], [0, 1259874], [855540, 2601781]],
     },
     extraround: {
-        groupA: [],
-        groupB: [],
+        groupA: [[326355, 2081049]],
+        groupB: [[75546, -1], [2601781, -2], [2678280, -3]],
         groupC: [],
         groupD: [],
         groupE: [],
@@ -149,9 +149,9 @@ export function MatchesForGroup(props) {
                     }
                 } else if (round === 'extraround') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Playoff gruppe B';
+                        groupHeader = 'Playoff gruppe A';
                     } else if (groupLetter === 'B') {
-                        groupHeader = 'Playoff gruppetoere på 18p';
+                        groupHeader = 'Playoff gruppe E';
                     } else {
                         groupHeader = false;
                     }

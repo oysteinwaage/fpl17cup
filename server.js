@@ -203,14 +203,14 @@ app.get('/api/getManagerList', function (req, res) {
     let leagueName = "leagueName";
     fplapi.findLeague(leagueId)
         .then(values => {
-            leagueName = values.name
+            leagueName = values.name;
             fplapi.findLeagueStandings(leagueId)
                 .then(values => {
-                    loadedPlayerIds = values.map(p => p.entry);
+                    loadedPlayerIds = values.results.map(p => p.entry);
                     const data = {
                         managers: loadedPlayerIds,
                         leagueName
-                    }
+                    };
                     res.type('application/json')
                         .send(data)
                         .end();
