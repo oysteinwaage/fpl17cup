@@ -49,6 +49,7 @@ export const leaguesInDropdownList = [
     {id: 191593, name: "Graduates 2012",},
     {id: 588841, name: "Arctic Invitational",},
     {id: 277260, name: "Tikka Cup Edition LIGA",},
+    {id: 643826, name: "Hvem har oversikten?!",},
 ];
 
 export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 'Playoff', 'Utslagningsrunder'];
