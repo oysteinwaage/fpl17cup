@@ -1,25 +1,46 @@
 const http = require('http');
 const url = require('url');
-const express = require('express');
 const util = require('util');
 const fplapi = require('fpl-api-node');
+const fetch = require('node-fetch');
+
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const { makeExecutableSchema } = require('graphql-tools');
+const { typeDefs, resolvers } = require('fpl-api-graphql');
+
+// build executable schema from typedefs and resolvers
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+// express app
+const app = express();
+
+// graphql
+app.use(
+    '/graphql',
+    graphqlHTTP({
+        schema,
+        graphiql: true,
+    }),
+);
+
 let leagueId = 61858;
 
 let loadedPlayerIds = [];
 const megOgSvenO = [972780, 1727710, 26724];
 
-let app = express();
-app.use(express.static('build'));
+//let app = express();
+// app.use(express.static('build'));
 
-app.use(function (err, req, res, next) {
-    console.error(err.stack);
-    next(err);
-});
-
-app.use(function (err, req, res, next) {
-    util.inspect(err);
-    res.status(500).send({error: err.message});
-});
+// app.use(function (err, req, res, next) {
+//     console.error(err.stack);
+//     next(err);
+// });
+//
+// app.use(function (err, req, res, next) {
+//     util.inspect(err);
+//     res.status(500).send({error: err.message});
+// });
 
 
 app.get('/api/score', function (req, res) {
@@ -39,20 +60,6 @@ app.get('/api/score', function (req, res) {
 app.get('/api/players', function (req, res) {
     Promise.all(
         loadedPlayerIds.map(fplapi.findEntry)
-    ).then(values => {
-        res.type('application/json')
-            .send(values)
-            .end();
-    }).catch((error) => {
-        res.type('application/json')
-            .send(error)
-            .end();
-    });
-});
-
-app.get('/api/pilsmedsveno', function (req, res) {
-    Promise.all(
-        megOgSvenO.map(fplapi.findEntry)
     ).then(values => {
         res.type('application/json')
             .send(values)
@@ -201,6 +208,19 @@ app.get('/api/getManagerList', function (req, res) {
     const query = url.parse(req.url, true).query;
     leagueId = query.leagueId;
     let leagueName = "leagueName";
+
+    // fetch('https://fantasy.premierleague.com/api/leagues-classic/'+leagueId+'/standings/', {
+    //     method: 'GET',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json',
+    //     },
+    //     // body: JSON.stringify({query: "{ entry(id: 1822874){player_first_name} }"})
+    // })
+    //     .then(r => r.json())
+    //     .then(data => console.log('data returned from direct http-fetch:', data))
+    //     .catch(error => console.log('Error: ', error));
+
     fplapi.findLeague(leagueId)
         .then(values => {
             leagueName = values.name;
@@ -242,7 +262,7 @@ app.get('/api/ping', function (req, res) {
         .end();
 });
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
 const port = process.env.PORT || 9999;
 app.listen(port);

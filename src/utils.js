@@ -4,40 +4,38 @@ import MenuItem from 'material-ui/MenuItem';
 
 export let players = {
 //Gruppe A
-    326355: "FC Moneyball",
-    2081049: "...The Red Devils...",
-    1076386: "Lokomotiv Rosberg",
-    450858: "Los Maestros",
-    81709: "FK Matre",
-    1540895: "Fly Emery",
 //Gruppe B
-    2042669: "Stolpe_inn",
-    250493: "Øksen",
-    295316: "Dale of Norway",
-    785974: "champs",
-    264768: "Løkrull United",
-    1552181: "GunSquad",
 //Gruppe C
-    61352: "Ji-sung Parkthebus",
-    364415: "FireFarting Unicorns",
-    564738: "Lé Spéciellé Óne",
-    394579: "We Need A Keeper",
-    422738: "Verdiløse Menn",
-    369455: "Dompa IL",
 //Gruppe D
-    74819: "AnulaiƀaR Te'oma",
-    415753: "Puthinhos",
-    922352: "2tt1ham",
-    187450: "The lucky eleven",
-    1067641: "Brillebjørn FC*",
-    1598415: "teaM eXtreMe",
 //Gruppe E
-    75546: "Super Eagles",
-    2601781: "Minipool",
-    855540: "Team Waage",
-    0: "Fantasy Average",
-    1259874: "You big Fekir",
+    2253517: "Minipool",
+    3249094: "GunSquad",
+    18286: "Puthinhos",
+    259276: "Verdiløse Menn",
+    95509: "Stupakjæll",
+    1822874: "Team Waage",
+    113690: "The Reds",
+    110138: "Dale of Norway",
+    1112848: "FK Matre",
+    3231757: "Live.Love.Sparkel",
+    147607: "Skolebrød",
+    513635: "Champs",
+    987338: "Øksen",
+    147378: "Strawberry Shaqiri",
+    280: "Ji-Sung Parkthebus\n",
+    136008: "Bjørk",
+    2868768: "PanserBataljonen",
+    265744: "Los Maestros",
+    1127639: "FireFartingUnicorns",
+    3119842: "Lallana's in Pysjmas",
+    2224552: "Lé Spéciellé Óne",
+    2354670: "Stonga Ballklubb",
+    1976189: "teaM eXtreMe dLuX",
+    2731034: "Manchester United",
+    1778465: "Dompa FC",
+    1770110: "2tt1ham",
     2678280: "Man utd",
+    0: "Fantasy Average",
 };
 
 export function updatePlayerListWithNewLEagueData(newPlayersMap){
@@ -45,11 +43,11 @@ export function updatePlayerListWithNewLEagueData(newPlayersMap){
 }
 
 export const leaguesInDropdownList = [
-    {id: 61858, name: "For Fame And Glory",},
-    {id: 191593, name: "Graduates 2012",},
-    {id: 588841, name: "Arctic Invitational",},
-    {id: 277260, name: "Tikka Cup Edition LIGA",},
-    {id: 643826, name: "Hvem har oversikten?!",},
+    {id: 28802, name: "For Fame And Glory",},
+    {id: 453594, name: "Graduates 2012",},
+    {id: 453718, name: "PM Oversikt",},
+    {id: 883227, name: "Progit",},
+    {id: 437181, name: "Lillohøyden FC",},
 ];
 
 export const participatingRounds = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 'Playoff', 'Utslagningsrunder'];

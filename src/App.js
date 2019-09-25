@@ -4,6 +4,7 @@ import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList} from './utils.js';
+import {getManagerList} from './api.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -25,7 +26,7 @@ export let averageRoundScore = {};
 let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
-    return leagueIdChosenByUser === 61858;
+    return leagueIdChosenByUser === 28802;
 }
 
 const reducer2 = (a, b) => {
@@ -157,23 +158,11 @@ class App extends Component {
     componentDidMount() {
     }
 
-    fetchDataForPilsMedSvenO() {
-        $.get("/api/pilsmedsveno").done(function (result) {
-            let score = "";
-            if (result && result.length > 0) {
-                const sortedResult = result.sort(function (a, b) {
-                    return b.summary_overall_points - a.summary_overall_points;
-                });
-                sortedResult.forEach(function (player) {
-                    score += player.player_first_name + "  " + player.summary_overall_points + "\n";
-                });
-            }
-            alert(score);
-        });
-    }
-
     fetchDataFromServer() {
         let that = this;
+
+        getManagerList(this.state.leagueIdChosenByUser);
+
         $.get("/api/getManagerList?leagueId=" + this.state.leagueIdChosenByUser).done(function (data) {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
@@ -271,7 +260,7 @@ class App extends Component {
                     // });
                 });
             } else if (data && data.managers && data.managers.length === 0) {
-                that.setState({ loadingData: false });
+                that.setState({loadingData: false});
             }
         });
     }
@@ -283,9 +272,6 @@ class App extends Component {
     };
 
     updateLeagueId = (newId) => {
-        if (newId === "pils" || newId === 'Pils') {
-            this.fetchDataForPilsMedSvenO();
-        }
         this.setState({
             leagueIdChosenByUser: newId,
         });
