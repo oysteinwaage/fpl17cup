@@ -5,7 +5,7 @@
   "dependencies": {
     "express": "^4.15.4",
     "express-graphql": "^0.9.0",
-    "fpl-api-graphql": "^0.0.7",
+    "fpl-api-graphql": "^0.0.8",
     "fpl-api-node": "^2.0.7",
     "graphql": "^14.5.4",
     "graphql-tools": "^4.0.5",

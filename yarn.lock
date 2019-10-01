@@ -2826,10 +2826,10 @@ forwarded@~0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
 
-fpl-api-graphql@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/fpl-api-graphql/-/fpl-api-graphql-0.0.7.tgz#3340d61fb4394d8cb87ce0b17b3b478c14d23071"
-  integrity sha512-a3JChYrLQgmszP9D8q/YCxbfvzRo47X6jAcF99RBkhC7k6GmNTOxHHPY4pNGUy0dt2vXfSyo/AKrprKgsglMhQ==
+fpl-api-graphql@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/fpl-api-graphql/-/fpl-api-graphql-0.0.8.tgz#809222e49928c70b942a00c654b3d3b8994e6093"
+  integrity sha512-Fx/J/+9RAaUxNel261BR3kbH+I1g19dK05F6+ZmT206xZBfbXXMwv6vgUYoFhX7EBs5C0rwYPjwWB1qIAquplA==
   dependencies:
     axios "^0.19.0"
     dataloader "^1.4.0"
