@@ -322,7 +322,7 @@ const megOgSvenO = [972780, 1727710, 26724];
 //         .end();
 // });
 
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
 const port = process.env.PORT || 9999;
 app.listen(port);
