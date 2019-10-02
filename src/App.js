@@ -3,8 +3,8 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
-import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList} from './utils.js';
-import {getManagerList} from './api.js';
+import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList, fplAvgTeams} from './utils.js';
+import {getManagerList, getScore, getStats} from './api.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -53,14 +53,14 @@ const transformData = data =>
     loadedPlayerIds.reduce(reducer1(data), {});
 
 export function score(t1, t2, round) {
-  return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round])
-    ? roundScore(t1, round) + (t2 > 0 ? (' - ' + roundScore(t2, round)) : '')
-    : ' - ';
+    return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round])
+        ? roundScore(t1, round) + (' - ' + roundScore(t2, round))
+        : ' - ';
 }
 
 function roundScore(team, round) {
-    if(team === 0){
-        return averageRoundScore[round.slice(5)];
+    if (fplAvgTeams.includes(team)) {
+        return averageRoundScore[round.slice(5)-1].average_entry_score;
     }
     return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
 }
@@ -131,11 +131,11 @@ class App extends Component {
         super(props);
         this.state = {
             points: {},
-            currentRound: 3,
+            currentRound: 8,
             dialogOpen: false,
             loadingData: false,
             chosenLeagueId: false,
-            leagueId: 61858,
+            leagueId: 28802,
             leagueName: 'Liganavn',
             showLeagueIdInfo: false,
             leagueIdChosenByUser: '',
@@ -156,113 +156,135 @@ class App extends Component {
     }
 
     componentDidMount() {
+        // TODO Fjern alt dette når ligavelger skal inn igjen. Husk å kommenter inn det som ligger i
+        // TODO triggerFetchDataFromServer igjen og!
+        this.setState({chosenLeagueId: 28802, leagueIdChosenByUser: 28802});
+        leagueIdChosenByUser = 28802;
+        this.triggerFetchDataFromServer();
     }
 
     fetchDataFromServer() {
         let that = this;
 
-        getManagerList(this.state.leagueIdChosenByUser);
-
-        $.get("/api/getManagerList?leagueId=" + this.state.leagueIdChosenByUser).done(function (data) {
+        getManagerList(this.state.leagueIdChosenByUser).then(data => {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
-                $.get("/api/stats").done(function (result) {
-                    averageRoundScore = result;
+                getStats().then(data => averageRoundScore = data);
+                getScore().then(data => {
+                    that.setCurrentRound(data[0].data.entry.current_event);
+                    dataz = transformData(data.map(a => a.data.entry.history.current))
+                    console.log(dataz);
+                    that.setData(dataz);
+                    makeGroupData();
+                    that.setState({loadingData: false}); 
                 });
-
-                $.get("/api/score").done(function (result) {
-                    console.log('score-result: ', result);
-                    if (result && result.length > 0) {
-                        that.setCurrentRound(result[0].length);
-                        dataz = transformData(result);
-                        that.setData(dataz);
-                        makeGroupData();
-                    } else if (result.name === 'GameUpdatingError') {
-                        alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
-                    }
-                    $.get("/api/players").done(function (result) {
-                        console.log('players-result: ', result);
-                        if (result && result.length > 0) {
-                            result.forEach(function (player) {
-                                Object.assign(dataz[player.id], {
-                                    managerName: player.player_first_name + ' ' + player.player_last_name,
-                                    teamName: player.name,
-                                    totalTransfers: player.total_transfers,
-                                });
-                            });
-                        }
-                    });
-                    $.get("/api/chips").done(function (result) {
-                        if (result && result.length > 0) {
-                            result.forEach(function (x) {
-                                x.forEach(function (chip) {
-                                    Object.assign(dataz[chip.entry]['round' + chip.event], {
-                                        chipsPlayed: {
-                                            chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
-                                            playedTime: chip.played_time_formatted,
-                                        }
-                                    })
-                                })
-                            })
-                        }
-                    });
-                    $.get("/api/league").done(function (result) {
-                        if (result && result.length > 0) {
-                            leagueStandings = result;
-                            result.forEach(function (player) {
-                                Object.assign(dataz[player.entry], {
-                                    leagueClimb: player.last_rank - player.rank,
-                                    leagueRank: player.rank,
-                                    lastRoundLeagueRank: player.last_rank,
-                                })
-                            })
-                            let teamNameToIdMap = {};
-                            result.forEach(function (player) {
-                                Object.assign(teamNameToIdMap, {
-                                    [player.entry]: player.entry_name,
-                                });
-                            });
-                            updatePlayerListWithNewLEagueData(teamNameToIdMap);
-                        }
-                    });
-                    $.get("/api/fplplayers").done(function (result) {
-                        if (result && result.length > 0) {
-                            fplPlayers = result;
-                        }
-                    });
-                    $.get("/api/transfers").done(function (result) {
-                        console.log('transfers: ', result);
-                        if (result && result.length > 0) {
-                            result.forEach(function (i) {
-                                i.forEach(function (transfer) {
-                                    if (transferlist.indexOf(transfer.element_in) === -1) {
-                                        transferlist.push(transfer.element_in);
-                                    }
-                                    if (transferlist.indexOf(transfer.element_out) === -1) {
-                                        transferlist.push(transfer.element_out);
-                                    }
-                                    if (dataz[transfer.entry]['round' + transfer.event].transfers) {
-                                        dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, transfer.time_formatted]);
-                                    } else {
-                                        Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-                                            transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
-                                        })
-                                    }
-                                })
-                            })
-                        }
-                        console.log('dataz: ', dataz);
-                        that.setState({loadingData: false});
-                    });
-                    // $.get("/api/captain2").done(function (result) {
-                    //     console.log('alle kapteiner2222: ', result);
-                    // });
-                });
-            } else if (data && data.managers && data.managers.length === 0) {
+            } else {
                 that.setState({loadingData: false});
             }
+
         });
+
+        // $.get("/api/getManagerList?leagueId=" + this.state.leagueIdChosenByUser).done(function (data) {
+        //     if (data && data.managers && data.managers.length > 0) {
+        //         loadedPlayerIds = data.managers;
+        //         that.state.leagueName = data.leagueName;
+        //         $.get("/api/stats").done(function (result) {
+        //             averageRoundScore = result;
+        //         });
+        //
+        //         $.get("/api/score").done(function (result) {
+        //             console.log('score-result: ', result);
+        //             if (result && result.length > 0) {
+        //                 that.setCurrentRound(result[0].length);
+        //                 dataz = transformData(result);
+        //                 that.setData(dataz);
+        //                 makeGroupData();
+        //             } else if (result.name === 'GameUpdatingError') {
+        //                 alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
+        //             }
+        //             $.get("/api/players").done(function (result) {
+        //                 console.log('players-result: ', result);
+        //                 if (result && result.length > 0) {
+        //                     result.forEach(function (player) {
+        //                         Object.assign(dataz[player.id], {
+        //                             managerName: player.player_first_name + ' ' + player.player_last_name,
+        //                             teamName: player.name,
+        //                             totalTransfers: player.total_transfers,
+        //                         });
+        //                     });
+        //                 }
+        //             });
+        //             $.get("/api/chips").done(function (result) {
+        //                 if (result && result.length > 0) {
+        //                     result.forEach(function (x) {
+        //                         x.forEach(function (chip) {
+        //                             Object.assign(dataz[chip.entry]['round' + chip.event], {
+        //                                 chipsPlayed: {
+        //                                     chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
+        //                                     playedTime: chip.played_time_formatted,
+        //                                 }
+        //                             })
+        //                         })
+        //                     })
+        //                 }
+        //             });
+        //             $.get("/api/league").done(function (result) {
+        //                 if (result && result.length > 0) {
+        //                     leagueStandings = result;
+        //                     result.forEach(function (player) {
+        //                         Object.assign(dataz[player.entry], {
+        //                             leagueClimb: player.last_rank - player.rank,
+        //                             leagueRank: player.rank,
+        //                             lastRoundLeagueRank: player.last_rank,
+        //                         })
+        //                     })
+        //                     let teamNameToIdMap = {};
+        //                     result.forEach(function (player) {
+        //                         Object.assign(teamNameToIdMap, {
+        //                             [player.entry]: player.entry_name,
+        //                         });
+        //                     });
+        //                     updatePlayerListWithNewLEagueData(teamNameToIdMap);
+        //                 }
+        //             });
+        //             $.get("/api/fplplayers").done(function (result) {
+        //                 if (result && result.length > 0) {
+        //                     fplPlayers = result;
+        //                 }
+        //             });
+        //             $.get("/api/transfers").done(function (result) {
+        //                 console.log('transfers: ', result);
+        //                 if (result && result.length > 0) {
+        //                     result.forEach(function (i) {
+        //                         i.forEach(function (transfer) {
+        //                             if (transferlist.indexOf(transfer.element_in) === -1) {
+        //                                 transferlist.push(transfer.element_in);
+        //                             }
+        //                             if (transferlist.indexOf(transfer.element_out) === -1) {
+        //                                 transferlist.push(transfer.element_out);
+        //                             }
+        //                             if (dataz[transfer.entry]['round' + transfer.event].transfers) {
+        //                                 dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, transfer.time_formatted]);
+        //                             } else {
+        //                                 Object.assign(dataz[transfer.entry]['round' + transfer.event], {
+        //                                     transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
+        //                                 })
+        //                             }
+        //                         })
+        //                     })
+        //                 }
+        //                 console.log('dataz: ', dataz);
+        //                 that.setState({loadingData: false});
+        //             });
+        //             // $.get("/api/captain2").done(function (result) {
+        //             //     console.log('alle kapteiner2222: ', result);
+        //             // });
+        //         });
+        //     } else if (data && data.managers && data.managers.length === 0) {
+        //         that.setState({loadingData: false});
+        //     }
+        // });
     }
 
     toggleEasteregg = () => {
@@ -282,7 +304,8 @@ class App extends Component {
             loadingData: true,
             chosenLeagueId: true,
         });
-        leagueIdChosenByUser = this.state.leagueIdChosenByUser;
+        // TODO må inn igjen når ligavelgeren går live igjen!
+        // leagueIdChosenByUser = this.state.leagueIdChosenByUser;
         this.fetchDataFromServer();
     };
 
@@ -316,9 +339,7 @@ class App extends Component {
                 disabled={this.state.leagueIdChosenByUser === ''}
             />,
         ];
-       // leaguesInDropdownList.forEach(league => {
-       //     return (league);
-       // })
+
         return (
             <div>
                 <div className="overHeader">
@@ -339,15 +360,15 @@ class App extends Component {
                         <li><Link to="/kamper" activeClassName="active">Kamper</Link></li>
                         <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
                         <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
-                        <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
-                        <li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>
+                        {/*<li><Link to="/transfers" activeClassName="active">Bytter</Link></li>*/}
+                        {/*<li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>*/}
                     </div>
                     }
                     {!isForFameAndGloryLeague() &&
                     <div>
                         <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
-                        <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
-                        <li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>
+                        {/*<li><Link to="/transfers" activeClassName="active">Bytter</Link></li>*/}
+                        {/*<li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>*/}
                     </div>
                     }
                 </ul>
@@ -385,7 +406,8 @@ class App extends Component {
                             contentStyle={customContentStyle}
                             actions={brukVaarLigaKnapp}
                         >
-                            <p style={{color: 'red', fontSize: 'small'}}> Pga. oppdateringer i API'et til FPL er denne siden ute
+                            <p style={{color: 'red', fontSize: 'small'}}> Pga. oppdateringer i API'et til FPL er denne
+                                siden ute
                                 av drift enn så lenge. Det jobbes med å få den opp igjen, så plutselig er vi tilbake :)
 
                                 {/*Pga begrensninger i API'et til FPL får man pr.*/}
@@ -402,13 +424,15 @@ class App extends Component {
                                 onClick={(event) => this.toggleShowLeagueIdInfo(event)}
                             />
                             <br/>
-                            <DropDownMenu value={leaguesInDropdownList.find(l => l.id === this.state.leagueIdChosenByUser) ? this.state.leagueIdChosenByUser : ''}
-                                          onChange={this.handleLigavalgFraDropdown}
-                                          autoWidth={false}
-                                          className="dropdownLeagues"
+                            <DropDownMenu
+                                value={leaguesInDropdownList.find(l => l.id === this.state.leagueIdChosenByUser) ? this.state.leagueIdChosenByUser : ''}
+                                onChange={this.handleLigavalgFraDropdown}
+                                autoWidth={false}
+                                className="dropdownLeagues"
                             >
-                                {leaguesInDropdownList.map(league => <MenuItem key={league.id} value={league.id} primaryText={league.name} />)}
-                                <MenuItem value={''} primaryText="Eller velg liga her" />
+                                {leaguesInDropdownList.map(league => <MenuItem key={league.id} value={league.id}
+                                                                               primaryText={league.name}/>)}
+                                <MenuItem value={''} primaryText="Eller velg liga her"/>
                             </DropDownMenu>
                             <Popover
                                 open={this.state.showLeagueIdInfo}
