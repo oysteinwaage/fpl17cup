@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {IndexLink, Link} from 'react-router';
 import './App.css';
-import $ from 'jquery';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList, fplAvgTeams} from './utils.js';
 import {getManagerList, getScore, getStats} from './api.js';

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import $ from 'jquery';
 import './Transfers.css';
 import {SelectBox, allRounds, players} from '../utils.js';
 import {dataz, currentRound, fplPlayers, loadedPlayerIds} from '../App.js';
@@ -24,13 +23,14 @@ class Transfers extends Component {
 
     fetchPlayerPoints(round) {
         let that = this;
-        if (round) {
-            $.get("/api/playerscores?round=" + round).done(function (result) {
-                that.setState({
-                    playerPoints: result,
-                })
-            });
-        }
+        // TODO må hentes via nytt API
+        // if (round) {
+        //     $.get("/api/playerscores?round=" + round).done(function (result) {
+        //         that.setState({
+        //             playerPoints: result,
+        //         })
+        //     });
+        // }
     }
 
     getSelectedRound() {

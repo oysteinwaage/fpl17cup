@@ -1,8 +1,8 @@
 const http = require('http');
-const url = require('url');
-const util = require('util');
-const fplapi = require('fpl-api-node');
-const fetch = require('node-fetch');
+// const url = require('url');
+// const util = require('util');
+// const fplapi = require('fpl-api-node');
+// const fetch = require('node-fetch');
 
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
@@ -30,7 +30,7 @@ let loadedPlayerIds = [];
 const megOgSvenO = [972780, 1727710, 26724];
 
 //let app = express();
-// app.use(express.static('build'));
+app.use(express.static('build'));
 
 // app.use(function (err, req, res, next) {
 //     console.error(err.stack);

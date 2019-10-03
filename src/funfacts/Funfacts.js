@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import $ from 'jquery';
 import '../App.css';
 import './Funfacts.css';
 import {players, SelectBox, allRounds, roundJackass} from '../utils.js';
@@ -166,17 +165,18 @@ class App extends Component {
     componentDidMount() {
         let round = 1;
         let totalCaptainPoints = {};
-        while (round <= currentRound) {
-            $.get("/api/captain?round=" + round).done(function (result) {
-                loadedPlayerIds.forEach(pId => {
-                    Object.assign(totalCaptainPoints, {
-                        playerId: pId,
-                        totalCapPoints: totalCaptainPoints.totalCapPoints + result[pId]
-                    })
-                })
-            });
-            round++;
-        }
+        // TODO må hentes via nytt API
+        // while (round <= currentRound) {
+        //     $.get("/api/captain?round=" + round).done(function (result) {
+        //         loadedPlayerIds.forEach(pId => {
+        //             Object.assign(totalCaptainPoints, {
+        //                 playerId: pId,
+        //                 totalCapPoints: totalCaptainPoints.totalCapPoints + result[pId]
+        //             })
+        //         })
+        //     });
+        //     round++;
+        // }
     }
 
     changeSelectedRound() {
@@ -189,17 +189,18 @@ class App extends Component {
 
     fetchCaptainData(round) {
         let that = this;
-        if (round) {
-            $.get("/api/captain?round=" + round).done(function (result) {
-                Object.assign(that.state.captainData, result)
-                console.log("kapteinData: ", result);
-            });
-            $.get("/api/playerscores?round=" + round).done(function (result) {
-                that.setState({
-                    playerPoints: result,
-                })
-            });
-        }
+        // TODO må hentes via nytt API
+        // if (round) {
+        //     $.get("/api/captain?round=" + round).done(function (result) {
+        //         Object.assign(that.state.captainData, result)
+        //         console.log("kapteinData: ", result);
+        //     });
+        //     $.get("/api/playerscores?round=" + round).done(function (result) {
+        //         that.setState({
+        //             playerPoints: result,
+        //         })
+        //     });
+        // }
     }
 
     render() {
