@@ -1,5 +1,3 @@
-import {players} from './utils.js'
-
 let leagueId = 28802;
 
 let loadedPlayerIds = [
@@ -32,66 +30,42 @@ let loadedPlayerIds = [
     2678280
 ];
 
-// TODO Enn så lenge kan denne hardkodes til vår liga!
 export function getManagerList(chosenLeagueId) {
     leagueId = chosenLeagueId;
     let leagueName = "For Fame And Glory";
 
-    // fetch('https://fantasy.premierleague.com/api/leagues-classic/'+leagueId+'/standings/', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Accept': 'application/json',
-    //     },
-    //     // body: JSON.stringify({query: "{ entry(id: 1822874){player_first_name} }"})
-    // })
-    //     .then(r => r.json())
-    //     .then(data => console.log('data returned:', data));
-    const data = {
+    return Promise.resolve({
         managers: loadedPlayerIds,
-        leagueName
-    };
-    return Promise.resolve(data);
+        leagueName: leagueName,
+    });
+
+// TODO Funket litt, så virket det som jeg ble "blacklistet" av fpl elns.. får Auth-feil hele tiden nå. Prøv igjen seinere
+    // return new Promise((resolve, reject) => {
+    //     setTimeout(function () {
+    //         fetch(`/api/getManagerList?leagueId=${leagueId}`)
+    //             .then(r => r.json())
+    //             .then(data => {
+    //                 console.log('liga-data ', data);
+    //                 loadedPlayerIds = data.standings.results.map(p => p.entry);
+    //                 return resolve({
+    //                     managers: loadedPlayerIds,
+    //                     leagueName: data.league.name,
+    //                 });
+    //             })
+    //             .catch(error => reject(error));
+    //     });
+    // });
 }
 
-//
-// app.get('/api/getManagerList', function (req, res) {
-//     const query = url.parse(req.url, true).query;
-//     leagueId = query.leagueId;
-//     let leagueName = "leagueName";
-//
-//     fplapi.findLeague(leagueId)
-//         .then(values => {
-//             leagueName = values.name;
-//             fplapi.findLeagueStandings(leagueId)
-//                 .then(values => {
-//                     loadedPlayerIds = values.map(p => p.entry);
-//                     const data = {
-//                         managers: loadedPlayerIds,
-//                         leagueName
-//                     };
-//                     res.type('application/json')
-//                         .send(data)
-//                         .end();
-//                 }).catch((error) => {
-//                 res.type('application/json')
-//                     .send(error)
-//                     .end();
-//             });
-//         });
-// });
-//
-//
-
-const statsQuery = `{
-  static {
-    events {
-      average_entry_score
-    }
-  }
-}`;
 
 export function getStats() {
+    const statsQuery = `{
+      static {
+        events {
+          average_entry_score
+        }
+      }
+    }`;
     return fetch('/graphql', {
         method: 'POST',
         headers: {
@@ -121,7 +95,9 @@ export function getStats() {
 //     });
 // });
 //
-const scoreQuery = loadedPlayerIds.map(playerId => `
+
+export function getScore() {
+    const scoreQuery = loadedPlayerIds.map(playerId => `
        {
        entry(id: ` + playerId + `) {
         id
@@ -142,8 +118,6 @@ const scoreQuery = loadedPlayerIds.map(playerId => `
         }
        }
      }`);
-
-export function getScore() {
     return Promise.all(scoreQuery.map(playerQuery => fetch('/graphql', {
             method: 'POST',
             headers: {
