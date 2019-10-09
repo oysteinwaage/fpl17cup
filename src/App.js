@@ -165,7 +165,7 @@ class App extends Component {
                 getScore().then(scoreData => {
                     console.log('score: ', scoreData);
                     that.setCurrentRound(scoreData[0].data.entry.current_event);
-                    dataz = transformData(scoreData.map(a => a.data.entry.history.current))
+                    dataz = transformData(scoreData.map(a => a.data.entry.history.current));
                     console.log(dataz);
                     that.setData(dataz);
                     makeGroupData();
@@ -187,7 +187,7 @@ class App extends Component {
                             leagueRank: myLeague.entry_rank,
                             lastRoundLeagueRank: myLeague.entry_last_rank,
                         })
-                    })
+                    });
 
                     that.setState({loadingData: false});
                 });
@@ -327,7 +327,7 @@ class App extends Component {
         });
     };
 
-    handleTouchTap = (event) => {
+    handleTouchTap = () => {
         // This prevents ghost click.
     };
 
@@ -393,7 +393,7 @@ class App extends Component {
                         contentStyle={customContentStyle}
                         autoScrollBodyContent={true}
                     >
-                        <img src={require('./images/helligeThane.jpg')} alt="Kongen" width="250" height="300"></img>
+                        <img src={require('./images/helligeThane.jpg')} alt="Kongen" width="250" height="300" />
                     </Dialog>
                 </MuiThemeProvider>
 
@@ -471,8 +471,7 @@ class App extends Component {
 }
 
 const customContentStyle = {
-    width: '90%',
-    maxWidth: '90%',
+    maxWidth: '350px',
     height: '90%',
     maxHeight: '90%',
     textAlign: 'center',
@@ -482,5 +481,5 @@ const actionInfoStyle = {
     '&:hover': {
         color: 'yellow'
     }
-}
+};
 export default App;
