@@ -217,9 +217,10 @@ class App extends Component {
             totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' :'-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
         }
         const roundJackasText = roundJackass['round' + this.state.selectedRound];
+        // TODO midlertidig fjernet teksten om at kapteinspoeng oppdateres fortløpende inntil det er tilbake
         return (
             <div className="ff-content-container">
-                {(!roundJackasText || !isForFameAndGloryLeague()) &&
+                {(!roundJackasText || !isForFameAndGloryLeague()) && false &&
                 <p style={{'textAlign': 'center', 'fontSize': 'small', 'width': '100%'}}>(Kun kapteinspoeng oppdateres
                     live, resten oppdateres når FPL oppdaterer sine data)</p>
                 }

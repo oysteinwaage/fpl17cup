@@ -8,10 +8,10 @@ import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import TextField from 'material-ui/TextField';
+// import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import ActionInfo from 'material-ui/svg-icons/action/help';
+// import ActionInfo from 'material-ui/svg-icons/action/help';
 import Popover from 'material-ui/Popover/Popover';
 
 export let dataz = {};
@@ -59,7 +59,7 @@ export function score(t1, t2, round) {
 
 function roundScore(team, round) {
     if (fplAvgTeams.includes(team)) {
-        return averageRoundScore[round.slice(5)-1].average_entry_score;
+        return averageRoundScore[round.slice(5) - 1].average_entry_score;
     }
     return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
 }
@@ -154,14 +154,6 @@ class App extends Component {
         currentRound = cur;
     }
 
-    componentDidMount() {
-        // TODO Fjern alt dette når ligavelger skal inn igjen. Husk å kommenter inn det som ligger i
-        // TODO triggerFetchDataFromServer igjen og!
-        this.setState({chosenLeagueId: 28802, leagueIdChosenByUser: 28802});
-        leagueIdChosenByUser = 28802;
-        this.triggerFetchDataFromServer();
-    }
-
     fetchDataFromServer() {
         let that = this;
 
@@ -170,13 +162,34 @@ class App extends Component {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
                 getStats().then(data => averageRoundScore = data);
-                getScore().then(data => {
-                    that.setCurrentRound(data[0].data.entry.current_event);
-                    dataz = transformData(data.map(a => a.data.entry.history.current))
+                getScore().then(scoreData => {
+                    console.log('score: ', scoreData);
+                    that.setCurrentRound(scoreData[0].data.entry.current_event);
+                    dataz = transformData(scoreData.map(a => a.data.entry.history.current))
                     console.log(dataz);
                     that.setData(dataz);
                     makeGroupData();
-                    that.setState({loadingData: false}); 
+
+                    // setter map med id: lagNavn
+                    let teamNameToIdMap = {};
+                    scoreData.forEach(function (player) {
+                        Object.assign(teamNameToIdMap, {
+                            [player.data.entry.id]: player.data.entry.name,
+                        });
+                    });
+                    updatePlayerListWithNewLEagueData(teamNameToIdMap);
+
+                    // setter største klatrer/fall for runden
+                    scoreData.forEach(function (player) {
+                        const myLeague = player.data.entry.leagues.classic.find(league => league.id === leagueIdChosenByUser);
+                        Object.assign(dataz[player.data.entry.id], {
+                            leagueClimb: myLeague.entry_last_rank - myLeague.entry_rank,
+                            leagueRank: myLeague.entry_rank,
+                            lastRoundLeagueRank: myLeague.entry_last_rank,
+                        })
+                    })
+
+                    that.setState({loadingData: false});
                 });
             } else {
                 that.setState({loadingData: false});
@@ -192,16 +205,16 @@ class App extends Component {
         //             averageRoundScore = result;
         //         });
         //
-        //         $.get("/api/score").done(function (result) {
-        //             console.log('score-result: ', result);
-        //             if (result && result.length > 0) {
-        //                 that.setCurrentRound(result[0].length);
-        //                 dataz = transformData(result);
-        //                 that.setData(dataz);
-        //                 makeGroupData();
-        //             } else if (result.name === 'GameUpdatingError') {
-        //                 alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
-        //             }
+        //  -       $.get("/api/score").done(function (result) {
+        //  -           console.log('score-result: ', result);
+        //  -           if (result && result.length > 0) {
+        //  -               that.setCurrentRound(result[0].length);
+        //  -               dataz = transformData(result);
+        //  -               that.setData(dataz);
+        //  -               makeGroupData();
+        //  -           } else if (result.name === 'GameUpdatingError') {
+        //  -               alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
+        //  -           }
         //             $.get("/api/players").done(function (result) {
         //                 console.log('players-result: ', result);
         //                 if (result && result.length > 0) {
@@ -228,25 +241,25 @@ class App extends Component {
         //                     })
         //                 }
         //             });
-        //             $.get("/api/league").done(function (result) {
-        //                 if (result && result.length > 0) {
-        //                     leagueStandings = result;
-        //                     result.forEach(function (player) {
-        //                         Object.assign(dataz[player.entry], {
-        //                             leagueClimb: player.last_rank - player.rank,
-        //                             leagueRank: player.rank,
-        //                             lastRoundLeagueRank: player.last_rank,
-        //                         })
-        //                     })
-        //                     let teamNameToIdMap = {};
-        //                     result.forEach(function (player) {
-        //                         Object.assign(teamNameToIdMap, {
-        //                             [player.entry]: player.entry_name,
-        //                         });
-        //                     });
-        //                     updatePlayerListWithNewLEagueData(teamNameToIdMap);
-        //                 }
-        //             });
+        //  -           $.get("/api/league").done(function (result) {
+        //  -               if (result && result.length > 0) {
+        //  -                   leagueStandings = result;
+        //  -                   result.forEach(function (player) {
+        //  -                       Object.assign(dataz[player.entry], {
+        //  -                           leagueClimb: player.last_rank - player.rank,
+        //  -                           leagueRank: player.rank,
+        //  -                           lastRoundLeagueRank: player.last_rank,
+        //  -                       })
+        //  -                   })
+        //  -                   let teamNameToIdMap = {};
+        //  -                   result.forEach(function (player) {
+        //  -                       Object.assign(teamNameToIdMap, {
+        //  -                           [player.entry]: player.entry_name,
+        //  -                       });
+        //  -                   });
+        //  -                   updatePlayerListWithNewLEagueData(teamNameToIdMap);
+        //  -               }
+        //  -           });
         //             $.get("/api/fplplayers").done(function (result) {
         //                 if (result && result.length > 0) {
         //                     fplPlayers = result;
@@ -303,8 +316,7 @@ class App extends Component {
             loadingData: true,
             chosenLeagueId: true,
         });
-        // TODO må inn igjen når ligavelgeren går live igjen!
-        // leagueIdChosenByUser = this.state.leagueIdChosenByUser;
+        leagueIdChosenByUser = this.state.leagueIdChosenByUser;
         this.fetchDataFromServer();
     };
 
@@ -400,29 +412,31 @@ class App extends Component {
                     {!this.state.chosenLeagueId &&
                     <MuiThemeProvider>
                         <Dialog
-                            title={"Fyll inn id'en på din FPL liga"}
+                            title={"Velg din liga fra listen"}
                             open={!this.state.chosenLeagueId}
                             contentStyle={customContentStyle}
                             actions={brukVaarLigaKnapp}
                         >
                             <p style={{color: 'red', fontSize: 'small'}}> Pga. oppdateringer i API'et til FPL er denne
-                                siden ute
-                                av drift enn så lenge. Det jobbes med å få den opp igjen, så plutselig er vi tilbake :)
+                                siden strippet for mye av sin tidligere funksjonalitet, som blant annet at man kunne
+                                fylle inn
+                                hvilken som helst liga-id her.. Dette er pr.nå ikke mulig å få til :/
 
                                 {/*Pga begrensninger i API'et til FPL får man pr.*/}
                                 {/*nå kun med data for de 50 beste i ligaen :/*/}
                             </p>
-                            <TextField
-                                hintText="eks: 61858"
-                                floatingLabelText="Fyll inn ID for din liga her"
-                                value={this.state.leagueIdChosenByUser}
-                                onChange={(event, newValue) => this.updateLeagueId(newValue)}
-                            />
-                            <ActionInfo
-                                style={actionInfoStyle}
-                                onClick={(event) => this.toggleShowLeagueIdInfo(event)}
-                            />
-                            <br/>
+                            {/*<TextField*/}
+                            {/*    disabled={true}*/}
+                            {/*    hintText="eks: 61858"*/}
+                            {/*    floatingLabelText="Fyll inn ID for din liga her ()"*/}
+                            {/*    value={this.state.leagueIdChosenByUser}*/}
+                            {/*    onChange={(event, newValue) => this.updateLeagueId(newValue)}*/}
+                            {/*/>*/}
+                            {/*<ActionInfo*/}
+                            {/*    style={actionInfoStyle}*/}
+                            {/*    onClick={(event) => this.toggleShowLeagueIdInfo(event)}*/}
+                            {/*/>*/}
+                            {/*<br/>*/}
                             <DropDownMenu
                                 value={leaguesInDropdownList.find(l => l.id === this.state.leagueIdChosenByUser) ? this.state.leagueIdChosenByUser : ''}
                                 onChange={this.handleLigavalgFraDropdown}
@@ -431,7 +445,7 @@ class App extends Component {
                             >
                                 {leaguesInDropdownList.map(league => <MenuItem key={league.id} value={league.id}
                                                                                primaryText={league.name}/>)}
-                                <MenuItem value={''} primaryText="Eller velg liga her"/>
+                                <MenuItem value={''} primaryText="Velg liga her"/>
                             </DropDownMenu>
                             <Popover
                                 open={this.state.showLeagueIdInfo}

@@ -43,7 +43,7 @@ export let players = {
 
 export const fplAvgTeams = [0, 1, 2, 3];
 
-export function updatePlayerListWithNewLEagueData(newPlayersMap){
+export function updatePlayerListWithNewLEagueData(newPlayersMap) {
     players = newPlayersMap;
 }
 
@@ -69,12 +69,14 @@ export function SelectBox(values, onChange, extraClassName = '', extraName = '',
                     onChange={onChange} value={startRound}>
                 <option value={null}>Velg runde</option>
                 {values.map(val => {
-                    return <option key={val} value={val}>{(val !== 'Utslagningsrunder' && val !== 'Playoff' ? 'Runde' : '') + val}</option>;
+                    return <option key={val}
+                                   value={val}>{(val !== 'Utslagningsrunder' && val !== 'Playoff' ? 'Runde' : '') + val}</option>;
                 })}
             </select>
         </div>
     )
 }
+
 const dropDownStyle = {
     fontSize: '16px',
     borderRadius: 0,
@@ -87,6 +89,7 @@ const dropDownStyle = {
     borderBottom: 'solid black 1px',
     height: '20px',
 }
+
 export function MakeDropDownMenu(values, chosenValue, onchange) {
     console.log('inniD: ', chosenValue === '5');
     return (
@@ -104,4 +107,29 @@ export function MakeDropDownMenu(values, chosenValue, onchange) {
             </DropDownMenu>
         </div>
     )
+}
+
+export const forFameAndGloryManagers = [2253517, 3249094, 18286, 259276, 95509, 1822874, 113690, 110138, 1112848, 3231757, 147607, 513635, 987338,
+    147378, 280, 136008, 2868768, 265744, 1127639, 3119842, 2224552, 2354670, 1976189, 2731034, 1778465, 1770110];
+export const graduatesManagers = [321128, 1822874, 413111, 2072291, 439368];
+export const progitManagers = [2347541, 1822874, 3959205, 3706260, 2886116, 3959217, 5449341];
+export const pmOversiktManagers = [537141, 1822874, 4309888, 2893981, 607214, 200362, 434611, 5060530, 4179755, 3090921, 3113961];
+export const lillohoydenFcManagers = [3880226, 1822874, 1244151, 3130565, 4356361, 1901889, 2017801, 3189167, 2943466];
+
+export function getLeagueManagers(leagueId) {
+
+    switch (leagueId) {
+        case 28802:
+            return forFameAndGloryManagers;
+        case 453594:
+            return graduatesManagers;
+        case 453718:
+            return pmOversiktManagers;
+        case 883227:
+            return progitManagers;
+        case 437181:
+            return lillohoydenFcManagers;
+        default:
+            return [];
+    }
 }

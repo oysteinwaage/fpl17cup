@@ -1,3 +1,5 @@
+import {getLeagueManagers} from "./utils";
+
 let leagueId = 28802;
 
 let loadedPlayerIds = [
@@ -26,13 +28,13 @@ let loadedPlayerIds = [
     1976189,
     2731034,
     1778465,
-    1770110,
-    2678280
+    1770110
 ];
 
 export function getManagerList(chosenLeagueId) {
     leagueId = chosenLeagueId;
     let leagueName = "For Fame And Glory";
+    loadedPlayerIds = getLeagueManagers(chosenLeagueId);
 
     return Promise.resolve({
         managers: loadedPlayerIds,
@@ -116,6 +118,13 @@ export function getScore() {
             points_on_bench
           }
         }
+        leagues{
+            classic{
+                id
+                entry_rank
+                entry_last_rank
+            }
+        }
        }
      }`);
     return Promise.all(scoreQuery.map(playerQuery => fetch('/graphql', {
@@ -130,20 +139,6 @@ export function getScore() {
     ));
 }
 
-// app.get('/api/score', function (req, res) {
-//     Promise.all(
-//         loadedPlayerIds.map(fplapi.findEntryEvents)
-//     ).then(values => {
-//         res.type('application/json')
-//             .send(values)
-//             .end();
-//     }).catch((error) => {
-//         res.type('application/json')
-//             .send(error)
-//             .end();
-//     });
-// });
-//
 // app.get('/api/players', function (req, res) {
 //     Promise.all(
 //         loadedPlayerIds.map(fplapi.findEntry)

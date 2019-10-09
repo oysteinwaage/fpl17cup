@@ -6,9 +6,9 @@ import {groupData} from '../App.js';
 import {players} from '../utils.js';
 
 const groupsMenmbers = {
-    groupA: [2224552,3249094,113690,18286,2253517,0],
-    groupB: [2354670,2731034,3231757,1770110,95509,1],
-    groupC: [265744,2,1976189,3119842,136008,1778465],
+    groupA: [2224552, 3249094, 113690, 18286, 2253517, 0],
+    groupB: [2354670, 2731034, 3231757, 1770110, 95509, 1],
+    groupC: [265744, 2, 1976189, 3119842, 136008, 1778465],
     groupD: [147607, 147378, 1822874, 1112848, 513635, 3],
     groupE: [280, 110138, 987338, 259276, 1127639, 2868768],
 };
@@ -50,7 +50,7 @@ class App extends Component {
                             const teamData = tempNullCheck(team);
                             const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
                             return makeRow(
-                                team === 0 ? "Fantasy Average" : players[team],
+                                team < 4  ? "Fantasy Average" : players[team],
                                 teamData.matches,
                                 teamData.matchesWon,
                                 teamData.matchesDrawn,
