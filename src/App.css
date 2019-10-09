@@ -13,15 +13,21 @@ body {
 .headerText {
     width: 30%;
     min-width: 330px;
+    margin-right: 50px;
 }
 
 .headerArt {
-    width: 70%;
+    width: 100%;
     margin: 0;
-    background: url('https://ismdj.scdn5.secure.raxcdn.com/static/libsass/plfpl/dist/img/header-bg-large.png?109fa73b2dbf') no-repeat right -50px bottom;
-    background-position: right top;
-    height: 130px;
+    background: url('./images/fpl_header_art.svg');
+    /*background: url('./images/fpl_header_art.svg') no-repeat right -50px bottom;*/
+    background-position: 100% 100%;
     vertical-align: middle;
+    -webkit-transform:rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 h1 {
