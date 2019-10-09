@@ -49,7 +49,7 @@ export function updatePlayerListWithNewLEagueData(newPlayersMap) {
 
 export const leaguesInDropdownList = [
     {id: 28802, name: "For Fame And Glory",},
-    {id: 453594, name: "Graduates 2012",},
+    {id: 453594, name: "Graduates 2012 FTW!",},
     {id: 453718, name: "PM Oversikt",},
     {id: 883227, name: "Progit",},
     {id: 437181, name: "Lillohøyden FC",},

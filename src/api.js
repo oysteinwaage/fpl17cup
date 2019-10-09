@@ -1,4 +1,4 @@
-import {getLeagueManagers} from "./utils";
+import {getLeagueManagers, leaguesInDropdownList} from "./utils";
 
 let leagueId = 28802;
 
@@ -33,7 +33,7 @@ let loadedPlayerIds = [
 
 export function getManagerList(chosenLeagueId) {
     leagueId = chosenLeagueId;
-    let leagueName = "For Fame And Glory";
+    let leagueName = leaguesInDropdownList.find(l => l.id === chosenLeagueId).name;
     loadedPlayerIds = getLeagueManagers(chosenLeagueId);
 
     return Promise.resolve({
