@@ -47,7 +47,7 @@ export const gamesPrGroupAndRound = {
         groupE: [],
     },
     utslagning: {
-        groupA: [],
+        groupA: [[3231757, 113690], [259276, 280], [1976189, 1112848], [2253517, 3119842]],
         groupB: [],
         groupC: [],
         groupD: [],
@@ -149,9 +149,9 @@ export function MatchesForGroup(props) {
                     }
                 } else if (round === 'extraround') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Playoff gruppe A';
-                    } else if (groupLetter === 'B') {
-                        groupHeader = 'Playoff gruppe E';
+                        groupHeader = 'Ingen playoff i år boys! Yolo';
+                //    } else if (groupLetter === 'B') {
+                //        groupHeader = 'Playoff gruppe E';
                     } else {
                         groupHeader = false;
                     }
