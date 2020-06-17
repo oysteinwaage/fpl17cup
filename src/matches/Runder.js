@@ -94,7 +94,7 @@ export function getRoundNr(round) {
         case 'Utslagningsrunder':
             return 'utslagning';
         default:
-            return 'round8_18';
+            return 'utslagning';
     }
 }
 
@@ -122,11 +122,11 @@ function Match(props) {
 
 function roundForCupPlay(groupHeader) {
     if (groupHeader.startsWith('Kvartfinale')) {
-        return 30;
+        return '30+';
     } else if (groupHeader.startsWith('Semifinale')) {
-        return 32;
+        return '32+';
     } else if (groupHeader.startsWith('Finale')) {
-        return 34;
+        return '34+';
     }
 }
 
@@ -139,11 +139,11 @@ export function MatchesForGroup(props) {
                 let groupHeader = 'Gruppe ' + groupLetter;
                 if (round === 'utslagning') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Kvartfinaler (runde 30)';
+                        groupHeader = 'Kvartfinaler (runde 30+)';
                     } else if (groupLetter === 'B') {
-                        groupHeader = 'Semifinaler (runde 32)';
+                        groupHeader = 'Semifinaler (runde 32+)';
                     } else if (groupLetter === 'C') {
-                        groupHeader = 'Finale (runde 34)';
+                        groupHeader = 'Finale (runde 34+)';
                     } else {
                         groupHeader = false;
                     }
@@ -172,4 +172,4 @@ export function MatchesForGroup(props) {
             })}
         </div>
     );
-};
+}
