@@ -59,6 +59,7 @@ export function getManagerList(chosenLeagueId) {
     // });
 }
 
+// TODO fpl-graphql-api er oppdatert til ny versjon. Sjekk ut om det gjør det enklere å hente mer data
 
 export function getStats() {
     const statsQuery = `{

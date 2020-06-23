@@ -122,11 +122,11 @@ function Match(props) {
 
 function roundForCupPlay(groupHeader) {
     if (groupHeader.startsWith('Kvartfinale')) {
-        return '30+';
+        return 39;
     } else if (groupHeader.startsWith('Semifinale')) {
-        return '32+';
+        return 41;
     } else if (groupHeader.startsWith('Finale')) {
-        return '34+';
+        return 43;
     }
 }
 

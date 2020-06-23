@@ -130,7 +130,7 @@ class App extends Component {
         super(props);
         this.state = {
             points: {},
-            currentRound: 8,
+            currentRound: 'Utslagningsrunder',
             dialogOpen: false,
             loadingData: false,
             chosenLeagueId: false,
