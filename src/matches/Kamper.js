@@ -46,7 +46,7 @@ class Kamper extends Component {
 
     lastCupRound() {
         let roundNr = currentRound % 2 === 0 ? currentRound : currentRound - 1;
-        return roundNr < 8 ? 0 : roundNr === 28 ? 'Playoff' : roundNr >= 30 ? 'Utslagningsrunder' : roundNr;
+        return roundNr < 4 ? 0 : roundNr === 28 ? 'Playoff' : roundNr >= 30 ? 'Utslagningsrunder' : roundNr;
     }
 
     render() {

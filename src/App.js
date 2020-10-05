@@ -3,7 +3,7 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getScore, getStats} from './api.js';
+import {getManagerList, getStats, getRoundScores} from './api.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -25,7 +25,7 @@ export let averageRoundScore = {};
 let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
-    return leagueIdChosenByUser === 28802;
+    return leagueIdChosenByUser === 120053;
 }
 
 const reducer2 = (a, b) => {
@@ -134,7 +134,7 @@ class App extends Component {
             dialogOpen: false,
             loadingData: false,
             chosenLeagueId: false,
-            leagueId: 28802,
+            leagueId: 120053,
             leagueName: 'Liganavn',
             showLeagueIdInfo: false,
             leagueIdChosenByUser: '',
@@ -162,35 +162,36 @@ class App extends Component {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
                 getStats().then(data => averageRoundScore = data);
-                getScore().then(scoreData => {
+                getRoundScores().then(scoreData => {
                     console.log('score: ', scoreData);
-                    that.setCurrentRound(scoreData[0].data.entry.current_event);
-                    dataz = transformData(scoreData.map(a => a.data.entry.history.current));
-                    console.log(dataz);
-                    that.setData(dataz);
+                    that.setCurrentRound(scoreData[0].entry.current_event);
+                    dataz = transformData(scoreData.map(a => a.current));
+                    console.log('dataz', dataz);
                     makeGroupData();
+                    console.log('groupData: ', groupData);
 
-                    // setter map med id: lagNavn
-                    let teamNameToIdMap = {};
-                    scoreData.forEach(function (player) {
-                        Object.assign(teamNameToIdMap, {
-                            [player.data.entry.id]: player.data.entry.name,
+                        // setter map med id: lagNavn
+                        let teamNameToIdMap = {};
+                        scoreData.forEach(function (player) {
+                            Object.assign(teamNameToIdMap, {
+                                [player.entry.id]: player.entry.name,
+                            });
                         });
-                    });
-                    updatePlayerListWithNewLEagueData(teamNameToIdMap);
+                        updatePlayerListWithNewLEagueData(teamNameToIdMap);
 
-                    // setter største klatrer/fall for runden
-                    scoreData.forEach(function (player) {
-                        const myLeague = player.data.entry.leagues.classic.find(league => league.id === leagueIdChosenByUser);
-                        Object.assign(dataz[player.data.entry.id], {
-                            leagueClimb: myLeague.entry_last_rank - myLeague.entry_rank,
-                            leagueRank: myLeague.entry_rank,
-                            lastRoundLeagueRank: myLeague.entry_last_rank,
-                        })
-                    });
+                        // setter største klatrer/fall for runden
+                        scoreData.forEach(function (player) {
+                            const myLeague = player.entry.leagues.classic.find(league => league.id === leagueIdChosenByUser);
+                            Object.assign(dataz[player.entry.id], {
+                                leagueClimb: myLeague.entry_last_rank - myLeague.entry_rank,
+                                leagueRank: myLeague.entry_rank,
+                                lastRoundLeagueRank: myLeague.entry_last_rank,
+                                managerName: player.entry.player_first_name + ' ' + player.entry.player_last_name,
+                            })
+                        });
 
                     that.setState({loadingData: false});
-                });
+                })
             } else {
                 that.setState({loadingData: false});
             }

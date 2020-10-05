@@ -4,40 +4,40 @@ import {score, dataz} from '../App.js';
 import {players, fplAvgTeams} from '../utils.js';
 
 export const gamesPrGroupAndRound = {
+    round4_14: {
+        groupA: [[737536, 1259705], [1618273, 130438], [2249091, 3958980]],
+        groupB: [[3930276, 126466], [3034647, 1025143], [3524888, 1]],
+        groupC: [[18575, 2], [1260577, 444051], [552453, 210166]],
+        groupD: [[531121, 1884253], [4984122, 131342], [1159430, 3]],
+        groupE: [[2218701, 493380], [219691, 3126178], [404123, 0]],
+    },
+    round6_16: {
+        groupA: [[737536, 1618273], [1259705, 2249091], [130438, 3958980]],
+        groupB: [[3930276, 3034647], [126466, 3524888], [1025143, 1]],
+        groupC: [[18575, 1260577], [2, 552453], [444051, 210166]],
+        groupD: [[531121, 4984122], [1884253, 1159430], [131342, 3]],
+        groupE: [[2218701, 219691], [493380, 404123], [3126178, 0]],
+    },
     round8_18: {
-        groupA: [[2224552, 3249094], [113690, 18286], [2253517, 0]],
-        groupB: [[2354670, 2731034], [3231757, 1770110], [95509, 1]],
-        groupC: [[265744, 2], [1976189, 3119842], [136008, 1778465]],
-        groupD: [[147607, 147378], [1822874, 1112848], [513635, 3]],
-        groupE: [[280, 110138], [987338, 259276], [1127639, 2868768]],
+        groupA: [[737536, 130438], [1259705, 3958980], [1618273, 2249091]],
+        groupB: [[3930276, 1025143], [126466, 1], [3034647, 3524888]],
+        groupC: [[18575, 444051], [2, 210166], [1260577, 552453]],
+        groupD: [[531121, 131342], [1884253, 3], [4984122, 1159430]],
+        groupE: [[2218701, 3126178], [493380, 0], [219691, 404123]],
     },
     round10_20: {
-        groupA: [[2224552, 113690], [3249094, 2253517], [18286, 0]],
-        groupB: [[2354670, 3231757], [2731034, 95509], [1770110, 1]],
-        groupC: [[265744, 1976189], [2, 136008], [3119842, 1778465]],
-        groupD: [[147607, 1822874], [147378, 513635], [1112848, 3]],
-        groupE: [[280, 987338], [110138, 1127639], [259276, 2868768]],
+        groupA: [[737536, 2249091], [1618273, 3958980], [1259705, 130438]],
+        groupB: [[3930276, 3524888], [3034647, 1], [126466, 1025143]],
+        groupC: [[18575, 552453], [1260577, 210166], [2, 444051]],
+        groupD: [[531121, 1159430], [4984122, 3], [1884253, 131342]],
+        groupE: [[2218701, 404123], [219691, 0], [493380, 3126178]],
     },
     round12_22: {
-        groupA: [[2224552, 18286], [3249094, 0], [113690, 2253517]],
-        groupB: [[2354670, 1770110], [2731034, 1], [3231757, 95509]],
-        groupC: [[265744, 3119842], [2, 1778465], [1976189, 136008]],
-        groupD: [[147607, 1112848], [147378, 3], [1822874, 513635]],
-        groupE: [[280, 259276], [110138, 2868768], [987338, 1127639]],
-    },
-    round14_24: {
-        groupA: [[2224552, 2253517], [113690, 0], [3249094, 18286]],
-        groupB: [[2354670, 95509], [3231757, 1], [2731034, 1770110]],
-        groupC: [[265744, 136008], [1976189, 1778465], [2, 3119842]],
-        groupD: [[147607, 513635], [1822874, 3], [147378, 1112848]],
-        groupE: [[280, 1127639], [987338, 2868768], [110138, 259276]],
-    },
-    round16_26: {
-        groupA: [[2224552, 0], [18286, 2253517], [113690, 3249094]],
-        groupB: [[2354670, 1], [1770110, 95509], [3231757, 2731034]],
-        groupC: [[265744, 1778465], [3119842, 136008], [1976189, 2]],
-        groupD: [[147607, 3], [1112848, 513635], [1822874, 147378]],
-        groupE: [[280, 2868768], [259276, 1127639], [987338, 110138]],
+        groupA: [[737536, 3958980], [130438, 2249091], [1618273, 1259705]],
+        groupB: [[3930276, 1], [1025143, 3524888], [3034647, 126466]],
+        groupC: [[18575, 210166], [444051, 552453], [1260577, 2]],
+        groupD: [[531121, 3], [131342, 1159430], [4984122, 1884253]],
+        groupE: [[2218701, 0], [3126178, 404123], [219691, 493380]],
     },
     extraround: {
         groupA: [],
@@ -47,9 +47,9 @@ export const gamesPrGroupAndRound = {
         groupE: [],
     },
     utslagning: {
-        groupA: [[3231757, 113690], [259276, 280], [1976189, 1112848], [2253517, 3119842]],
-        groupB: [[3231757, 1112848], [280, 3119842]],
-        groupC: [[1112848, 280]],
+        groupA: [],
+        groupB: [],
+        groupC: [],
         groupD: [],
         groupE: [],
     }
@@ -63,6 +63,16 @@ export const groups = ['A', 'B', 'C', 'D', 'E'];
 //TODO også se om du kan fikse dette på en finere måte
 export function getRoundNr(round) {
     switch (round) {
+        case '4':
+        case 4:
+        case '14':
+        case 14:
+            return 'round4_14';
+        case '6':
+        case 6:
+        case '16':
+        case 16:
+            return 'round6_16';
         case '8':
         case 8:
         case '18':
@@ -78,17 +88,7 @@ export function getRoundNr(round) {
         case '22':
         case 22:
             return 'round12_22';
-        case '14':
-        case 14:
-        case '24':
         case 24:
-            return 'round14_24';
-        case '16':
-        case 16:
-        case '26':
-        case 26:
-            return 'round16_26';
-        case 28:
         case 'Playoff':
             return 'extraround';
         case 'Utslagningsrunder':
@@ -122,11 +122,11 @@ function Match(props) {
 
 function roundForCupPlay(groupHeader) {
     if (groupHeader.startsWith('Kvartfinale')) {
-        return 39;
+        return 26;
     } else if (groupHeader.startsWith('Semifinale')) {
-        return 41;
+        return 28;
     } else if (groupHeader.startsWith('Finale')) {
-        return 43;
+        return 30;
     }
 }
 
@@ -139,11 +139,11 @@ export function MatchesForGroup(props) {
                 let groupHeader = 'Gruppe ' + groupLetter;
                 if (round === 'utslagning') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Kvartfinaler (runde 30+)';
+                        groupHeader = 'Kvartfinaler (runde 26)';
                     } else if (groupLetter === 'B') {
-                        groupHeader = 'Semifinaler (runde 32+)';
+                        groupHeader = 'Semifinaler (runde 28)';
                     } else if (groupLetter === 'C') {
-                        groupHeader = 'Finale (runde 34+)';
+                        groupHeader = 'Finale (runde 30)';
                     } else {
                         groupHeader = false;
                     }
@@ -157,7 +157,7 @@ export function MatchesForGroup(props) {
                     }
                 }
                 const roundNr = props.chosenRound === 'Utslagningsrunder' && groupHeader ? roundForCupPlay(groupHeader) :
-                    props.chosenRound === 'Playoff' && groupHeader ? 28 : props.chosenRound;
+                    props.chosenRound === 'Playoff' && groupHeader ? 24 : props.chosenRound;
                 return groupHeader && (
                     <div key={groupId}>
                         <div className='groupName'>{groupHeader}</div>

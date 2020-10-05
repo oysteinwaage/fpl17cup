@@ -1,35 +1,8 @@
 import {getLeagueManagers, leaguesInDropdownList} from "./utils";
 
-let leagueId = 28802;
+let leagueId = 120053;
 
-let loadedPlayerIds = [
-    2253517,
-    3249094,
-    18286,
-    259276,
-    95509,
-    1822874,
-    113690,
-    110138,
-    1112848,
-    3231757,
-    147607,
-    513635,
-    987338,
-    147378,
-    280,
-    136008,
-    2868768,
-    265744,
-    1127639,
-    3119842,
-    2224552,
-    2354670,
-    1976189,
-    2731034,
-    1778465,
-    1770110
-];
+let loadedPlayerIds = [210166, 4984122, 2249091, 1159430, 126466, 404123, 130438, 1025143, 493380, 552453, 1260577, 1618273, 219691, 1259705, 3958980, 444051, 3034647, 531121, 2218701, 131342, 3524888, 3930276, 3126178, 737536, 18575, 1884253 ];
 
 export function getManagerList(chosenLeagueId) {
     leagueId = chosenLeagueId;
@@ -59,86 +32,95 @@ export function getManagerList(chosenLeagueId) {
     // });
 }
 
-// TODO fpl-graphql-api er oppdatert til ny versjon. Sjekk ut om det gjør det enklere å hente mer data
+export function getRoundScores() {
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            fetch(`/api/scores?teams=${loadedPlayerIds}`)
+                .then(r => r.json())
+                .then(data => {
+                    // loadedPlayerIds = data.standings.results.map(p => p.entry);
+                    return resolve(data);
+                })
+                .catch(error => reject(error));
+        });
+    });
+}
 
 export function getStats() {
-    const statsQuery = `{
-      static {
-        events {
-          average_entry_score
-        }
-      }
-    }`;
-    return fetch('/graphql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({query: statsQuery})
-    }).then(r => r.json())
-        .then(data => data.data.static.events);
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            fetch(`/api/stats`)
+                .then(r => r.json())
+                .then(data => {
+                    console.log('stats', data);
+                    return resolve(data);
+                })
+                .catch(error => reject(error));
+        });
+    });
 }
 
-// app.get('/api/stats', function (req, res) {
-//     fplapi.getEvents().then(values => {
-//         const averagePoints = {};
-//         values.forEach(round => {
-//             Object.assign(averagePoints, {
-//                 [round.id]: round.average_entry_score
-//             })
-//         });
-//         res.type('application/json')
-//             .send(averagePoints)
-//             .end();
-//     }).catch((error) => {
-//         res.type('application/json')
-//             .send(error)
-//             .end();
-//     });
-// });
-//
+// export function getStats() {
+//     const statsQuery = `{
+//       static {
+//         events {
+//           average_entry_score
+//         }
+//       }
+//     }`;
+//     return fetch('/graphql', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Accept': 'application/json',
+//         },
+//         body: JSON.stringify({query: statsQuery})
+//     }).then(r => r.json())
+//         .then(data => data.data.static.events);
+// }
 
-export function getScore() {
-    const scoreQuery = loadedPlayerIds.map(playerId => `
-       {
-       entry(id: ` + playerId + `) {
-        id
-        player_first_name
-        player_last_name
-        summary_overall_points
-        name
-        current_event
-        history(event: ` + playerId + `){
-          current {
-            event
-            points
-            total_points
-            event_transfers
-            event_transfers_cost
-            points_on_bench
-          }
-        }
-        leagues{
-            classic{
-                id
-                entry_rank
-                entry_last_rank
-            }
-        }
-       }
-     }`);
-    return Promise.all(scoreQuery.map(playerQuery => fetch('/graphql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({query: playerQuery})
-        })
-            .then(r => r.json())
-    ));
-}
+// export function getScore() {
+//     const scoreQuery = loadedPlayerIds.map(playerId => `
+//        {
+//        entry(id: ` + playerId + `) {
+//         id
+//         player_first_name
+//         player_last_name
+//         summary_overall_points
+//         name
+//         current_event
+//         history(event: ` + playerId + `){
+//           current {
+//             event
+//             points
+//             total_points
+//             event_transfers
+//             event_transfers_cost
+//             points_on_bench
+//           }
+//         }
+//         leagues{
+//             classic{
+//                 id
+//                 entry_rank
+//                 entry_last_rank
+//             }
+//         }
+//        }
+//      }`);
+//     return Promise.all(scoreQuery.map(playerQuery => fetch('/graphql', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Accept': 'application/json',
+//                 'User-Agent':
+//                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
+//             },
+//             body: JSON.stringify({query: playerQuery})
+//         })
+//             .then(r => r.json())
+//     ));
+// }
 
 // app.get('/api/players', function (req, res) {
 //     Promise.all(

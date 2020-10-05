@@ -4,41 +4,41 @@ import MenuItem from 'material-ui/MenuItem';
 
 export let players = {
 //Gruppe A
-    2224552: "Lé Spéciellé Óne",
-    3249094: "GunSquad",
-    113690: "The Reds",
-    18286: "Puthinhos",
-    2253517: "Minipool",
-    0: "Fantasy Average",
+    737536: "Verdiløse Menn",
+    1259705: "Puthinos",
+    1618273: "Lé Spéciellé Óne",
+    130438: "Dale of Norway",
+    2249091: "FireFartingUnicorns",
+    3958980: "Sk Bunn",
 //Gruppe B
-    2354670: "Stonga Ballklubb",
-    2731034: "Manchester United",
-    3231757: "Live.Love.Sparkel",
-    1770110: "2tt1ham",
-    95509: "Stupakjæll",
+    3930276: "GunSquad",
+    126466: "Skøelv",
+    3034647: "pollyeid",
+    1025143: "SuperStar",
+    3524888: "Champs",
     1: "Fantasy Average",
 //Gruppe C
-    265744: "Los Maestros",
+    18575: "Tryhards United",
     2: "Fantasy Average",
-    1976189: "teaM eXtreMe dLuX",
-    3119842: "Lallana's in Pysjmas",
-    136008: "Bjørk",
-    1778465: "Dompa FC",
+    1260577: "Peanutbutterfalcons",
+    444051: "The Red's",
+    552453: "Minipool",
+    210166: "Stupakjæll_v2",
 //Gruppe D
-    147607: "Skolebrød",
-    147378: "Strawberry Shaqiri",
-    1822874: "Team Waage",
-    1112848: "FK Matre",
-    513635: "Champs",
+    531121: "Team Waage",
+    1884253: "KistebakkaneClimbers",
+    4984122: "tEAM eXtreMe",
+    131342: "Ji- Sung Parkthebus",
+    1159430: "Marka",
     3: "Fantasy Average",
 
 //Gruppe E
-    280: "Ji-Sung Parkthebus",
-    110138: "Dale of Norway",
-    987338: "Øksen",
-    259276: "Verdiløse Menn",
-    1127639: "FireFartingUnicorns",
-    2868768: "PanserBataljonen",
+    2218701: "F.C. Syversen",
+    493380: "Anulaibar Teoma",
+    219691: "Fk Matre",
+    3126178: "All Or Nothing",
+    404123: "Los Maestros",
+    0: "Fantasy Average",
 };
 
 export const fplAvgTeams = [0, 1, 2, 3];
@@ -48,16 +48,16 @@ export function updatePlayerListWithNewLEagueData(newPlayersMap) {
 }
 
 export const leaguesInDropdownList = [
-    {id: 28802, name: "For Fame And Glory",},
-    {id: 453594, name: "Graduates 2012 FTW!",},
-    {id: 453718, name: "PM Oversikt",},
-    {id: 883227, name: "Progit",},
-    {id: 437181, name: "Lillohøyden FC",},
-    {id: 10724, name: "200-kronersligaen",},
+    {id: 120053, name: "For Fame And Glory",},
+    // {id: 453594, name: "Graduates 2012 FTW!",},
+    // {id: 453718, name: "PM Oversikt",},
+    // {id: 883227, name: "Progit",},
+    // {id: 437181, name: "Lillohøyden FC",},
+    // {id: 10724, name: "200-kronersligaen",},
 ];
 
-export const participatingRounds = [8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 'Playoff', 'Utslagningsrunder'];
-export const allRounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
+export const participatingRounds = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 'Playoff', 'Utslagningsrunder'];
+export const allRounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38];
 
 export const roundJackass = {
     roundnull: 'Får du opp denne siden her så er det fordi server driver og starter opp. Refresh siden igjen og prøv på nytt så funker det nok :D',
@@ -110,8 +110,7 @@ export function MakeDropDownMenu(values, chosenValue, onchange) {
     )
 }
 
-export const forFameAndGloryManagers = [2253517, 3249094, 18286, 259276, 95509, 1822874, 113690, 110138, 1112848, 3231757, 147607, 513635, 987338,
-    147378, 280, 136008, 2868768, 265744, 1127639, 3119842, 2224552, 2354670, 1976189, 2731034, 1778465, 1770110];
+export const forFameAndGloryManagers = [210166, 4984122, 2249091, 1159430, 126466, 404123, 130438, 1025143, 493380, 552453, 1260577, 1618273, 219691, 1259705, 3958980, 444051, 3034647, 531121, 2218701, 131342, 3524888, 3930276, 3126178, 737536, 18575, 1884253 ];
 export const graduatesManagers = [321128, 1822874, 413111, 2072291, 439368];
 export const progitManagers = [2347541, 1822874, 3959205, 3706260, 2886116, 3959217, 5449341];
 export const pmOversiktManagers = [537141, 1822874, 4309888, 2893981, 607214, 200362, 434611, 5060530, 4179755, 3090921, 3113961];
@@ -121,7 +120,7 @@ export const _200kronersligaen = [67531, 459652, 3187306, 251497, 2931055, 30294
 export function getLeagueManagers(leagueId) {
 
     switch (leagueId) {
-        case 28802:
+        case 120053:
             return forFameAndGloryManagers;
         case 453594:
             return graduatesManagers;
