@@ -161,14 +161,14 @@ class App extends Component {
             if (data && data.managers && data.managers.length > 0) {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
-                getStats().then(data => averageRoundScore = data);
-                getRoundScores().then(scoreData => {
-                    console.log('score: ', scoreData);
-                    that.setCurrentRound(scoreData[0].entry.current_event);
-                    dataz = transformData(scoreData.map(a => a.current));
-                    console.log('dataz', dataz);
-                    makeGroupData();
-                    console.log('groupData: ', groupData);
+                getStats().then(data => {
+                    averageRoundScore = data
+                    getRoundScores().then(scoreData => {
+                        console.log('score: ', scoreData);
+                        that.setCurrentRound(scoreData[0].entry.current_event);
+                        dataz = transformData(scoreData.map(a => a.current));
+                        console.log('dataz', dataz);
+                        makeGroupData();
 
                         // setter map med id: lagNavn
                         let teamNameToIdMap = {};
@@ -190,8 +190,9 @@ class App extends Component {
                             })
                         });
 
-                    that.setState({loadingData: false});
-                })
+                        that.setState({loadingData: false});
+                    })
+                });
             } else {
                 that.setState({loadingData: false});
             }
@@ -394,7 +395,7 @@ class App extends Component {
                         contentStyle={customContentStyle}
                         autoScrollBodyContent={true}
                     >
-                        <img src={require('./images/helligeThane.jpg')} alt="Kongen" width="250" height="300" />
+                        <img src={require('./images/helligeThane.jpg')} alt="Kongen" width="250" height="300"/>
                     </Dialog>
                 </MuiThemeProvider>
 
