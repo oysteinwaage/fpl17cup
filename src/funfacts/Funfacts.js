@@ -3,6 +3,7 @@ import '../App.css';
 import './Funfacts.css';
 import {players, SelectBox, allRounds, roundJackass} from '../utils.js';
 import {currentRound, dataz, roundStats, loadedPlayerIds, isForFameAndGloryLeague} from '../App.js';
+import {transferDiff} from '../transfers/Transfers.js';
 
 function tempNullCheck(teamId) {
     return dataz[teamId] || {};
@@ -56,6 +57,8 @@ export function calculateStats(round, players, playerPoints, captainData) {
     let fewestTransfersUsed = [];
     let mostTotalHitsTaken = [];
     let lowestTotalHitsTaken = [];
+    let bestTransferDiff = [];
+    let worstTransferDiff = [];
     players.forEach(function (p) {
         const roundNullsafe = tempNullCheckRound(p, 'round' + round);
         const points = roundNullsafe.points;
@@ -108,6 +111,10 @@ export function calculateStats(round, players, playerPoints, captainData) {
             mostTotalPointsOnBench = populateHighestValueListFor(mostTotalPointsOnBench, totalPointsOnBench, p);
             lowestTotalPointsOnBench = populateLowestValueListFor(lowestTotalPointsOnBench, totalPointsOnBench, p);
         }
+        if(transferDiff && Object.keys(transferDiff).length && transferDiff[p][round]){
+            bestTransferDiff = populateHighestValueListFor(bestTransferDiff, transferDiff[p][round], p);
+            worstTransferDiff = populateLowestValueListFor(worstTransferDiff, transferDiff[p][round], p);
+        }
         if(totalHitsTaken !== null && totalHitsTaken !== undefined){
             mostTotalHitsTaken = populateHighestValueListFor(mostTotalHitsTaken, totalHitsTaken, p);
             lowestTotalHitsTaken = populateLowestValueListFor(lowestTotalHitsTaken, totalHitsTaken, p);
@@ -136,6 +143,8 @@ export function calculateStats(round, players, playerPoints, captainData) {
         largestLeageDrop,
         mostCaptainPoints,
         lowestCaptainPoints,
+        bestTransferDiff,
+        worstTransferDiff,
         chipsUsed,
         hitsTaken,
     }
@@ -238,6 +247,8 @@ class App extends Component {
                     {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore)}
                     {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore)}
                     {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench)}
+                    {makeMultipleResultsRowsWithSameScore('Best diff på bytter', score.bestTransferDiff)}
+                    {makeMultipleResultsRowsWithSameScore('Dårligst diff på bytter', score.worstTransferDiff)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
                     {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}

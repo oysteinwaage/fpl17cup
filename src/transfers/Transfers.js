@@ -5,7 +5,7 @@ import {currentRound, dataz, loadedPlayerIds, roundStats, transferlist} from '..
 import {getPlayerScoresFor} from '../api.js';
 
 export let loading = false;
-//export let transferDiff = {};
+export let transferDiff = {};
 
 class Transfers extends Component {
     constructor(props) {
@@ -82,6 +82,15 @@ class Transfers extends Component {
                 )
             });
             const diff = totalPointsIn - totalPointsOut;
+            transferDiff = {
+                ...transferDiff,
+                [teamId]: {
+                    ...transferDiff[teamId],
+                    [round]: diff
+                }
+            }
+
+            // transferDiff[teamId][round] = diff;
             return teamId && round && transfers && (
                 <div key={teamId} className="transfer-container">
                     <div className="transfer-team">
