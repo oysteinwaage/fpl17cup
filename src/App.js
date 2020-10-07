@@ -3,7 +3,7 @@ import {IndexLink, Link} from 'react-router';
 import './App.css';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, updatePlayerListWithNewLEagueData, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getStats, getRoundScores} from './api.js';
+import {getManagerList, getStats, getRoundScores, getTransfers} from './api.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -18,10 +18,10 @@ export let dataz = {};
 export let groupData = {};
 export let currentRound = null;
 export let transferlist = [];
-export let fplPlayers = [];
+// export let fplPlayers = [];
 export let loadedPlayerIds = [];
 export let leagueStandings = [];
-export let averageRoundScore = {};
+export let roundStats = {};
 let leagueIdChosenByUser = 0;
 
 export function isForFameAndGloryLeague() {
@@ -59,7 +59,7 @@ export function score(t1, t2, round) {
 
 function roundScore(team, round) {
     if (fplAvgTeams.includes(team)) {
-        return averageRoundScore[round.slice(5) - 1].average_entry_score;
+        return roundStats[round.slice(5) - 1].average_entry_score;
     }
     return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
 }
@@ -162,12 +162,12 @@ class App extends Component {
                 loadedPlayerIds = data.managers;
                 that.state.leagueName = data.leagueName;
                 getStats().then(data => {
-                    averageRoundScore = data
+                    console.log('getStats: ', data);
+                    roundStats = data;
                     getRoundScores().then(scoreData => {
                         console.log('score: ', scoreData);
                         that.setCurrentRound(scoreData[0].entry.current_event);
                         dataz = transformData(scoreData.map(a => a.current));
-                        console.log('dataz', dataz);
                         makeGroupData();
 
                         // setter map med id: lagNavn
@@ -180,17 +180,51 @@ class App extends Component {
                         updatePlayerListWithNewLEagueData(teamNameToIdMap);
 
                         // setter største klatrer/fall for runden
-                        scoreData.forEach(function (player) {
+                        scoreData.forEach(player => {
                             const myLeague = player.entry.leagues.classic.find(league => league.id === leagueIdChosenByUser);
                             Object.assign(dataz[player.entry.id], {
                                 leagueClimb: myLeague.entry_last_rank - myLeague.entry_rank,
                                 leagueRank: myLeague.entry_rank,
                                 lastRoundLeagueRank: myLeague.entry_last_rank,
                                 managerName: player.entry.player_first_name + ' ' + player.entry.player_last_name,
-                            })
+                                name: player.entry.name
+                            });
+                            player.chips.forEach(chip => {
+                                Object.assign(dataz[player.entry.id]['round' + chip.event], {
+                                    chipsPlayed: {
+                                        chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
+                                        playedTime: chip.time,
+                                    }
+                                })
+                            });
                         });
 
-                        that.setState({loadingData: false});
+                        getTransfers().then(result => {
+                            console.log('transfers: ', result);
+                            transferlist = result;
+                            if (result && result.length > 0) {
+                                result.forEach(function (i) {
+                                    i.forEach(function (transfer) {
+                                        const tidspunkt = new Date(transfer.time).toLocaleDateString() + ' ' + new Date(transfer.time).toLocaleTimeString();
+                                        // if (transferlist.indexOf(transfer.element_in) === -1) {
+                                        //     transferlist.push(transfer.element_in);
+                                        // }
+                                        // if (transferlist.indexOf(transfer.element_out) === -1) {
+                                        //     transferlist.push(transfer.element_out);
+                                        // }
+                                        if (dataz[transfer.entry]['round' + transfer.event].transfers) {
+                                            dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, tidspunkt]);
+                                        } else {
+                                            Object.assign(dataz[transfer.entry]['round' + transfer.event], {
+                                                transfers: [[transfer.element_in, transfer.element_out, tidspunkt]]
+                                            })
+                                        }
+                                    })
+                                })
+                            }
+                            console.log('dataz: ', dataz);
+                            that.setState({loadingData: false});
+                        });
                     })
                 });
             } else {
@@ -207,16 +241,6 @@ class App extends Component {
         //             averageRoundScore = result;
         //         });
         //
-        //  -       $.get("/api/score").done(function (result) {
-        //  -           console.log('score-result: ', result);
-        //  -           if (result && result.length > 0) {
-        //  -               that.setCurrentRound(result[0].length);
-        //  -               dataz = transformData(result);
-        //  -               that.setData(dataz);
-        //  -               makeGroupData();
-        //  -           } else if (result.name === 'GameUpdatingError') {
-        //  -               alert('fantasy.premierleague.com oppdateres nå. Prøv igjen seinere :)');
-        //  -           }
         //             $.get("/api/players").done(function (result) {
         //                 console.log('players-result: ', result);
         //                 if (result && result.length > 0) {
@@ -229,67 +253,10 @@ class App extends Component {
         //                     });
         //                 }
         //             });
-        //             $.get("/api/chips").done(function (result) {
-        //                 if (result && result.length > 0) {
-        //                     result.forEach(function (x) {
-        //                         x.forEach(function (chip) {
-        //                             Object.assign(dataz[chip.entry]['round' + chip.event], {
-        //                                 chipsPlayed: {
-        //                                     chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
-        //                                     playedTime: chip.played_time_formatted,
-        //                                 }
-        //                             })
-        //                         })
-        //                     })
-        //                 }
-        //             });
-        //  -           $.get("/api/league").done(function (result) {
-        //  -               if (result && result.length > 0) {
-        //  -                   leagueStandings = result;
-        //  -                   result.forEach(function (player) {
-        //  -                       Object.assign(dataz[player.entry], {
-        //  -                           leagueClimb: player.last_rank - player.rank,
-        //  -                           leagueRank: player.rank,
-        //  -                           lastRoundLeagueRank: player.last_rank,
-        //  -                       })
-        //  -                   })
-        //  -                   let teamNameToIdMap = {};
-        //  -                   result.forEach(function (player) {
-        //  -                       Object.assign(teamNameToIdMap, {
-        //  -                           [player.entry]: player.entry_name,
-        //  -                       });
-        //  -                   });
-        //  -                   updatePlayerListWithNewLEagueData(teamNameToIdMap);
-        //  -               }
-        //  -           });
         //             $.get("/api/fplplayers").done(function (result) {
         //                 if (result && result.length > 0) {
         //                     fplPlayers = result;
         //                 }
-        //             });
-        //             $.get("/api/transfers").done(function (result) {
-        //                 console.log('transfers: ', result);
-        //                 if (result && result.length > 0) {
-        //                     result.forEach(function (i) {
-        //                         i.forEach(function (transfer) {
-        //                             if (transferlist.indexOf(transfer.element_in) === -1) {
-        //                                 transferlist.push(transfer.element_in);
-        //                             }
-        //                             if (transferlist.indexOf(transfer.element_out) === -1) {
-        //                                 transferlist.push(transfer.element_out);
-        //                             }
-        //                             if (dataz[transfer.entry]['round' + transfer.event].transfers) {
-        //                                 dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, transfer.time_formatted]);
-        //                             } else {
-        //                                 Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-        //                                     transfers: [[transfer.element_in, transfer.element_out, transfer.time_formatted]]
-        //                                 })
-        //                             }
-        //                         })
-        //                     })
-        //                 }
-        //                 console.log('dataz: ', dataz);
-        //                 that.setState({loadingData: false});
         //             });
         //             // $.get("/api/captain2").done(function (result) {
         //             //     console.log('alle kapteiner2222: ', result);
@@ -358,7 +325,7 @@ class App extends Component {
                 <div className="overHeader">
                     <div className="headerText">
                         {isForFameAndGloryLeague() &&
-                        <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'18 Cup-O-Rama</h1>
+                        <h1>For Fame And <a onClick={() => this.toggleEasteregg()}>Glory</a> FPL'20 Cup-O-Rama</h1>
                         }
                         {!isForFameAndGloryLeague() &&
                         <h1>{this.state.leagueName}</h1>
@@ -373,14 +340,14 @@ class App extends Component {
                         <li><Link to="/kamper" activeClassName="active">Kamper</Link></li>
                         <li><Link to="/grupper" activeClassName="active">Grupper</Link></li>
                         <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
-                        {/*<li><Link to="/transfers" activeClassName="active">Bytter</Link></li>*/}
+                        <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
                         {/*<li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>*/}
                     </div>
                     }
                     {!isForFameAndGloryLeague() &&
                     <div>
                         <li><IndexLink to="/" activeClassName="active">Funfacts</IndexLink></li>
-                        {/*<li><Link to="/transfers" activeClassName="active">Bytter</Link></li>*/}
+                        <li><Link to="/transfers" activeClassName="active">Bytter</Link></li>
                         {/*<li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>*/}
                     </div>
                     }
@@ -478,10 +445,10 @@ const customContentStyle = {
     maxHeight: '90%',
     textAlign: 'center',
 };
-const actionInfoStyle = {
-    // TODO funker ikke med hover. sjekk ut.
-    '&:hover': {
-        color: 'yellow'
-    }
-};
+// const actionInfoStyle = {
+//     // TODO funker ikke med hover. sjekk ut.
+//     '&:hover': {
+//         color: 'yellow'
+//     }
+// };
 export default App;

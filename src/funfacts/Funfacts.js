@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import '../App.css';
 import './Funfacts.css';
 import {players, SelectBox, allRounds, roundJackass} from '../utils.js';
-import {currentRound, dataz, fplPlayers, loadedPlayerIds, isForFameAndGloryLeague} from '../App.js';
+import {currentRound, dataz, roundStats, loadedPlayerIds, isForFameAndGloryLeague} from '../App.js';
 
 function tempNullCheck(teamId) {
     return dataz[teamId] || {};
@@ -74,8 +74,8 @@ export function calculateStats(round, players, playerPoints, captainData) {
         }
         if (captainPoints !== null && captainPoints !== undefined) {
             const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
-                fplPlayers[captainData[p].player - 1].web_name :
-                fplPlayers[captainData[p].vicePlayer - 1].web_name;
+                roundStats.allPlayers[captainData[p].player - 1].web_name :
+                roundStats.allPlayers[captainData[p].vicePlayer - 1].web_name;
             if (mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0]) {
                 mostCaptainPoints = [[captainPoints, p, captainName]];
             } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
@@ -163,8 +163,8 @@ class App extends Component {
 
     // TODO denne må flyttes til App.js og gjøres ETTER currentRound er satt!
     componentDidMount() {
-        let round = 1;
-        let totalCaptainPoints = {};
+        // let round = 1;
+        // let totalCaptainPoints = {};
         // TODO må hentes via nytt API
         // while (round <= currentRound) {
         //     $.get("/api/captain?round=" + round).done(function (result) {
