@@ -87,7 +87,7 @@ class Transfers extends Component {
                     <div className="transfer-team">
                         {players[teamId]}
                         <span className={`transfer-diff${diff > 0 ? '-pluss' : diff < 0 ? '-minus' : ''}`}>
-                            {` ( ${diff > 0 ? '+' : diff < 0 ? '-' : ''}${Math.abs(diff)} )`}
+                            {` ( ${diff > 0 ? '+' : diff < 0 ? '-' : ''}${Math.abs(diff)}p )`}
                         </span>
                     </div>
                     <div className="transfer-transferlist">
