@@ -247,8 +247,8 @@ class App extends Component {
                     {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore)}
                     {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore)}
                     {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench)}
-                    {makeMultipleResultsRowsWithSameScore('Best diff på bytter', score.bestTransferDiff)}
-                    {makeMultipleResultsRowsWithSameScore('Dårligst diff på bytter', score.worstTransferDiff)}
+                    {makeMultipleResultsRowsWithSameScore('Best diff bytter', score.bestTransferDiff)}
+                    {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff)}
                     {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
                     {normalFact('Største fall i vår liga', score.largestLeageDrop)}
                     {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
