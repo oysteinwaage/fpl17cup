@@ -1,16 +1,19 @@
 import React, {Component} from 'react';
 import '../App.css';
 import './Funfacts.css';
-import {players, SelectBox, allRounds, roundJackass} from '../utils.js';
-import {currentRound, dataz, roundStats, loadedPlayerIds, isForFameAndGloryLeague} from '../App.js';
+// TODO bytt ut players her med den fra state når den modalen er flyttet til egen komponent
+import {players, SelectBox, roundsUpTilNow, roundJackass} from '../utils.js';
+import {roundStats, isForFameAndGloryLeague} from '../Login.js';
 import {transferDiff} from '../transfers/Transfers.js';
+import PropTypes from "prop-types";
+import {connect} from "react-redux";
 
-function tempNullCheck(teamId) {
+function tempNullCheck(teamId, dataz) {
     return dataz[teamId] || {};
 }
 
-function tempNullCheckRound(teamId, round) {
-    return tempNullCheck(teamId) && tempNullCheck(teamId)[round] ? tempNullCheck(teamId)[round] : {};
+function tempNullCheckRound(teamId, round, dataz) {
+    return tempNullCheck(teamId, dataz) && tempNullCheck(teamId, dataz)[round] ? tempNullCheck(teamId, dataz)[round] : {};
 }
 
 function hasCaptainPlayed(playerPoints, captainId) {
@@ -41,7 +44,7 @@ function populateLowestValueListFor(list, value, player){
     return list;
 }
 
-export function calculateStats(round, players, playerPoints, captainData) {
+export function calculateStats(round, managers, playerPoints, captainData, currentRound, dataz) {
     let highestRoundScore = [];
     let lowestRoundScore = [];
     let mostPointsOnBench = [];
@@ -59,73 +62,73 @@ export function calculateStats(round, players, playerPoints, captainData) {
     let lowestTotalHitsTaken = [];
     let bestTransferDiff = [];
     let worstTransferDiff = [];
-    players.forEach(function (p) {
-        const roundNullsafe = tempNullCheckRound(p, 'round' + round);
+    (managers || []).forEach(function (teamId) {
+        const roundNullsafe = tempNullCheckRound(teamId, 'round' + round, dataz);
         const points = roundNullsafe.points;
         const pointsOnBench = roundNullsafe.pointsOnBench;
-        const transfersUsed = tempNullCheck(p).totalTransfers;
-        const totalPointsOnBench = tempNullCheck(p).totalPointsOnBench;
-        const totalHitsTaken = tempNullCheck(p).totalHitsTaken;
-        const captainPoints = playerPoints && playerPoints[1] && captainData[p] && calculateCaptainPointsForPlayer(playerPoints, captainData, p);
+        const transfersUsed = tempNullCheck(teamId, dataz).totalTransfers;
+        const totalPointsOnBench = tempNullCheck(teamId, dataz).totalPointsOnBench;
+        const totalHitsTaken = tempNullCheck(teamId, dataz).totalHitsTaken;
+        const captainPoints = playerPoints && playerPoints[1] && captainData[teamId] && calculateCaptainPointsForPlayer(playerPoints, captainData, teamId);
 
-        if(points !== null && points !== undefined){
-            highestRoundScore = populateHighestValueListFor(highestRoundScore, points, p);
-            lowestRoundScore = populateLowestValueListFor(lowestRoundScore, points, p);
+        if (points !== null && points !== undefined) {
+            highestRoundScore = populateHighestValueListFor(highestRoundScore, points, teamId);
+            lowestRoundScore = populateLowestValueListFor(lowestRoundScore, points, teamId);
         }
         if (pointsOnBench !== null && pointsOnBench !== undefined) {
-            mostPointsOnBench = populateHighestValueListFor(mostPointsOnBench, pointsOnBench, p);
+            mostPointsOnBench = populateHighestValueListFor(mostPointsOnBench, pointsOnBench, teamId);
         }
         if (captainPoints !== null && captainPoints !== undefined) {
-            const captainName = hasCaptainPlayed(playerPoints, captainData[p].player) ?
-                roundStats.allPlayers[captainData[p].player - 1].web_name :
-                roundStats.allPlayers[captainData[p].vicePlayer - 1].web_name;
+            const captainName = hasCaptainPlayed(playerPoints, captainData[teamId].player) ?
+                roundStats.allPlayers[captainData[teamId].player - 1].web_name :
+                roundStats.allPlayers[captainData[teamId].vicePlayer - 1].web_name;
             if (mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0]) {
-                mostCaptainPoints = [[captainPoints, p, captainName]];
+                mostCaptainPoints = [[captainPoints, teamId, captainName]];
             } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
-                mostCaptainPoints.push([captainPoints, p, captainName]);
+                mostCaptainPoints.push([captainPoints, teamId, captainName]);
             }
             if (lowestCaptainPoints.length === 0 || captainPoints < lowestCaptainPoints[0][0]) {
-                lowestCaptainPoints = [[captainPoints, p, captainName]];
+                lowestCaptainPoints = [[captainPoints, teamId, captainName]];
             } else if (lowestCaptainPoints.length > 0 && captainPoints === lowestCaptainPoints[0][0]) {
-                lowestCaptainPoints.push([captainPoints, p, captainName])
+                lowestCaptainPoints.push([captainPoints, teamId, captainName])
             }
         }
         if (roundNullsafe.chipsPlayed) {
-            chipsUsed.push([p, roundNullsafe.chipsPlayed.chipName]);
+            chipsUsed.push([teamId, roundNullsafe.chipsPlayed.chipName]);
         }
         if (roundNullsafe.takenHit > 0) {
-            hitsTaken.push([p, '-' + roundNullsafe.takenHit + 'p']);
+            hitsTaken.push([teamId, '-' + roundNullsafe.takenHit + 'teamId']);
         }
         if (round + '' === currentRound + '') {
-            const leagueClimb = tempNullCheck(p).leagueClimb;
+            const leagueClimb = tempNullCheck(teamId, dataz).leagueClimb;
             if (leagueClimb > highestLeagueClimber[0]) {
                 highestLeagueClimber[0] = leagueClimb;
-                highestLeagueClimber[1] = p;
+                highestLeagueClimber[1] = teamId;
             } else if (leagueClimb < largestLeageDrop[0]) {
                 largestLeageDrop[0] = leagueClimb;
-                largestLeageDrop[1] = p;
+                largestLeageDrop[1] = teamId;
             }
         }
 
-        if(totalPointsOnBench !== null && totalPointsOnBench !== undefined){
-            mostTotalPointsOnBench = populateHighestValueListFor(mostTotalPointsOnBench, totalPointsOnBench, p);
-            lowestTotalPointsOnBench = populateLowestValueListFor(lowestTotalPointsOnBench, totalPointsOnBench, p);
+        if (totalPointsOnBench !== null && totalPointsOnBench !== undefined) {
+            mostTotalPointsOnBench = populateHighestValueListFor(mostTotalPointsOnBench, totalPointsOnBench, teamId);
+            lowestTotalPointsOnBench = populateLowestValueListFor(lowestTotalPointsOnBench, totalPointsOnBench, teamId);
         }
-        if(transferDiff && Object.keys(transferDiff).length && transferDiff[p][round]){
-            bestTransferDiff = populateHighestValueListFor(bestTransferDiff, transferDiff[p][round], p);
-            worstTransferDiff = populateLowestValueListFor(worstTransferDiff, transferDiff[p][round], p);
+        if (transferDiff && Object.keys(transferDiff).length && transferDiff[teamId][round]) {
+            bestTransferDiff = populateHighestValueListFor(bestTransferDiff, transferDiff[teamId][round], teamId);
+            worstTransferDiff = populateLowestValueListFor(worstTransferDiff, transferDiff[teamId][round], teamId);
         }
-        if(totalHitsTaken !== null && totalHitsTaken !== undefined){
-            mostTotalHitsTaken = populateHighestValueListFor(mostTotalHitsTaken, totalHitsTaken, p);
-            lowestTotalHitsTaken = populateLowestValueListFor(lowestTotalHitsTaken, totalHitsTaken, p);
+        if (totalHitsTaken !== null && totalHitsTaken !== undefined) {
+            mostTotalHitsTaken = populateHighestValueListFor(mostTotalHitsTaken, totalHitsTaken, teamId);
+            lowestTotalHitsTaken = populateLowestValueListFor(lowestTotalHitsTaken, totalHitsTaken, teamId);
         }
-        if(transfersUsed !== null && transfersUsed !== undefined){
-            mostTransfersUsed = populateHighestValueListFor(mostTransfersUsed, transfersUsed, p);
-            fewestTransfersUsed = populateLowestValueListFor(fewestTransfersUsed, transfersUsed, p);
+        if (transfersUsed !== null && transfersUsed !== undefined) {
+            mostTransfersUsed = populateHighestValueListFor(mostTransfersUsed, transfersUsed, teamId);
+            fewestTransfersUsed = populateLowestValueListFor(fewestTransfersUsed, transfersUsed, teamId);
         }
     });
-    highestLeagueClimber[0] = convertForView(highestLeagueClimber);
-    largestLeageDrop[0] = convertForView(largestLeageDrop);
+    highestLeagueClimber[0] = convertForView(highestLeagueClimber, dataz);
+    largestLeageDrop[0] = convertForView(largestLeageDrop, dataz);
     hitsTaken.sort(function (a, b) {
         return b[1].slice(1, -1) - a[1].slice(1, -1);
     });
@@ -150,11 +153,11 @@ export function calculateStats(round, players, playerPoints, captainData) {
     }
 }
 
-function convertForView(data) {
-    return tempNullCheck(data[1]).lastRoundLeagueRank + ' => ' + tempNullCheck(data[1]).leagueRank;
+function convertForView(data, dataz) {
+    return tempNullCheck(data[1], dataz).lastRoundLeagueRank + ' => ' + tempNullCheck(data[1], dataz).leagueRank;
 }
 
-class App extends Component {
+class Funfacts extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -162,22 +165,21 @@ class App extends Component {
             highestRoundScore: '?',
             lowestScorePlayer: '?',
             lowestRoundScore: '?',
-            selectedRound: currentRound,
+            selectedRound: props.currentRound,
             captainData: {},
             playerPoints: null,
         };
-        // this.calculateStats = this.calculateStats.bind(this);
         this.fetchCaptainData = this.fetchCaptainData.bind(this);
     };
 
-    // TODO denne må flyttes til App.js og gjøres ETTER currentRound er satt!
+    // TODO denne må flyttes til Login.js og gjøres ETTER currentRound er satt!
     componentDidMount() {
         // let round = 1;
         // let totalCaptainPoints = {};
         // TODO må hentes via nytt API
         // while (round <= currentRound) {
         //     $.get("/api/captain?round=" + round).done(function (result) {
-        //         loadedPlayerIds.forEach(pId => {
+        //         managerIds.forEach(pId => {
         //             Object.assign(totalCaptainPoints, {
         //                 playerId: pId,
         //                 totalCapPoints: totalCaptainPoints.totalCapPoints + result[pId]
@@ -213,10 +215,14 @@ class App extends Component {
     }
 
     render() {
-        if (this.state.playerPoints === null) {
-            this.fetchCaptainData(this.state.selectedRound);
+        const { currentRound, managerIds, dataz } = this.props;
+        const { playerPoints, selectedRound, captainData} = this.state;
+
+        // TODO dette her er ikke riktig lenger. Hent kapteinsdata samtidig som alt annet i Login om det er mulig
+        if (playerPoints === null) {
+            this.fetchCaptainData(selectedRound);
         }
-        let score = calculateStats(this.state.selectedRound, loadedPlayerIds, this.state.playerPoints, this.state.captainData);
+        let score = calculateStats(selectedRound, managerIds, playerPoints, captainData, currentRound, dataz);
         let totalHits = score.mostTotalHitsTaken || [];
         if(totalHits[0]){
             totalHits[0] = ['-' + score.mostTotalHitsTaken[0][0] + 'p', score.mostTotalHitsTaken[0][1]];
@@ -225,7 +231,7 @@ class App extends Component {
         if(totalFewestHits[0]){
             totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' :'-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
         }
-        const roundJackasText = roundJackass['round' + this.state.selectedRound];
+        const roundJackasText = roundJackass['round' + selectedRound];
         // TODO midlertidig fjernet teksten om at kapteinspoeng oppdateres fortløpende inntil det er tilbake
         return (
             <div className="ff-content-container">
@@ -242,8 +248,8 @@ class App extends Component {
                 </div>
                 }
                 <div className="ff-round-facts">
-                    <div className="ff-facts-header">Stats runde {this.state.selectedRound}</div>
-                    {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
+                    <div className="ff-facts-header">Stats runde {selectedRound}</div>
+                    {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
                     {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore)}
                     {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore)}
                     {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench)}
@@ -288,28 +294,6 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
     )
 }
 
-// export function makeMultipleResultsRowsWithSameScore(text, data) {
-//     let firstRow = true;
-//     return data.length === 0 ? null : (
-//         <div className={"ff-multiple-results-container"}>
-//             <div className="ff-normal-fact-text">{text}</div>
-//             <div className="ff-normal-fact-result">
-//                 {data.map(d => {
-//                     const points = firstRow ? d[0] : '';
-//                     const player = players[d[1][0]] + ' (' + d[1][1] + ')';
-//                     firstRow = false;
-//                     return (
-//                         <div key={d[1][0] + 'r'} className="ff-multiple-result-facts-2">
-//                             <div key={d[1][0] + 'p'} className="ff-multiple-result-facts-points">{points}</div>
-//                             <div key={d[1][0] + 'p2'} className="ff-multiple-result-facts-player">{player}</div>
-//                         </div>
-//                     )
-//                 })}
-//             </div>
-//         </div>
-//     )
-// }
-
 export function makeMultipleResultsRowsWithSameScore(text, data, onlyScore = false) {
     let firstRow = true;
     return data.length === 0 ? null : (
@@ -344,4 +328,18 @@ export function normalFact(text, data, onlyScore) {
     )
 }
 
-export default App;
+Funfacts.propTypes = {
+    players: PropTypes.object,
+    dataz: PropTypes.object,
+    currentRound: PropTypes.number,
+    managerIds: PropTypes.array
+};
+
+const mapStateToProps = state => ({
+    players: state.data.players,
+    currentRound: state.data.currentRound,
+    managerIds: state.data.managerIds,
+    dataz: state.data.dataz
+});
+
+export default connect(mapStateToProps)(Funfacts);

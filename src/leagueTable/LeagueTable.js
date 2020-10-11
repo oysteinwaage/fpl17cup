@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 import '../App.css';
 import './LeagueTable.css';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
-import {dataz, currentRound, leagueStandings} from "../App.js";
+import {leagueStandings} from "../Login.js";
 import {SelectBox, players, allRounds} from '../utils.js';
 import {customContentStyle} from '../matches/Kamper.js';
 import {
@@ -51,6 +53,7 @@ class LeagueTable extends Component {
     };
 
     render() {
+        const { currentRound, dataz } = this.props;
         let that = this;
         const actions = [
             <FlatButton
@@ -122,4 +125,15 @@ class LeagueTable extends Component {
     }
 }
 
-export default LeagueTable;
+
+LeagueTable.propTypes = {
+    currentRound: PropTypes.number,
+    dataz: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+    currentRound: state.data.currentRound,
+    dataz: state.data.dataz
+});
+
+export default connect(mapStateToProps)(LeagueTable);

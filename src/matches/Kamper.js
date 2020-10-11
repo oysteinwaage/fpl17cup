@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import './Matches.css';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import {MatchesForGroup} from './Runder.js';
-import {SelectBox, participatingRounds, players, allRounds} from '../utils.js';
-import {dataz, currentRound} from "../App.js";
+import {SelectBox, participatingRounds, allRounds} from '../utils.js';
 import {
     calculateStats, normalFact, makeMultipleResultsRows,
     makeMultipleResultsRowsWithSameScore
@@ -45,11 +46,14 @@ class Kamper extends Component {
     };
 
     lastCupRound() {
+        const { currentRound } = this.props;
         let roundNr = currentRound % 2 === 0 ? currentRound : currentRound - 1;
         return roundNr < 4 ? 0 : roundNr === 28 ? 'Playoff' : roundNr >= 30 ? 'Utslagningsrunder' : roundNr;
     }
 
     render() {
+        const { players, currentRound, dataz } = this.props;
+        // TODO denne og dialogen nedenfor kan plasseres i Login og trigges av redux-action istedenfor
         const actions = [
             <FlatButton
                 label="Lukk"
@@ -68,7 +72,7 @@ class Kamper extends Component {
                     info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
                 <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
-                                 onToggleDialog={this.toggleDialog}/>
+                                 onToggleDialog={this.toggleDialog} dataz={dataz}/>
                 <MuiThemeProvider>
                     <Dialog
                         title={players[this.state.dialogPlayer] + ' - ' + managerName}
@@ -114,4 +118,17 @@ export const customContentStyle = {
     height: '90%',
     maxHeight: 'none',
 };
-export default Kamper;
+
+Kamper.propTypes = {
+    players: PropTypes.object,
+    dataz: PropTypes.object,
+    currentRound: PropTypes.number
+};
+
+const mapStateToProps = state => ({
+    players: state.data.players,
+    currentRound: state.data.currentRound,
+    dataz: state.data.dataz
+});
+
+export default connect(mapStateToProps)(Kamper);

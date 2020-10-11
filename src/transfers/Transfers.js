@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 import './Transfers.css';
-import {allRounds, players, SelectBox} from '../utils.js';
-import {currentRound, dataz, loadedPlayerIds, roundStats, transferlist} from '../App.js';
+import {updateIsLoadingData} from '../actions/actions';
+import {roundsUpTilNow, SelectBox} from '../utils.js';
 import {getPlayerScoresFor} from '../api.js';
 
 export let loading = false;
@@ -19,16 +21,28 @@ class Transfers extends Component {
     };
 
     changeSelectedRound() {
-        this.setState({
-            selectedRound: parseInt(document.getElementsByName('selectBox')[0].value)
-        });
-        this.fetchPlayerPoints(parseInt(document.getElementsByName('selectBox')[0].value));
+        const { currentRound } = this.props;
+        const selectedRound = document.getElementsByName('selectBox')[0].value;
+        if(selectedRound === 'Velg runde'){
+            this.setState({
+                selectedRound: null
+            });
+            this.fetchPlayerPoints(currentRound);
+        } else {
+            this.setState({
+                selectedRound: parseInt(selectedRound)
+            });
+            this.fetchPlayerPoints(parseInt(selectedRound));
+        }
     };
 
+    // TODO flytt ut herfra og inn i initial-data-opphenting. Hent da samtidig opp alt som trengs for alle runder frem til gjeldende
     fetchPlayerPoints(round) {
+        const { transferlist, onUpdateIsLoadingData } = this.props;
         let that = this;
         if (round) {
             loading = true;
+            onUpdateIsLoadingData(true);
             let temp = transferlist.reduce(function (prev, curr) {
                 prev.push(...curr.reduce((p, c) => {
                     if (c.event === round) p.push(c.element_out, c.element_in);
@@ -39,9 +53,11 @@ class Transfers extends Component {
             getPlayerScoresFor([...new Set(temp)])
                 .then(points => {
                     loading = false;
+                    onUpdateIsLoadingData(false);
                     that.setState({playerPoints: points})
                 })
                 .catch(error => {
+                    onUpdateIsLoadingData(false);
                     loading = false;
                     console.log('Error getPlayerScoresFor: ', error)
                 });
@@ -49,10 +65,11 @@ class Transfers extends Component {
     }
 
     getSelectedRound() {
-        return this.state.selectedRound || currentRound;
+        return this.state.selectedRound || this.props.currentRound;
     }
 
     transfersForTeamAndRound(teamId, round) {
+        const { players, dataz, roundStats } = this.props;
         const pp = this.state.playerPoints;
         const fplPlayers = roundStats.allPlayers;
         if (teamId && round && pp && !loading) {
@@ -88,9 +105,8 @@ class Transfers extends Component {
                     ...transferDiff[teamId],
                     [round]: diff
                 }
-            }
+            };
 
-            // transferDiff[teamId][round] = diff;
             return teamId && round && transfers && (
                 <div key={teamId} className="transfer-container">
                     <div className="transfer-team">
@@ -114,6 +130,7 @@ class Transfers extends Component {
     }
 
     render() {
+        const { currentRound, managerIds } = this.props;
         const chosenRound = this.getSelectedRound();
         if (this.state.playerPoints === null && !loading) {
             this.fetchPlayerPoints(chosenRound);
@@ -121,16 +138,36 @@ class Transfers extends Component {
         return (
             <div className="transfer-content">
                 <div className="transfer-header"> {(chosenRound === currentRound && chosenRound !== null) && 'Runde ' + chosenRound}</div>
-                {SelectBox(allRounds, this.changeSelectedRound.bind(this))}
-                {/*<MuiThemeProvider>*/}
-                {/*{MakeDropDownMenu(participatingRounds, this.state.selectedRound, this.changeSelectedRoundUi.bind(this))}*/}
-                {/*</MuiThemeProvider>*/}
-                {loadedPlayerIds.map(player => {
-                    return this.transfersForTeamAndRound(player, chosenRound);
+                {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
+                {managerIds.map(teamId => {
+                    return this.transfersForTeamAndRound(teamId, chosenRound);
                 })}
             </div>
         );
     }
 }
 
-export default Transfers;
+Transfers.propTypes = {
+    players: PropTypes.object,
+    currentRound: PropTypes.number,
+    managerIds: PropTypes.array,
+    transferlist: PropTypes.array,
+    dataz: PropTypes.object,
+    roundStats: PropTypes.object,
+    onUpdateIsLoadingData: PropTypes.func
+};
+
+const mapStateToProps = state => ({
+    players: state.data.players,
+    currentRound: state.data.currentRound,
+    managerIds: state.data.managerIds,
+    transferlist: state.data.transferlist,
+    dataz: state.data.dataz,
+    roundStats: state.data.roundStats
+});
+
+const mapDispatchToProps = dispatch => ({
+    onUpdateIsLoadingData: (isLoading) => dispatch(updateIsLoadingData(isLoading)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transfers);

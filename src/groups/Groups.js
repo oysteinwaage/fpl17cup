@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import '../App.css';
 import './Groups.css';
 import {groups} from '../matches/Runder.js';
-import {groupData} from '../App.js';
-import {players} from '../utils.js';
 
 const groupsMenmbers = {
     groupA: [737536, 1259705, 1618273, 130438, 2249091, 3958980],
@@ -27,27 +27,26 @@ function makeRow(team, matches, wins, draws, lost, goalDiff, points, extraClassn
     )
 }
 
-//TODO inntil jeg får fikset redux med state
-function tempNullCheck(teamId) {
-    return groupData[teamId] || {};
-}
+class Grupper extends Component {
+    tempNullCheck = (teamId) => this.props.groupData[teamId] || {};
 
-class App extends Component {
     render() {
+        const { players } = this.props;
+        let that = this;
         return (
             <div className="group-content">
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
                     const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
-                        return tempNullCheck(b).difference - tempNullCheck(a).difference;
+                        return that.tempNullCheck(b).difference - that.tempNullCheck(a).difference;
                     }).sort(function (a, b) {
-                        return tempNullCheck(b).points - tempNullCheck(a).points;
+                        return that.tempNullCheck(b).points - that.tempNullCheck(a).points;
                     });
                     return (<div key={groupId}>
                         <div className='groupName'>{'Gruppe ' + groupLetter}</div>
                         {makeRow('Lag', 'K', 'S', 'U', 'T', 'Diff', 'Poeng', 'Header')}
                         {sortedGroupMembers.map(team => {
-                            const teamData = tempNullCheck(team);
+                            const teamData = that.tempNullCheck(team);
                             const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
                             return makeRow(
                                 team < 4  ? "Fantasy Average" : players[team],
@@ -66,4 +65,14 @@ class App extends Component {
     }
 }
 
-export default App;
+Grupper.propTypes = {
+    groupData: PropTypes.object,
+    players: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+    groupData: state.data.groupData,
+    players: state.data.players
+});
+
+export default connect(mapStateToProps)(Grupper);

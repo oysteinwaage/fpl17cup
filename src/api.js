@@ -88,7 +88,7 @@ export function getTransfers() {
 export function getTestNoe() {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
-            fetch(`/api/getTestDirekte`)
+            fetch(`/api/test`)
                 .then(r => r.json())
                 .then(data => {
                     console.log('testNoe', data);

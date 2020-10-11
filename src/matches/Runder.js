@@ -1,6 +1,6 @@
 import React from 'react';
 import './Runder.css';
-import {score, dataz} from '../App.js';
+import {score} from '../Login.js';
 import {players, fplAvgTeams} from '../utils.js';
 
 export const gamesPrGroupAndRound = {
@@ -55,8 +55,6 @@ export const gamesPrGroupAndRound = {
     }
 };
 
-
-
 export const groups = ['A', 'B', 'C', 'D', 'E'];
 
 //TODO Flytt alle disse felles-funksjonene til utils. Brukes av mange
@@ -105,14 +103,14 @@ function Match(props) {
                 <div className="homeTeam team">
                     <a onClick={() => props.onToggleDialog(props.team1)}>
                         {fplAvgTeams.includes(props.team1) ? "Fantasy Average" : players[props.team1]}<br/>
-                        <div className="subName">{fplAvgTeams.includes(props.team1) ? props.round : dataz[props.team1] && dataz[props.team1].managerName}</div>
+                        <div className="subName">{fplAvgTeams.includes(props.team1) ? props.round : props.dataz[props.team1] && props.dataz[props.team1].managerName}</div>
                     </a>
                 </div>
-                <div className="score">{score(props.team1, props.team2, props.round)}</div>
+                <div className="score">{score(props.team1, props.team2, props.round, props.dataz)}</div>
                 <div className="awayTeam team">
                     <a onClick={() => props.onToggleDialog(props.team2)}>
                         {fplAvgTeams.includes(props.team2) ? "Fantasy Average" : players[props.team2]}<br/>
-                        <div className="subName">{fplAvgTeams.includes(props.team2) ? props.round : dataz[props.team2] && dataz[props.team2].managerName}</div>
+                        <div className="subName">{fplAvgTeams.includes(props.team2) ? props.round : props.dataz[props.team2] && props.dataz[props.team2].managerName}</div>
                     </a>
                 </div>
             </div>
@@ -166,7 +164,9 @@ export function MatchesForGroup(props) {
                                           team1={match[0]}
                                           team2={match[1]}
                                           round={'round' + roundNr}
-                                          onToggleDialog={props.onToggleDialog}/>;
+                                          onToggleDialog={props.onToggleDialog}
+                                          dataz={props.dataz}
+                            />;
                         })}
                     </div>);
             })}
