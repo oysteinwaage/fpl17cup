@@ -1,20 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, Route, IndexRoute, hashHistory} from 'react-router';
+import { Route } from 'react-router';
+import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import './index.css';
-import App from './App';
-import Kamper from './matches/Kamper';
-import Grupper from './groups/Groups';
-import Funfacts from './funfacts/Funfacts';
-import Transfers from './transfers/Transfers';
-import registerServiceWorker from './registerServiceWorker';
+import App2 from './App';
+import { configureStore, history } from './store/configureStore';
+window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
-ReactDOM.render(<Router history={hashHistory}>
-    <Route path="/" component={App}>
-        <IndexRoute component={Kamper}/>
-        <Route path="grupper" component={Grupper}/>
-        <Route path="funfacts" component={Funfacts}/>
-        <Route path="transfers" component={Transfers}/>
-    </Route>
-</Router>, document.getElementById('root'));
-registerServiceWorker();
+const store = configureStore();
+ReactDOM.render(
+    <Provider store={store}>
+        <ConnectedRouter history={history}>
+            <Route path="/" component={App2} />
+        </ConnectedRouter>
+    </Provider>, document.getElementById('root'),
+);
+// registerServiceWorker();

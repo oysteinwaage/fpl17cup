@@ -1,19 +1,26 @@
-.transfer-header {
-    text-align: center;
-}
-
 .transfer-container {
     font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding-top: 30px;
+    padding-top: 40px;
+}
+
+.transfer-header {
+    text-align: center;
+}
+
+.transfer-diff-pluss {
+    color: #8dbf9e;
+}
+.transfer-diff-minus {
+    color: rgba(238, 6, 0, 0.73);
 }
 
 .transfer-team {
     width: 100%;
     font-weight: bold;
-    padding-bottom: 5px;
+    padding: 0 0 5px 5px;
 }
 
 .transfer-transferlist {
@@ -25,11 +32,34 @@
     width: 100%;
     /*justify-content: space-between;*/
     border-bottom: .5px solid #c4c4c4;
+    background-color: #f9f9f9;
+    padding: 0 5px;
+}
+
+.row-transfer-diff-pluss {
+    background-color: rgba(141, 191, 158, 0.31);
+}
+.row-transfer-diff-minus {
+    background-color: rgba(238, 6, 0, 0.08);
+}
+
+.transfer-header-row {
+    display: flex;
+    width: 100%;
+    border-bottom: .5px solid #c4c4c4;
+    background-color: #ebebeb;
+    padding: 5px;
+}
+
+.transfer-player-header {
+    text-align: left;
+    padding: 2px 0;
+    width: 40%;
 }
 
 .transfer-player {
     text-align: left;
-    padding: 2px 0;
+    padding-top: 10px;
     width: 40%;
 }
 
@@ -37,4 +67,16 @@
     text-align: right;
     padding: 2px 0;
     width: 100px;
+}
+
+.transfer-content .selectBoxContainer .select_style {
+    font-size: 16px;
+    border-radius: 0;
+    padding: 7px;
+    position: relative;
+    border: 0;
+    cursor: pointer;
+    z-index: 10;
+    background-color: #dfdfdf;
+    border-bottom: solid black 1px;
 }
