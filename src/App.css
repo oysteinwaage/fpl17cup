@@ -63,6 +63,11 @@ ul.header li a {
     display: flex;
     justify-content: center;
     padding: 20px;
+    background-color: rgba(235, 235, 235, 0.19);
+    height: 100%;
+}
+.footer {
+    background-color: rgba(235, 235, 235, 0.19);
 }
 
 .content h2 {

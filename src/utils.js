@@ -45,9 +45,8 @@ export const fplAvgTeams = [0, 1, 2, 3];
 
 export const leaguesInDropdownList = [
     {id: 120053, name: "For Fame And Glory",},
-    // {id: 453594, name: "Graduates 2012 FTW!",},
-    // {id: 453718, name: "PM Oversikt",},
-    // {id: 883227, name: "Progit",},
+    {id: 104768, name: "Graduates 2012 FTW!",},
+    {id: 524841, name: "Progit",},
     // {id: 437181, name: "Lillohøyden FC",},
     // {id: 10724, name: "200-kronersligaen",},
 ];
@@ -109,7 +108,6 @@ export function MakeDropDownMenu(values, chosenValue, onchange) {
 export const forFameAndGloryManagers = [210166, 4984122, 2249091, 1159430, 126466, 404123, 130438, 1025143, 493380, 552453, 1260577, 1618273, 219691, 1259705, 3958980, 444051, 3034647, 531121, 2218701, 131342, 3524888, 3930276, 3126178, 737536, 18575, 1884253 ];
 export const graduatesManagers = [321128, 1822874, 413111, 2072291, 439368];
 export const progitManagers = [2347541, 1822874, 3959205, 3706260, 2886116, 3959217, 5449341];
-export const pmOversiktManagers = [537141, 1822874, 4309888, 2893981, 607214, 200362, 434611, 5060530, 4179755, 3090921, 3113961];
 export const lillohoydenFcManagers = [3880226, 1822874, 1244151, 3130565, 4356361, 1901889, 2017801, 3189167, 2943466];
 export const _200kronersligaen = [67531, 459652, 3187306, 251497, 2931055, 3029470, 1471223, 151328, 934964, 2065912, 2531378, 133698, 3194393, 48161, 313300, 60601, 2554088, 2382455, 580680, 87152, 1507107, 1149654, 2930950, 3767462, 1748600, 520455, 947380, 69423, 3316935, 199948, 4767729, 2933152, 1148906, 37348, 68522, 3203486, 1132182, 2965511, 883899, 3326262, 4978046, 3571520, 3524564];
 
@@ -120,9 +118,7 @@ export function getLeagueManagers(leagueId) {
             return forFameAndGloryManagers;
         case 453594:
             return graduatesManagers;
-        case 453718:
-            return pmOversiktManagers;
-        case 883227:
+        case 524841:
             return progitManagers;
         case 437181:
             return lillohoydenFcManagers;

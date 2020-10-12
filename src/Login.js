@@ -1,20 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import './App.css';
-import {
-    updateChosenLeagueId,
-    updateGroupData as updateGroupDataAction,
-    updatePlayersList,
-    setCurrentRound,
-    setManagerIds,
-    setRoundStats,
-    updateTransfers,
-    updateIsLoadingData
-} from './actions/actions';
-import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
-import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getStats, getRoundScores, getTransfers, getTestNoe} from './api.js';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -23,10 +9,23 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Popover from 'material-ui/Popover/Popover';
 import {push} from "connected-react-router";
+import './App.css';
+import {
+    updateChosenLeagueId,
+    updateGroupData as updateGroupDataAction,
+    updatePlayersList,
+    setCurrentRound,
+    setRoundStats,
+    updateTransfers,
+    updateIsLoadingData,
+    updateLeagueData
+} from './actions/actions';
+import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
+import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.js';
+import {getManagerList, getStats, getRoundScores, getTransfers} from './api.js';
+import TeamStatsModal from "./components/TeamStatsModal";
 
-// let dataz = {};
 let groupData = {};
-export let leagueStandings = [];
 export let roundStats = {};
 
 export function isForFameAndGloryLeague(id) {
@@ -123,23 +122,23 @@ class Login extends Component {
 
     fetchDataFromServer() {
         const {
-            leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onAapneNySide,
-            onSetCurrentRound, onSetManagersIds, onUpdateTransfers, onUpdateIsLoadingData
+            leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onAapneNySide, onUpdateLeagueData,
+            onSetCurrentRound, onUpdateTransfers, onUpdateIsLoadingData
         } = this.props;
         let that = this;
 
-        getTestNoe();
+        // getTestNoe();
 
         getManagerList(leagueIdChosenByUser).then(leagueData => {
             if (leagueData && leagueData.managers && leagueData.managers.length > 0) {
-                onSetManagersIds(leagueData.managers);
+                onUpdateLeagueData(leagueData);
                 that.state.leagueName = leagueData.leagueName;
                 getStats().then(data => {
                     console.log('getStats: ', data);
                     roundStats = data;
                     onSetRoundStats(data);
 
-                    getRoundScores().then(scoreData => {
+                    getRoundScores(leagueData.managers).then(scoreData => {
                         console.log('score: ', scoreData);
                         onSetCurrentRound(scoreData);
                         this.makeGroupData();
@@ -153,7 +152,7 @@ class Login extends Component {
                         });
                         onUpdatePlayersList(teamNameToIdMap);
 
-                        getTransfers().then(result => {
+                        getTransfers(leagueData.managers).then(result => {
                             onUpdateTransfers(result);
                             // if (result && result.length > 0) {
                             //     result.forEach(function (i) {
@@ -249,11 +248,14 @@ class Login extends Component {
                         <li>
                             <a className={currentPage === '/transfers' ? 'active' : ''} onClick={() => onAapneNySide('transfers')}>Bytter</a>
                         </li>
-                        {/*<li><Link to="/leaguetable" activeClassName="active">Tabell</Link></li>*/}
+                        <li>
+                            <a className={currentPage === '/leaguetable' ? 'active' : ''} onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
+                        </li>
                     </div>
                 </ul>
 
                 <div className="content">
+                    <TeamStatsModal />
                     {isLoadingData &&
                     <MuiThemeProvider>
                         <Dialog
@@ -345,10 +347,10 @@ Login.propTypes = {
     onUpdateGroupData: PropTypes.func,
     onUpdatePlayersList: PropTypes.func,
     onSetCurrentRound: PropTypes.func,
-    onSetManagersIds: PropTypes.func,
     onSetRoundStats: PropTypes.func,
     onUpdateTransfers: PropTypes.func,
     onUpdateIsLoadingData: PropTypes.func,
+    onUpdateLeagueData: PropTypes.func,
     onAapneNySide: PropTypes.func,
     leagueIdChosenByUser: PropTypes.number,
     currentPage: PropTypes.string,
@@ -372,10 +374,10 @@ const mapDispatchToProps = dispatch => ({
     onUpdateGroupData: (groupData) => dispatch(updateGroupDataAction(groupData)),
     onUpdatePlayersList: (players) => dispatch(updatePlayersList(players)),
     onSetCurrentRound: (round) => dispatch(setCurrentRound(round)),
-    onSetManagersIds: (managers) => dispatch(setManagerIds(managers)),
     onSetRoundStats: (roundStats) => dispatch(setRoundStats(roundStats)),
     onUpdateTransfers: (transfers) => dispatch(updateTransfers(transfers)),
     onUpdateIsLoadingData: (isLoading) => dispatch(updateIsLoadingData(isLoading)),
+    onUpdateLeagueData: (leagueData) => dispatch(updateLeagueData(leagueData)),
     onAapneNySide: (id) => dispatch(push(id)),
 });
 

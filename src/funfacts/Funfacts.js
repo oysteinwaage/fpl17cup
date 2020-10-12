@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import '../App.css';
 import './Funfacts.css';
-// TODO bytt ut players her med den fra state når den modalen er flyttet til egen komponent
-import {players, SelectBox, roundsUpTilNow, roundJackass} from '../utils.js';
+import {SelectBox, roundsUpTilNow, roundJackass} from '../utils.js';
 import {roundStats, isForFameAndGloryLeague} from '../Login.js';
 import {transferDiff} from '../transfers/Transfers.js';
 import PropTypes from "prop-types";
@@ -97,7 +96,7 @@ export function calculateStats(round, managers, playerPoints, captainData, curre
             chipsUsed.push([teamId, roundNullsafe.chipsPlayed.chipName]);
         }
         if (roundNullsafe.takenHit > 0) {
-            hitsTaken.push([teamId, '-' + roundNullsafe.takenHit + 'teamId']);
+            hitsTaken.push([teamId, '-' + roundNullsafe.takenHit + 'p']);
         }
         if (round + '' === currentRound + '') {
             const leagueClimb = tempNullCheck(teamId, dataz).leagueClimb;
@@ -215,7 +214,7 @@ class Funfacts extends Component {
     }
 
     render() {
-        const { currentRound, managerIds, dataz } = this.props;
+        const { currentRound, managerIds, dataz, players } = this.props;
         const { playerPoints, selectedRound, captainData} = this.state;
 
         // TODO dette her er ikke riktig lenger. Hent kapteinsdata samtidig som alt annet i Login om det er mulig
@@ -250,33 +249,33 @@ class Funfacts extends Component {
                 <div className="ff-round-facts">
                     <div className="ff-facts-header">Stats runde {selectedRound}</div>
                     {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
-                    {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore)}
-                    {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore)}
-                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench)}
-                    {makeMultipleResultsRowsWithSameScore('Best diff bytter', score.bestTransferDiff)}
-                    {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff)}
-                    {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber)}
-                    {normalFact('Største fall i vår liga', score.largestLeageDrop)}
-                    {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints)}
-                    {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints)}
-                    {makeMultipleResultsRows('Brukt chips', score.chipsUsed)}
-                    {makeMultipleResultsRows('Tatt hit', score.hitsTaken)}
+                    {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore, players)}
+                    {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore, players)}
+                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench, players)}
+                    {makeMultipleResultsRowsWithSameScore('Best diff bytter', score.bestTransferDiff, players)}
+                    {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff, players)}
+                    {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber, players)}
+                    {normalFact('Største fall i vår liga', score.largestLeageDrop, players)}
+                    {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints, players)}
+                    {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints, players)}
+                    {makeMultipleResultsRows('Brukt chips', score.chipsUsed, players)}
+                    {makeMultipleResultsRows('Tatt hit', score.hitsTaken, players)}
                 </div>
                 <div className="ff-total-facts">
                     <div className="ff-facts-header">Stats totalt</div>
-                    {makeMultipleResultsRowsWithSameScore('Flest bytter', score.mostTransfersUsed)}
-                    {makeMultipleResultsRowsWithSameScore('Færrest bytter', score.fewestTransfersUsed)}
-                    {makeMultipleResultsRowsWithSameScore('Mest hits tatt', totalHits)}
-                    {makeMultipleResultsRowsWithSameScore('Minst hits tatt', totalFewestHits)}
-                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench)}
-                    {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench)}
+                    {makeMultipleResultsRowsWithSameScore('Flest bytter', score.mostTransfersUsed, players)}
+                    {makeMultipleResultsRowsWithSameScore('Færrest bytter', score.fewestTransfersUsed, players)}
+                    {makeMultipleResultsRowsWithSameScore('Mest hits tatt', totalHits, players)}
+                    {makeMultipleResultsRowsWithSameScore('Minst hits tatt', totalFewestHits, players)}
+                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench, players)}
+                    {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench, players)}
                 </div>
             </div>
         );
     }
 }
 
-export function makeMultipleResultsRows(text, data, onlyScore) {
+export function makeMultipleResultsRows(text, data, players, onlyScore) {
     return data.length === 0 ? null : (
         <div className={"ff-multiple-results-container"}>
             <div className="ff-normal-fact-text">{text}</div>
@@ -294,7 +293,7 @@ export function makeMultipleResultsRows(text, data, onlyScore) {
     )
 }
 
-export function makeMultipleResultsRowsWithSameScore(text, data, onlyScore = false) {
+export function makeMultipleResultsRowsWithSameScore(text, data, players, onlyScore = false) {
     let firstRow = true;
     return data.length === 0 ? null : (
         <div className={"ff-multiple-results-container"}>
@@ -316,7 +315,7 @@ export function makeMultipleResultsRowsWithSameScore(text, data, onlyScore = fal
     )
 }
 
-export function normalFact(text, data, onlyScore) {
+export function normalFact(text, data, players, onlyScore) {
     const teamName = onlyScore ? '' : ' (' + players[data[1]] + ')';
     return data[1] && (
         <div className={"ff-normal-fact-container"}>

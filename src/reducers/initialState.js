@@ -4,9 +4,10 @@ export default {
     currentRound: null,
     transferlist: [],
     managerIds: [],
-    leagueStandings: [],
+    leagueData: {},
     roundStats: {},
     leagueIdChosenByUser: 0,
     loadingData: false,
     players: {},
+    showTeamStatsModal: false,
 };

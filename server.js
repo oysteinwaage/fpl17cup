@@ -33,7 +33,6 @@ app.use(express.static('build'));
 
 app.get('/api/getManagerList', function (req, res) {
     leagueId = req.query.leagueId;
-    console.log('ligaId: ', leagueId);
     fetchClassicLeague(leagueId)
         .then(values => {
             loadedPlayerIds = values.map(p => p.entry);
@@ -124,8 +123,8 @@ app.get('/api/stats', function (req, res) {
 });
 
 app.get('/api/scores', function (req, res) {
-    // let teams = req.query.teams;
-    Promise.all(loadedPlayerIds.map(teamId => {
+    let teams = req.query.teams.split(',');
+    Promise.all(teams.map(teamId => {
         return fetchEntry(teamId)
             .then(entry => {
                 return fetchEntryHistory(teamId)
@@ -178,8 +177,56 @@ app.get('/api/test', function (req, res) {
     });
 });
 
+app.get('/api/testDirekte', function (req, res) {
+    fetch(`https://fantasy.premierleague.com/api/leagues-classic/104768/standings/`, {
+        method: 'GET',
+        headers: {
+            'User-Agent':
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+    }).then(r => r.json())
+        .then(data => {
+            res.type('application/json')
+                .send(data)
+                .end();
+        })
+        .catch(error => {
+            console.log('getTest error: ', error);
+            res.type('application/json')
+                .send(error)
+                .end();
+        })
+});
+
+app.get('/api/getLeagueInfo', function (req, res) {
+    leagueId = req.query.leagueId;
+    fetch(`https://fantasy.premierleague.com/api/leagues-classic/${leagueId}/standings/`, {
+        method: 'GET',
+        headers: {
+            'User-Agent':
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+    }).then(r => r.json())
+        .then(data => {
+            res.type('application/json')
+                .send(data)
+                .end();
+        })
+        .catch(error => {
+            console.log('getTest error: ', error);
+            res.type('application/json')
+                .send(error)
+                .end();
+        })
+});
+
 app.get('/api/getTransfers', function (req, res) {
-    Promise.all(loadedPlayerIds.map(teamId =>
+    let teams = req.query.teams.split(',');
+    Promise.all(teams.map(teamId =>
         new Promise((resolve, reject) => {
             setTimeout(function () {
                 fetch(`https://fantasy.premierleague.com/api/entry/${teamId}/transfers/`, {
@@ -198,14 +245,6 @@ app.get('/api/getTransfers', function (req, res) {
         })
     ))
         .then(data => {
-            // let resultJson = {};
-            // data.forEach(p => {
-            //     resultJson = {
-            //         ...resultJson,
-            //         [p[0].entry]: p
-            //     }
-            // });
-
             res.type('application/json')
                 .send(data)
                 .end();
@@ -217,6 +256,7 @@ app.get('/api/getTransfers', function (req, res) {
                 .end();
         })
 });
+
 
 const server = http.createServer(app);
 

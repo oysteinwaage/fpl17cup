@@ -1,13 +1,12 @@
 import initialState from './initialState';
 import {
-  SET_CURRENT_ROUND,
-  SET_MANAGER_IDS,
-  SET_ROUND_STATS,
-  UPDATE_CHOSEN_LEAGUE_ID,
-  UPDATE_GROUP_DATA,
-  UPDATE_IS_LOADING_DATA,
-  UPDATE_PLAYERS_LIST,
-  UPDATE_TRANSFERS
+    SET_CURRENT_ROUND,
+    SET_ROUND_STATS, TOGGLE_SHOW_TEAM_STATS,
+    UPDATE_CHOSEN_LEAGUE_ID,
+    UPDATE_GROUP_DATA,
+    UPDATE_IS_LOADING_DATA, UPDATE_LEAGUE_DATA,
+    UPDATE_PLAYERS_LIST,
+    UPDATE_TRANSFERS
 } from '../actions/actions';
 
 export default function dataReducer(state = initialState, action) {
@@ -69,10 +68,11 @@ export default function dataReducer(state = initialState, action) {
                 ...state,
                 roundStats: action.roundStats
             };
-        case SET_MANAGER_IDS:
+        case UPDATE_LEAGUE_DATA:
             return {
                 ...state,
-                managerIds: action.managers
+                leagueData: action.leagueData,
+                managerIds: action.leagueData.managers
             };
         case UPDATE_GROUP_DATA:
             return {
@@ -109,6 +109,11 @@ export default function dataReducer(state = initialState, action) {
                 ...state,
                 transferlist: action.transferData,
                 dataz: newDataz
+            };
+        case TOGGLE_SHOW_TEAM_STATS:
+            return {
+                ...state,
+                showTeamStatsModal: action.teamId
             };
         default:
             return state;

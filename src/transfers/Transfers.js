@@ -69,7 +69,7 @@ class Transfers extends Component {
     }
 
     transfersForTeamAndRound(teamId, round) {
-        const { players, dataz, roundStats } = this.props;
+        const { dataz, roundStats } = this.props;
         const pp = this.state.playerPoints;
         const fplPlayers = roundStats.allPlayers;
         if (teamId && round && pp && !loading) {
@@ -110,10 +110,12 @@ class Transfers extends Component {
             return teamId && round && transfers && (
                 <div key={teamId} className="transfer-container">
                     <div className="transfer-team">
-                        {players[teamId]}
+                        {dataz[teamId].name}
                         <span className={`transfer-diff${diff > 0 ? '-pluss' : diff < 0 ? '-minus' : ''}`}>
                             {` ( ${diff > 0 ? '+' : diff < 0 ? '-' : ''}${Math.abs(diff)}p )`}
                         </span>
+                        <br />
+                        <div className="subName">{dataz[teamId].managerName}</div>
                     </div>
                     <div className="transfer-transferlist">
                         <div className={`transfer-header-row`}>

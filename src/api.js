@@ -6,13 +6,35 @@ export let loadedPlayerIds = [210166, 4984122, 2249091, 1159430, 126466, 404123,
 
 export function getManagerList(chosenLeagueId) {
     leagueId = chosenLeagueId;
-    let leagueName = leaguesInDropdownList.find(l => l.id === chosenLeagueId).name;
-    loadedPlayerIds = getLeagueManagers(chosenLeagueId);
 
-    return Promise.resolve({
-        managers: loadedPlayerIds,
-        leagueName: leagueName,
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            fetch(`/api/getLeagueInfo?leagueId=${chosenLeagueId}`)
+                .then(r => r.json())
+                .then(data => {
+                    console.log('leagueInfo ', data);
+                    return resolve({
+                        ...data,
+                        managers: data.standings.results.map(p => p.entry),
+                        leagueName: data.league.name
+                    });
+                })
+                .catch(error => {
+                    if( chosenLeagueId === 120053) {
+                        let leagueName = leaguesInDropdownList.find(l => l.id === chosenLeagueId).name;
+                        loadedPlayerIds = getLeagueManagers(chosenLeagueId);
+                        return Promise.resolve({
+                            managers: loadedPlayerIds,
+                            leagueName: leagueName,
+                        });
+                    } else {
+                        // TODO lag en feil-modal til å vise når opphenting eller andre "kjente" ting inntreffer
+                        reject(error);
+                    }
+                });
+        });
     });
+
 
 // TODO Funket litt, så virket det som jeg ble "blacklistet" av fpl elns.. får Auth-feil hele tiden nå. Prøv igjen seinere
     // return new Promise((resolve, reject) => {
@@ -32,10 +54,10 @@ export function getManagerList(chosenLeagueId) {
     // });
 }
 
-export function getRoundScores() {
+export function getRoundScores(managerIds) {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
-            fetch(`/api/scores?teams=${loadedPlayerIds}`)
+            fetch(`/api/scores?teams=${managerIds}`)
                 .then(r => r.json())
                 .then(data => {
                     // loadedPlayerIds = data.standings.results.map(p => p.entry);
@@ -72,10 +94,10 @@ export function getPlayerScoresFor(players) {
     });
 }
 
-export function getTransfers() {
+export function getTransfers(managerIds) {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
-            fetch(`/api/getTransfers`)
+            fetch(`/api/getTransfers?teams=${managerIds}`)
                 .then(r => r.json())
                 .then(data => {
                     return resolve(data);
@@ -88,10 +110,10 @@ export function getTransfers() {
 export function getTestNoe() {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
-            fetch(`/api/test`)
+            fetch(`/api/testDirekte`)
                 .then(r => r.json())
                 .then(data => {
-                    console.log('testNoe', data);
+                    console.log('testDirekte', data);
                     return resolve(data);
                 })
                 .catch(error => reject(error));
