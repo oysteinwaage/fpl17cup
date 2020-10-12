@@ -6,7 +6,7 @@ export default {
     managerIds: [],
     leagueData: {},
     roundStats: {},
-    leagueIdChosenByUser: 0,
+    leagueIdChosenByUser: null,
     loadingData: false,
     players: {},
     showTeamStatsModal: false,

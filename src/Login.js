@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+// TODO disse her må du bli kvitt og bytte ut med nye @material-ui
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -8,6 +9,12 @@ import CircularProgress from 'material-ui/CircularProgress';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Popover from 'material-ui/Popover/Popover';
+
+import Tooltip from '@material-ui/core/Tooltip';
+import HelpIcon from '@material-ui/icons/Help';
+import TextField from '@material-ui/core/TextField';
+import withStyles from "@material-ui/core/styles/withStyles";
+import Typography from "@material-ui/core/Typography";
 import {push} from "connected-react-router";
 import './App.css';
 import {
@@ -102,8 +109,10 @@ class Login extends Component {
             leagueId: 120053,
             leagueName: 'Liganavn',
             showLeagueIdInfo: false,
+            leagueIdInputField: '',
         };
         this.toggleShowLeagueIdInfo = this.toggleShowLeagueIdInfo.bind(this);
+        this.handleLigavalgFraInput = this.handleLigavalgFraInput.bind(this);
         this.props.onAapneNySide('');
     };
 
@@ -143,6 +152,7 @@ class Login extends Component {
                         onSetCurrentRound(scoreData);
                         this.makeGroupData();
 
+                        // TODO flytt denne her inn i samme reducer-innslag som onSetCurrentRound (og rename den actionene den..)
                         // setter map med id: lagNavn
                         let teamNameToIdMap = {};
                         scoreData.forEach(function (player) {
@@ -181,7 +191,7 @@ class Login extends Component {
     }
 
     triggerFetchDataFromServer = () => {
-        const { onUpdateIsLoadingData} = this.props;
+        const {onUpdateIsLoadingData} = this.props;
         onUpdateIsLoadingData(true);
         this.setState({
             chosenLeagueId: true,
@@ -200,9 +210,20 @@ class Login extends Component {
         // This prevents ghost click.
     };
 
-    // TODO fjern denne og alt som har med ligaId som lokal konstant her når state er fikset
     handleLigavalgFraDropdown = (event, index, value) => {
+        this.setState({leagueIdInputField: value});
         this.props.onUpdateChosenLeagueId(value);
+    };
+
+    handleLigavalgFraInput = (event) => {
+        try {
+            const nyId = parseInt(event.target.value, 10);
+            this.props.onUpdateChosenLeagueId(Number.isNaN(nyId) ? null : nyId);
+            this.setState({leagueIdInputField: Number.isNaN(nyId) ? '' : nyId});
+        } catch (e) {
+            //doNothing
+            console.log('error ', e, " - verdi ", event.target.value);
+        }
     };
 
     render() {
@@ -212,9 +233,20 @@ class Login extends Component {
             <RaisedButton
                 label="Gå videre med valgt liga"
                 onClick={() => this.triggerFetchDataFromServer()}
-                disabled={this.state.leagueIdChosenByUser === ''}
+                disabled={!leagueIdChosenByUser}
             />,
         ];
+
+        const HtmlTooltip = withStyles((theme) => ({
+            tooltip: {
+                backgroundColor: '#f5f5f9',
+                color: 'rgba(0, 0, 0, 0.87)',
+                maxWidth: 450,
+                fontSize: theme.typography.pxToRem(12),
+                border: '1px solid #dadde9',
+                disableFocusListener: true
+            },
+        }))(Tooltip);
 
         return (
             <div>
@@ -235,27 +267,32 @@ class Login extends Component {
                         {isForFameAndGloryLeague(leagueIdChosenByUser) &&
                         <React.Fragment>
                             <li>
-                                <a className={currentPage === '/kamper' ? 'active' : ''} onClick={() => onAapneNySide('kamper')}>Kamper</a>
+                                <a className={currentPage === '/kamper' ? 'active' : ''}
+                                   onClick={() => onAapneNySide('kamper')}>Kamper</a>
                             </li>
                             <li>
-                                <a className={currentPage === '/grupper' ? 'active' : ''} onClick={() => onAapneNySide('grupper')}>Grupper</a>
+                                <a className={currentPage === '/grupper' ? 'active' : ''}
+                                   onClick={() => onAapneNySide('grupper')}>Grupper</a>
                             </li>
                         </React.Fragment>
                         }
                         <li>
-                            <a className={currentPage === '/funfacts' ? 'active' : ''} onClick={() => onAapneNySide('funfacts')}>Funfacts</a>
+                            <a className={currentPage === '/funfacts' ? 'active' : ''}
+                               onClick={() => onAapneNySide('funfacts')}>Funfacts</a>
                         </li>
                         <li>
-                            <a className={currentPage === '/transfers' ? 'active' : ''} onClick={() => onAapneNySide('transfers')}>Bytter</a>
+                            <a className={currentPage === '/transfers' ? 'active' : ''}
+                               onClick={() => onAapneNySide('transfers')}>Bytter</a>
                         </li>
                         <li>
-                            <a className={currentPage === '/leaguetable' ? 'active' : ''} onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
+                            <a className={currentPage === '/leaguetable' ? 'active' : ''}
+                               onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
                         </li>
                     </div>
                 </ul>
 
                 <div className="content">
-                    <TeamStatsModal />
+                    <TeamStatsModal/>
                     {isLoadingData &&
                     <MuiThemeProvider>
                         <Dialog
@@ -270,31 +307,38 @@ class Login extends Component {
                     {!this.state.chosenLeagueId &&
                     <MuiThemeProvider>
                         <Dialog
-                            title={"Velg din liga fra listen"}
+                            title={"Velg din liga fra listen eller skriv inn egen liga id"}
                             open={!this.state.chosenLeagueId}
                             contentStyle={customContentStyle}
                             actions={brukValgtLigaKnapp}
                         >
-                            <p style={{color: 'red', fontSize: 'small'}}> Pga. oppdateringer i API'et til FPL er denne
-                                siden strippet for mye av sin tidligere funksjonalitet, som blant annet at man kunne
-                                fylle inn
-                                hvilken som helst liga-id her.. Dette er pr.nå ikke mulig å få til :/
-
-                                {/*Pga begrensninger i API'et til FPL får man pr.*/}
-                                {/*nå kun med data for de 50 beste i ligaen :/*/}
+                            <p style={{color: 'red', fontSize: 'small'}}>
+                                Pga begrensninger i API'et til FPL får man pr.
+                                nå kun med data for de 50 beste i ligaen :/
                             </p>
-                            {/*<TextField*/}
-                            {/*    disabled={true}*/}
-                            {/*    hintText="eks: 61858"*/}
-                            {/*    floatingLabelText="Fyll inn ID for din liga her ()"*/}
-                            {/*    value={this.state.leagueIdChosenByUser}*/}
-                            {/*    onChange={(event, newValue) => this.updateLeagueId(newValue)}*/}
-                            {/*/>*/}
-                            {/*<ActionInfo*/}
-                            {/*    style={actionInfoStyle}*/}
-                            {/*    onClick={(event) => this.toggleShowLeagueIdInfo(event)}*/}
-                            {/*/>*/}
-                            {/*<br/>*/}
+                            <div>
+                                <TextField
+                                    className="leagueIdInputField"
+                                    helperText="Fyll inn ID for din liga her"
+                                    value={this.state.leagueIdInputField}
+                                    onChange={this.handleLigavalgFraInput}
+                                />
+                                <HtmlTooltip
+                                    title={
+                                        <React.Fragment>
+                                            <Typography color="inherit">Her finner du din ligakode</Typography>
+                                            Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se
+                                            i
+                                            URL'en.<br/>
+                                            Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/leagues/<span
+                                            style={{fontStyle: 'italic', fontWeight: 'bold'}}>1234567</span>/standings/c
+                                        </React.Fragment>
+                                    }
+                                >
+                                    <HelpIcon/>
+                                </HtmlTooltip>
+                            </div>
+                            <br/>
                             <DropDownMenu
                                 value={leaguesInDropdownList.find(l => l.id === leagueIdChosenByUser) ? leagueIdChosenByUser : ''}
                                 onChange={this.handleLigavalgFraDropdown}
@@ -315,8 +359,8 @@ class Login extends Component {
                             >
                                 Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i
                                 URL'en.<br/>
-                                Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/a/ leagues/standings/<a
-                                style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</a>/classic
+                                Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/leagues/<span
+                                style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</span>/standings/c
                             </Popover>
                         </Dialog>
                     </MuiThemeProvider>
@@ -334,13 +378,6 @@ const customContentStyle = {
     maxHeight: '90%',
     textAlign: 'center',
 };
-// const actionInfoStyle = {
-//     // TODO funker ikke med hover. sjekk ut.
-//     '&:hover': {
-//         color: 'yellow'
-//     }
-// };
-// export default Login;
 
 Login.propTypes = {
     onUpdateChosenLeagueId: PropTypes.func,

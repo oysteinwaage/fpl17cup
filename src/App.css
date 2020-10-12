@@ -88,3 +88,7 @@ ul.header li a {
     width: 100%;
     text-align: left;
 }
+
+.leagueIdInputField {
+    width: 75%;
+}
