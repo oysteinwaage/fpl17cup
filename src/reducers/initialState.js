@@ -1,13 +1,21 @@
 export default {
-    dataz: {},
-    groupData: {},
-    currentRound: null,
-    transferlist: [],
-    managerIds: [],
-    leagueData: {},
-    roundStats: {},
-    leagueIdChosenByUser: null,
-    loadingData: false,
-    players: {},
-    showTeamStatsModal: false,
+    data: {
+        dataz: {},
+        groupData: {},
+        currentRound: null,
+        transferlist: [],
+        managerIds: [],
+        leagueData: {},
+        roundStats: {},
+        leagueIdChosenByUser: null,
+        loadingData: false,
+        players: {},
+        showTeamStatsModal: null,
+        isCurrentRoundFinished: true
+    },
+    liveData: {
+        playersLiveScore: {},
+        fplManagersLiveScore: {},
+        entryPicks: {}
+    }
 };

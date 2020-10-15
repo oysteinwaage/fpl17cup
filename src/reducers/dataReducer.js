@@ -9,7 +9,7 @@ import {
     UPDATE_TRANSFERS
 } from '../actions/actions';
 
-export default function dataReducer(state = initialState, action) {
+export default function dataReducer(state = initialState.data, action) {
   const createDatazObject = (roundScore, managerIds, leagueIdChosenByUser) => {
     let datazObject = managerIds.reduce((acc, current) => {
       acc[current] = roundScore.map(a => a.current)[Object.keys(acc).length].reduce((a, b) => {
@@ -58,15 +58,17 @@ export default function dataReducer(state = initialState, action) {
                 leagueIdChosenByUser: action.leagueId
             };
         case SET_CURRENT_ROUND:
-          return {
+            const currentRound = action.roundScore[0].entry.current_event;
+            return {
                 ...state,
-                currentRound: action.roundScore[0].entry.current_event,
+                currentRound,
+                isCurrentRoundFinished: state.roundStats[currentRound] && state.roundStats[currentRound].finished,
                 dataz: createDatazObject(action.roundScore, state.managerIds, state.leagueIdChosenByUser)
             };
         case SET_ROUND_STATS:
             return {
                 ...state,
-                roundStats: action.roundStats
+                roundStats: action.roundStats,
             };
         case UPDATE_LEAGUE_DATA:
             return {

@@ -25,12 +25,14 @@ import {
     setRoundStats,
     updateTransfers,
     updateIsLoadingData,
-    updateLeagueData
+    updateLeagueData,
+    setLiveData, entryPicksFetched
 } from './actions/actions';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getStats, getRoundScores, getTransfers} from './api.js';
+import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData, getTestNoe} from './api.js';
 import TeamStatsModal from "./components/TeamStatsModal";
+import {getEntryPicks} from "./api";
 
 let groupData = {};
 export let roundStats = {};
@@ -129,10 +131,20 @@ class Login extends Component {
         onUpdateGroupData(groupData);
     };
 
+    fetchLiveData() {
+        const { currentRound, onSetLiveData, isCurrentRoundFinished } = this.props;
+        if (!isCurrentRoundFinished){
+            getLiveData(currentRound)
+                .then(liveData => onSetLiveData(liveData));
+        } else {
+            clearInterval(this.intervalId);
+        }
+    }
+
     fetchDataFromServer() {
         const {
             leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onAapneNySide, onUpdateLeagueData,
-            onSetCurrentRound, onUpdateTransfers, onUpdateIsLoadingData
+            onSetCurrentRound, onUpdateTransfers, onUpdateIsLoadingData, onSetLiveData, onEntryPicksFetched
         } = this.props;
         let that = this;
 
@@ -151,6 +163,15 @@ class Login extends Component {
                         console.log('score: ', scoreData);
                         onSetCurrentRound(scoreData);
                         this.makeGroupData();
+                        const localCurrentRound = scoreData[0].entry.current_event;
+                        getEntryPicks(leagueData.managers, localCurrentRound)
+                            .then(entryPicks => {
+                                getLiveData(localCurrentRound)
+                                    .then(liveData => onSetLiveData(liveData));
+                                this.intervalId = setInterval(this.fetchLiveData.bind(this), 60000);
+
+                                onEntryPicksFetched(entryPicks)
+                            });
 
                         // TODO flytt denne her inn i samme reducer-innslag som onSetCurrentRound (og rename den actionene den..)
                         // setter map med id: lagNavn
@@ -319,7 +340,7 @@ class Login extends Component {
                             <div>
                                 <TextField
                                     className="leagueIdInputField"
-                                    helperText="Fyll inn ID for din liga her"
+                                    helperText="Fyll inn koden for din liga her"
                                     value={this.state.leagueIdInputField}
                                     onChange={this.handleLigavalgFraInput}
                                 />
@@ -388,13 +409,16 @@ Login.propTypes = {
     onUpdateTransfers: PropTypes.func,
     onUpdateIsLoadingData: PropTypes.func,
     onUpdateLeagueData: PropTypes.func,
+    onSetLiveData: PropTypes.func,
+    onEntryPicksFetched: PropTypes.func,
     onAapneNySide: PropTypes.func,
     leagueIdChosenByUser: PropTypes.number,
     currentPage: PropTypes.string,
     currentRound: PropTypes.number,
     managerIds: PropTypes.array,
     isLoadingData: PropTypes.bool,
-    dataz: PropTypes.object
+    dataz: PropTypes.object,
+    isCurrentRoundFinished: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
@@ -403,7 +427,8 @@ const mapStateToProps = state => ({
     currentRound: state.data.currentRound,
     managerIds: state.data.managerIds,
     isLoadingData: state.data.isLoadingData,
-    dataz: state.data.dataz
+    dataz: state.data.dataz,
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -415,6 +440,8 @@ const mapDispatchToProps = dispatch => ({
     onUpdateTransfers: (transfers) => dispatch(updateTransfers(transfers)),
     onUpdateIsLoadingData: (isLoading) => dispatch(updateIsLoadingData(isLoading)),
     onUpdateLeagueData: (leagueData) => dispatch(updateLeagueData(leagueData)),
+    onSetLiveData: (round) => dispatch(setLiveData(round)),
+    onEntryPicksFetched: (entryPicks) => dispatch(entryPicksFetched(entryPicks)),
     onAapneNySide: (id) => dispatch(push(id)),
 });
 
