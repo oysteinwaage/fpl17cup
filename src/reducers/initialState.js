@@ -17,6 +17,7 @@ export default {
         playersLiveScore: {},
         fplManagersLiveScore: {},
         entryPicks: {},
+        roundHits: {},
         averageScore: null
     }
 };

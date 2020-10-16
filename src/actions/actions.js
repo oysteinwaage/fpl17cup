@@ -6,10 +6,10 @@ export function updateChosenLeagueId(leagueId) {
     };
 }
 
-export const SET_CURRENT_ROUND = 'SET_CURRENT_ROUND';
-export function setCurrentRound(roundScore) {
+export const SET_SCORE_DATA = 'SET_SCORE_DATA';
+export function setScoreData(roundScore) {
     return {
-        type: SET_CURRENT_ROUND,
+        type: SET_SCORE_DATA,
         roundScore,
     };
 }

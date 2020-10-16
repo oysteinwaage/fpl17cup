@@ -21,7 +21,7 @@ import {
     updateChosenLeagueId,
     updateGroupData as updateGroupDataAction,
     updatePlayersList,
-    setCurrentRound,
+    setScoreData,
     setRoundStats,
     updateTransfers,
     updateIsLoadingData,
@@ -138,7 +138,7 @@ class Login extends Component {
     fetchDataFromServer() {
         const {
             leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onAapneNySide, onUpdateLeagueData,
-            onSetCurrentRound, onUpdateTransfers, onUpdateIsLoadingData, onSetLiveData, onEntryPicksFetched
+            onSetScoreData, onUpdateTransfers, onUpdateIsLoadingData, onSetLiveData, onEntryPicksFetched
         } = this.props;
         let that = this;
 
@@ -155,7 +155,7 @@ class Login extends Component {
 
                     getRoundScores(leagueData.managers).then(scoreData => {
                         console.log('score: ', scoreData);
-                        onSetCurrentRound(scoreData);
+                        onSetScoreData(scoreData);
                         this.makeGroupData();
                         const localCurrentRound = scoreData[0].entry.current_event;
                         getEntryPicks(leagueData.managers, localCurrentRound)
@@ -167,7 +167,7 @@ class Login extends Component {
                                 onEntryPicksFetched(entryPicks)
                             });
 
-                        // TODO flytt denne her inn i samme reducer-innslag som onSetCurrentRound (og rename den actionene den..)
+                        // TODO flytt denne her inn i samme reducer-innslag som onSetScoreData (og rename den actionene den..)
                         // setter map med id: lagNavn
                         let teamNameToIdMap = {};
                         scoreData.forEach(function (player) {
@@ -398,7 +398,7 @@ Login.propTypes = {
     onUpdateChosenLeagueId: PropTypes.func,
     onUpdateGroupData: PropTypes.func,
     onUpdatePlayersList: PropTypes.func,
-    onSetCurrentRound: PropTypes.func,
+    onSetScoreData: PropTypes.func,
     onSetRoundStats: PropTypes.func,
     onUpdateTransfers: PropTypes.func,
     onUpdateIsLoadingData: PropTypes.func,
@@ -429,7 +429,7 @@ const mapDispatchToProps = dispatch => ({
     onUpdateChosenLeagueId: (leagueId) => dispatch(updateChosenLeagueId(leagueId)),
     onUpdateGroupData: (groupData) => dispatch(updateGroupDataAction(groupData)),
     onUpdatePlayersList: (players) => dispatch(updatePlayersList(players)),
-    onSetCurrentRound: (round) => dispatch(setCurrentRound(round)),
+    onSetScoreData: (round) => dispatch(setScoreData(round)),
     onSetRoundStats: (roundStats) => dispatch(setRoundStats(roundStats)),
     onUpdateTransfers: (transfers) => dispatch(updateTransfers(transfers)),
     onUpdateIsLoadingData: (isLoading) => dispatch(updateIsLoadingData(isLoading)),

@@ -1,7 +1,7 @@
 import initialState from './initialState';
 import {
     ENTRY_PICKS_FETCHED,
-    SET_LIVE_DATA,
+    SET_LIVE_DATA, SET_SCORE_DATA,
 } from '../actions/actions';
 
 export default function liveDataReducer(state = initialState.liveData, action) {
@@ -9,7 +9,7 @@ export default function liveDataReducer(state = initialState.liveData, action) {
         return entryPicks.reduce((total, entry) => {
             total[entry.entryId] = entry.picks.reduce((tot, player) => {
                 return tot + (player.multiplier * liveScore.elements[player.element - 1].stats.total_points);
-            }, 0);
+            }, - state.roundHits[entry.entryId]);
             return total;
         }, {})
     };
@@ -17,7 +17,6 @@ export default function liveDataReducer(state = initialState.liveData, action) {
     switch (action.type) {
         case SET_LIVE_DATA:
             if (state.entryPicks.length > 0) {
-                console.log('inni if SET_LIVE_DATA');
                 return {
                     ...state,
                     playersLiveScore: action.liveData,
@@ -33,6 +32,14 @@ export default function liveDataReducer(state = initialState.liveData, action) {
             return {
                 ...state,
                 entryPicks: action.entryPicks
+            };
+        case SET_SCORE_DATA:
+            return {
+                ...state,
+                roundHits: action.roundScore.reduce((tot, team) => {
+                    tot[team.entry.id] = team.current[team.entry.current_event - 1].event_transfers_cost;
+                    return tot;
+                }, {})
             };
         default:
             return state;

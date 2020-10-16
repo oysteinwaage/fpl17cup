@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import '../App.css';
 import './LeagueTable.css';
 import {showTeamsStatsModalFor} from "../actions/actions";
+import LiveDataShown from "../components/liveDataShown";
 
 function makeRow(rank, teamAndManager, gwPoints, totalPoints, extraClassname = "") {
     return (
@@ -19,10 +20,11 @@ function makeRow(rank, teamAndManager, gwPoints, totalPoints, extraClassname = "
 class LeagueTable extends Component {
 
     render() {
-        const { leagueData, onShowTeamStatsModal } = this.props;
+        const { leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound } = this.props;
 
         return (
             <div key="jallajalla" className="table-content">
+                { !isCurrentRoundFinished && <LiveDataShown /> }
                 {makeRow('', 'Lag', 'GW', 'TOT', 'Header')}
                 {leagueData.standings && leagueData.standings.results.map(team => {
                     const teamAndManager = (
@@ -33,11 +35,13 @@ class LeagueTable extends Component {
                             </a>
                         </div>
                     );
+                    const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round'+ currentRound].points : liveScore[team.entry];
+                    const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round'+ (currentRound-1)].totalPoints + liveScore[team.entry];
                     return makeRow(
                         team.rank,
                         teamAndManager,
-                        team.event_total,
-                        team.total,
+                        gwPoints,
+                        totalPoints,
                     );
                 })}
             </div>
@@ -50,13 +54,17 @@ LeagueTable.propTypes = {
     currentRound: PropTypes.number,
     dataz: PropTypes.object,
     leagueData: PropTypes.object,
-    onShowTeamStatsModal: PropTypes.func
+    onShowTeamStatsModal: PropTypes.func,
+    liveScore: PropTypes.object,
+    isCurrentRoundFinished: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     currentRound: state.data.currentRound,
     dataz: state.data.dataz,
-    leagueData: state.data.leagueData
+    leagueData: state.data.leagueData,
+    liveScore: state.liveData.fplManagersLiveScore,
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished,
 });
 
 const mapDispatchToProps = dispatch => ({
