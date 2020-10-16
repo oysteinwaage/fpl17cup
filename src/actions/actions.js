@@ -71,10 +71,11 @@ export function showTeamsStatsModalFor(teamId) {
 }
 
 export const SET_LIVE_DATA = 'SET_LIVE_DATA';
-export function setLiveData(liveData) {
+export function setLiveData(liveData, averageScore) {
     return {
         type: SET_LIVE_DATA,
-        liveData
+        liveData,
+        averageScore
     };
 }
 

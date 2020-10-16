@@ -1,0 +1,41 @@
+@keyframes blinking {
+    0% {
+    opacity: .25
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: .25;
+    }
+}
+.circle {
+    margin-left: 10px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    opacity: .25;
+}
+.green {
+    background-color: forestgreen;
+    top: 50%;
+    left: 50%;
+    -webkit-animation: blinking 1s infinite;
+    -moz-animation: blinking 1s infinite;
+    -o-animation: blinking 1s infinite;
+    animation: blinking 1s infinite;
+}
+
+.liveDataShownComponent {
+    display: flex;
+    width: 75px;
+    background-color: rgba(42, 213, 42, 0.24);
+    border-radius: 25px;
+    padding: 10px 5px;
+    border: forestgreen 2px solid;
+}
+
+.liveText {
+    margin: 2px 0 0 5px;
+    font-weight: bold;
+}

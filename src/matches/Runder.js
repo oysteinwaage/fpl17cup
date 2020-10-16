@@ -1,6 +1,6 @@
 import React from 'react';
 import './Runder.css';
-import {score} from '../Login.js';
+import {roundScore} from '../Login.js';
 import {players, fplAvgTeams} from '../utils.js';
 
 export const gamesPrGroupAndRound = {
@@ -96,6 +96,19 @@ export function getRoundNr(round) {
     }
 }
 
+const roundLiveScore = (team, liveScore, averageScore) =>
+    fplAvgTeams.includes(team) ? averageScore : liveScore[team] || 0
+
+const score = (t1, t2, round, dataz, liveScore, averageScore) => {
+    if (liveScore){
+        return roundLiveScore(t1, liveScore, averageScore) + (' - ' + roundLiveScore(t2, liveScore, averageScore));
+    }
+
+    return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round])
+        ? roundScore(t1, round, dataz) + (' - ' + roundScore(t2, round, dataz))
+        : ' - ';
+}
+
 function Match(props) {
     return (
         <div className="match-score-container">
@@ -106,7 +119,7 @@ function Match(props) {
                         <div className="subName">{fplAvgTeams.includes(props.team1) ? props.round : props.dataz[props.team1] && props.dataz[props.team1].managerName}</div>
                     </a>
                 </div>
-                <div className="score">{score(props.team1, props.team2, props.round, props.dataz)}</div>
+                <div className="score">{score(props.team1, props.team2, props.round, props.dataz, props.liveScore, props.averageScore)}</div>
                 <div className="awayTeam team">
                     <a onClick={() => props.onToggleDialog(props.team2)}>
                         {fplAvgTeams.includes(props.team2) ? "Fantasy Average" : players[props.team2]}<br/>
@@ -166,6 +179,8 @@ export function MatchesForGroup(props) {
                                           round={'round' + roundNr}
                                           onToggleDialog={props.onToggleDialog}
                                           dataz={props.dataz}
+                                          liveScore={props.liveScore}
+                                          averageScore={props.averageScore}
                             />;
                         })}
                     </div>);

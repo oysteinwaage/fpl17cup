@@ -41,15 +41,9 @@ export function isForFameAndGloryLeague(id) {
     return id === 120053;
 }
 
-export function score(t1, t2, round, dataz) {
-    return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round])
-        ? roundScore(t1, round, dataz) + (' - ' + roundScore(t2, round, dataz))
-        : ' - ';
-}
-
-function roundScore(team, round, dataz) {
+export function roundScore(team, round, dataz) {
     if (fplAvgTeams.includes(team)) {
-        return roundStats[round.slice(5) - 1].average_entry_score;
+        return roundStats[round.slice(5)].average_entry_score;
     }
     return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
 }
@@ -154,10 +148,10 @@ class Login extends Component {
             if (leagueData && leagueData.managers && leagueData.managers.length > 0) {
                 onUpdateLeagueData(leagueData);
                 that.state.leagueName = leagueData.leagueName;
-                getStats().then(data => {
-                    console.log('getStats: ', data);
-                    roundStats = data;
-                    onSetRoundStats(data);
+                getStats().then(stats => {
+                    console.log('getStats: ', stats);
+                    roundStats = stats;
+                    onSetRoundStats(stats);
 
                     getRoundScores(leagueData.managers).then(scoreData => {
                         console.log('score: ', scoreData);
@@ -167,7 +161,7 @@ class Login extends Component {
                         getEntryPicks(leagueData.managers, localCurrentRound)
                             .then(entryPicks => {
                                 getLiveData(localCurrentRound)
-                                    .then(liveData => onSetLiveData(liveData));
+                                    .then(liveData => onSetLiveData(liveData, stats[localCurrentRound].average_entry_score));
                                 this.intervalId = setInterval(this.fetchLiveData.bind(this), 60000);
 
                                 onEntryPicksFetched(entryPicks)
@@ -312,7 +306,7 @@ class Login extends Component {
                     </div>
                 </ul>
 
-                <div className="content">
+                <div>
                     <TeamStatsModal/>
                     {isLoadingData &&
                     <MuiThemeProvider>
@@ -440,7 +434,7 @@ const mapDispatchToProps = dispatch => ({
     onUpdateTransfers: (transfers) => dispatch(updateTransfers(transfers)),
     onUpdateIsLoadingData: (isLoading) => dispatch(updateIsLoadingData(isLoading)),
     onUpdateLeagueData: (leagueData) => dispatch(updateLeagueData(leagueData)),
-    onSetLiveData: (round) => dispatch(setLiveData(round)),
+    onSetLiveData: (round, averageScore) => dispatch(setLiveData(round, averageScore)),
     onEntryPicksFetched: (entryPicks) => dispatch(entryPicksFetched(entryPicks)),
     onAapneNySide: (id) => dispatch(push(id)),
 });

@@ -5,6 +5,7 @@ import './Matches.css';
 import {MatchesForGroup} from './Runder.js';
 import {SelectBox, participatingRounds} from '../utils.js';
 import {showTeamsStatsModalFor} from "../actions/actions";
+import LiveDataShown from "../components/liveDataShown";
 
 class Kamper extends Component {
     constructor(props) {
@@ -34,13 +35,15 @@ class Kamper extends Component {
     }
 
     render() {
-        const { dataz, onShowTeamStatsModal } = this.props;
+        const { dataz, onShowTeamStatsModal, isCurrentRoundFinished, fplManagersLiveScore, averageScore } = this.props;
         return (
             <div className="matches-content">
+                {!isCurrentRoundFinished && <LiveDataShown/>}
                 <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
                 <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
-                                 onToggleDialog={onShowTeamStatsModal} dataz={dataz}/>
+                                 onToggleDialog={onShowTeamStatsModal} dataz={dataz} averageScore={averageScore}
+                                 liveScore={isCurrentRoundFinished ? false : fplManagersLiveScore}/>
             </div>
         );
     }
@@ -56,12 +59,18 @@ export const customContentStyle = {
 Kamper.propTypes = {
     dataz: PropTypes.object,
     currentRound: PropTypes.number,
-    onShowTeamStatsModal: PropTypes.func
+    onShowTeamStatsModal: PropTypes.func,
+    isCurrentRoundFinished: PropTypes.bool,
+    fplManagersLiveScore: PropTypes.object,
+    averageScore: PropTypes.number
 };
 
 const mapStateToProps = state => ({
     currentRound: state.data.currentRound,
-    dataz: state.data.dataz
+    dataz: state.data.dataz,
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished,
+    fplManagersLiveScore: state.liveData.fplManagersLiveScore,
+    averageScore: state.liveData.averageScore
 });
 
 const mapDispatchToProps = dispatch => ({

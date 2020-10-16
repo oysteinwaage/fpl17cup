@@ -16,6 +16,7 @@ export default {
     liveData: {
         playersLiveScore: {},
         fplManagersLiveScore: {},
-        entryPicks: {}
+        entryPicks: {},
+        averageScore: null
     }
 };
