@@ -22,11 +22,27 @@ class LeagueTable extends Component {
     render() {
         const {leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound} = this.props;
 
+        const leagueDataSorted = leagueData.standings && leagueData.standings.results.reduce((acc, team) => {
+            const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry];
+            const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
+            acc.push({
+                entry: team.entry,
+                entry_name: team.entry_name,
+                player_name: team.player_name,
+                previous_rank: team.rank,
+                gwPoints,
+                totalPoints
+            });
+            return acc;
+        }, []).sort(function (a, b) {
+            return b.totalPoints - a.totalPoints;
+        });
+
         return (
             <div key="jallajalla" className="table-content">
                 {!isCurrentRoundFinished && <LiveDataShown/>}
                 {makeRow('', 'Lag', 'GW', 'TOT', 'Header')}
-                {leagueData.standings && leagueData.standings.results.map(team => {
+                {(leagueDataSorted || []).map((team, index) => {
                     const teamAndManager = (
                         <div className="teamName">
                             <a onClick={() => onShowTeamStatsModal(team.entry)}>
@@ -38,20 +54,45 @@ class LeagueTable extends Component {
                     const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry];
                     const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
                     return makeRow(
-                        team.rank,
+                        index + 1,
                         teamAndManager,
                         gwPoints,
                         totalPoints,
                     );
-                }).sort(function (a, b) {
-                    return b.props.children[3].props.children - a.props.children[3].props.children;
-                })
-                }
+                })}
             </div>
         );
     }
 }
 
+// TODO kan nok slettes, men tar bare var på for sikkerhets skyld om noe går skeis når runden ikke er på Live-modus lenger.
+// return (
+//     <div key="jallajalla" className="table-content">
+//         {!isCurrentRoundFinished && <LiveDataShown/>}
+//         {makeRow('', 'Lag', 'GW', 'TOT', 'Header')}
+//         {leagueData.standings && leagueData.standings.results.map(team => {
+//             const teamAndManager = (
+//                 <div className="teamName">
+//                     <a onClick={() => onShowTeamStatsModal(team.entry)}>
+//                         {team.entry_name}<br/>
+//                         <div className="managerName">{team.player_name}</div>
+//                     </a>
+//                 </div>
+//             );
+//             const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry];
+//             const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
+//             return makeRow(
+//                 team.rank,
+//                 teamAndManager,
+//                 gwPoints,
+//                 totalPoints,
+//             );
+//         }).sort(function (a, b) {
+//             return b.props.children[3].props.children - a.props.children[3].props.children;
+//         })
+//         }
+//     </div>
+// );
 
 LeagueTable.propTypes = {
     currentRound: PropTypes.number,
