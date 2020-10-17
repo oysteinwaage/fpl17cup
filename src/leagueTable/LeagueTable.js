@@ -8,7 +8,7 @@ import LiveDataShown from "../components/liveDataShown";
 
 function makeRow(rank, teamAndManager, gwPoints, totalPoints, extraClassname = "") {
     return (
-        <div key={rank+''+gwPoints} className={"tabellRad" + extraClassname}>
+        <div key={rank + '' + gwPoints} className={"tabellRad" + extraClassname}>
             <div className="tableRank">{rank}</div>
             <div className="tableTeamAndManager">{teamAndManager}</div>
             <div className="tableGwScore">{gwPoints}</div>
@@ -20,11 +20,11 @@ function makeRow(rank, teamAndManager, gwPoints, totalPoints, extraClassname = "
 class LeagueTable extends Component {
 
     render() {
-        const { leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound } = this.props;
+        const {leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound} = this.props;
 
         return (
             <div key="jallajalla" className="table-content">
-                { !isCurrentRoundFinished && <LiveDataShown /> }
+                {!isCurrentRoundFinished && <LiveDataShown/>}
                 {makeRow('', 'Lag', 'GW', 'TOT', 'Header')}
                 {leagueData.standings && leagueData.standings.results.map(team => {
                     const teamAndManager = (
@@ -35,15 +35,18 @@ class LeagueTable extends Component {
                             </a>
                         </div>
                     );
-                    const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round'+ currentRound].points : liveScore[team.entry];
-                    const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round'+ (currentRound-1)].totalPoints + liveScore[team.entry];
+                    const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry];
+                    const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
                     return makeRow(
                         team.rank,
                         teamAndManager,
                         gwPoints,
                         totalPoints,
                     );
-                })}
+                }).sort(function (a, b) {
+                    return b.props.children[3].props.children - a.props.children[3].props.children;
+                })
+                }
             </div>
         );
     }

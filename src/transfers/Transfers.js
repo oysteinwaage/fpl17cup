@@ -5,6 +5,7 @@ import './Transfers.css';
 import {updateIsLoadingData} from '../actions/actions';
 import {roundsUpTilNow, SelectBox} from '../utils.js';
 import {getPlayerScoresFor} from '../api.js';
+import LiveDataShown from "../components/liveDataShown";
 
 export let loading = false;
 export let transferDiff = {};
@@ -132,13 +133,14 @@ class Transfers extends Component {
     }
 
     render() {
-        const { currentRound, managerIds } = this.props;
+        const { currentRound, managerIds, isCurrentRoundFinished } = this.props;
         const chosenRound = this.getSelectedRound();
         if (this.state.playerPoints === null && !loading) {
             this.fetchPlayerPoints(chosenRound);
         }
         return (
             <div className="transfer-content">
+                { !isCurrentRoundFinished && <LiveDataShown /> }
                 <div className="transfer-header"> {(chosenRound === currentRound && chosenRound !== null) && 'Runde ' + chosenRound}</div>
                 {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
                 {managerIds.map(teamId => {
@@ -156,7 +158,8 @@ Transfers.propTypes = {
     transferlist: PropTypes.array,
     dataz: PropTypes.object,
     roundStats: PropTypes.object,
-    onUpdateIsLoadingData: PropTypes.func
+    onUpdateIsLoadingData: PropTypes.func,
+    isCurrentRoundFinished: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -165,7 +168,8 @@ const mapStateToProps = state => ({
     managerIds: state.data.managerIds,
     transferlist: state.data.transferlist,
     dataz: state.data.dataz,
-    roundStats: state.data.roundStats
+    roundStats: state.data.roundStats,
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished,
 });
 
 const mapDispatchToProps = dispatch => ({
