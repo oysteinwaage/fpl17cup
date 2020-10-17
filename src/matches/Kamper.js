@@ -35,15 +35,16 @@ class Kamper extends Component {
     }
 
     render() {
-        const { dataz, onShowTeamStatsModal, isCurrentRoundFinished, fplManagersLiveScore, averageScore } = this.props;
+        const { dataz, onShowTeamStatsModal, isCurrentRoundFinished, fplManagersLiveScore, averageScore, currentRound } = this.props;
+        let skalBrukeLiveData = !isCurrentRoundFinished && currentRound == this.state.selectedRound;
         return (
             <div className="matches-content">
-                {!isCurrentRoundFinished && <LiveDataShown/>}
+                {skalBrukeLiveData && <LiveDataShown/>}
                 <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
                 <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
                                  onToggleDialog={onShowTeamStatsModal} dataz={dataz} averageScore={averageScore}
-                                 liveScore={isCurrentRoundFinished ? false : fplManagersLiveScore}/>
+                                 liveScore={skalBrukeLiveData ? fplManagersLiveScore : false}/>
             </div>
         );
     }
