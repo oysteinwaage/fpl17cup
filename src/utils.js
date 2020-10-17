@@ -47,6 +47,7 @@ export const leaguesInDropdownList = [
     {id: 120053, name: "For Fame And Glory",},
     {id: 104768, name: "Graduates 2012 FTW!",},
     {id: 524841, name: "Progit",},
+    {id: 196004, name: "KJEMPEBRALIGA",},
     // {id: 437181, name: "Lillohøyden FC",},
     // {id: 10724, name: "200-kronersligaen",},
 ];

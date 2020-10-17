@@ -26,17 +26,35 @@
     animation: blinking 1s infinite;
 }
 
+.liveDataContainer {
+    display: flex;
+    align-items:center;
+    /*justify-content:center;*/
+}
+
 .liveDataShownComponent {
     display: flex;
     width: 75px;
+    min-width: 75px;
+    height: 20px;
+    max-height: 20px;
     background-color: rgba(42, 213, 42, 0.24);
     border-radius: 25px;
     padding: 10px 5px;
     border: forestgreen 2px solid;
-    margin-bottom: 15px;
+    margin: 0 10px 15px 0;
 }
 
 .liveText {
     margin: 2px 0 0 5px;
     font-weight: bold;
 }
+
+.disclaimerText {
+    display: flex;
+    height: 20px;
+    font-size: small;
+    align-items:center;
+    justify-content:center;
+}
+
