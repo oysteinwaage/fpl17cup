@@ -13,7 +13,8 @@ function makeRow(rank, previousRank, teamAndManager, gwPoints, totalPoints, extr
         <div key={rank + '' + gwPoints} className={"tabellRad" + extraClassname}>
             <div className="tableRank">
                 {rank}
-                {rank > previousRank ? <ArrowDropDownIcon className="redArrow" /> : rank < previousRank ? <ArrowDropUpIcon /> : null}
+                {rank > previousRank ? <ArrowDropDownIcon className="redArrow"/> :
+                    rank < previousRank ? <ArrowDropUpIcon/> : null}
             </div>
             <div className="tableTeamAndManager">{teamAndManager}</div>
             <div className="tableGwScore">{gwPoints}</div>
