@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import '../App.css';
 import './LeagueTable.css';
 import {showTeamsStatsModalFor} from "../actions/actions";
 import LiveDataShown from "../components/liveDataShown";
 
-function makeRow(rank, teamAndManager, gwPoints, totalPoints, extraClassname = "") {
+function makeRow(rank, previousRank, teamAndManager, gwPoints, totalPoints, extraClassname = "") {
     return (
         <div key={rank + '' + gwPoints} className={"tabellRad" + extraClassname}>
-            <div className="tableRank">{rank}</div>
+            <div className="tableRank">
+                {rank}
+                {rank > previousRank ? <ArrowDropDownIcon className="redArrow" /> : rank < previousRank ? <ArrowDropUpIcon /> : null}
+            </div>
             <div className="tableTeamAndManager">{teamAndManager}</div>
             <div className="tableGwScore">{gwPoints}</div>
             <div className="tableTotalScore">{totalPoints}</div>
@@ -29,7 +34,7 @@ class LeagueTable extends Component {
                 entry: team.entry,
                 entry_name: team.entry_name,
                 player_name: team.player_name,
-                previous_rank: team.rank,
+                previous_rank: team.last_rank || team.rank,
                 gwPoints,
                 totalPoints
             });
@@ -41,7 +46,7 @@ class LeagueTable extends Component {
         return (
             <div key="jallajalla" className="table-content">
                 {!isCurrentRoundFinished && <LiveDataShown/>}
-                {makeRow('', 'Lag', 'GW', 'TOT', 'Header')}
+                {makeRow('', '', 'Lag', 'GW', 'TOT', 'Header')}
                 {(leagueDataSorted || []).map((team, index) => {
                     const teamAndManager = (
                         <div className="teamName">
@@ -55,6 +60,7 @@ class LeagueTable extends Component {
                     const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
                     return makeRow(
                         index + 1,
+                        team.previous_rank,
                         teamAndManager,
                         gwPoints,
                         totalPoints,

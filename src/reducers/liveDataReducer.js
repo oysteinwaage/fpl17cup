@@ -37,7 +37,9 @@ export default function liveDataReducer(state = initialState.liveData, action) {
             return {
                 ...state,
                 roundHits: action.roundScore.reduce((tot, team) => {
-                    tot[team.entry.id] = team.current[team.entry.current_event - 1].event_transfers_cost;
+                    const currentRoundScore = team.current.filter(round => round.event === team.entry.current_event);
+
+                    tot[team.entry.id] = currentRoundScore[0].event_transfers_cost;
                     return tot;
                 }, {})
             };
