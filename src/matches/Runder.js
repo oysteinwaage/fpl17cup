@@ -97,7 +97,7 @@ export function getRoundNr(round) {
 }
 
 const roundLiveScore = (team, liveScore, averageScore) =>
-    fplAvgTeams.includes(team) ? averageScore : liveScore[team] || 0
+    fplAvgTeams.includes(team) ? averageScore : liveScore[team].totalPoints || 0;
 
 const score = (t1, t2, round, dataz, liveScore, averageScore) => {
     if (liveScore){
@@ -107,7 +107,7 @@ const score = (t1, t2, round, dataz, liveScore, averageScore) => {
     return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round])
         ? roundScore(t1, round, dataz) + (' - ' + roundScore(t2, round, dataz))
         : ' - ';
-}
+};
 
 function Match(props) {
     return (

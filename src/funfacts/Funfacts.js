@@ -225,7 +225,8 @@ class Funfacts extends Component {
         }
         if (!isCurrentRoundFinished) {
             managerIds.forEach(id => {
-                dataz[id]['round' + currentRound].points = liveScore[id]
+                dataz[id]['round' + currentRound].points = liveScore[id] && liveScore[id].totalPoints;
+                dataz[id]['round' + currentRound].pointsOnBench = liveScore[id] && liveScore[id].benchPoints;
             })
         }
 
@@ -239,8 +240,7 @@ class Funfacts extends Component {
             totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' : '-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
         }
         const roundJackasText = roundJackass['round' + selectedRound];
-        const disclaimerText = "(Pr. nå kun live for Høyest/Lavest score og Best/dårligst diff på bytter for valgt runde)";
-        // TODO midlertidig fjernet teksten om at kapteinspoeng oppdateres fortløpende inntil det er tilbake
+        const disclaimerText = "(Pr. nå er alt utenom endring i ligaplassering live for valgt runde. Stats totalt er ikke live)";
         return (
             <div className="table-content">
                 {!isCurrentRoundFinished && currentRound == this.state.selectedRound && <LiveDataShown text={disclaimerText}/> }

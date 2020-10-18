@@ -29,8 +29,8 @@ class LeagueTable extends Component {
         const {leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound} = this.props;
 
         const leagueDataSorted = leagueData.standings && leagueData.standings.results.reduce((acc, team) => {
-            const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry];
-            const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
+            const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry].totalPoints;
+            const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry].totalPoints;
             acc.push({
                 entry: team.entry,
                 entry_name: team.entry_name,
@@ -57,14 +57,12 @@ class LeagueTable extends Component {
                             </a>
                         </div>
                     );
-                    const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry];
-                    const totalPoints = isCurrentRoundFinished ? team.total : dataz[team.entry]['round' + (currentRound - 1)].totalPoints + liveScore[team.entry];
                     return makeRow(
                         index + 1,
                         team.previous_rank,
                         teamAndManager,
-                        gwPoints,
-                        totalPoints,
+                        team.gwPoints,
+                        team.totalPoints,
                     );
                 })}
             </div>
