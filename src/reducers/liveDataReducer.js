@@ -8,12 +8,13 @@ export default function liveDataReducer(state = initialState.liveData, action) {
     const calculateLiveRoundScore = (entryPicks, liveScore) => {
         return entryPicks.reduce((total, entry) => {
             total[entry.entryId] = entry.picks.reduce((tot, player) => {
-                if (player.multiplier > 1) {
-                    tot.captainPoints = liveScore.elements[player.element - 1].stats.minutes !== 0 ?
-                        player.multiplier * liveScore.elements[player.element - 1].stats.total_points
-                        : null;
-                } else if (player.multiplier) {
+                if (player.multiplier > 0) {
                     tot.totalPoints = tot.totalPoints + (player.multiplier * liveScore.elements[player.element - 1].stats.total_points);
+                    if (player.multiplier > 1) {
+                        tot.captainPoints = liveScore.elements[player.element - 1].stats.minutes !== 0 ?
+                            player.multiplier * liveScore.elements[player.element - 1].stats.total_points
+                            : null;
+                    }
                 } else {
                     tot.benchPoints = tot.benchPoints + liveScore.elements[player.element - 1].stats.total_points;
                 }
