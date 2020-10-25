@@ -31,7 +31,7 @@ export default function liveDataReducer(state = initialState.liveData, action) {
                     ...state,
                     playersLiveScore: action.liveData,
                     fplManagersLiveScore: calculateLiveRoundScore(state.entryPicks, action.liveData),
-                    averageScore: action.averageScore
+                    averageScore: action.averageScore || state.averageScore
                 };
             }
             return {

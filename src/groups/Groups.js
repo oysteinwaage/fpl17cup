@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import '../App.css';
 import './Groups.css';
 import {groups} from '../matches/Runder.js';
+import {participatingRounds} from "../utils";
+import LiveDataShown from "../components/liveDataShown";
 
 const groupsMenmbers = {
     groupA: [737536, 1259705, 1618273, 130438, 2249091, 3958980],
@@ -31,10 +33,11 @@ class Grupper extends Component {
     tempNullCheck = (teamId) => this.props.groupData[teamId] || {};
 
     render() {
-        const { players } = this.props;
+        const { players, currentRound, isCurrentRoundFinished } = this.props;
         let that = this;
         return (
             <div className="group-content">
+                {!isCurrentRoundFinished && participatingRounds.includes(currentRound) && <LiveDataShown />}
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
                     const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
@@ -67,12 +70,16 @@ class Grupper extends Component {
 
 Grupper.propTypes = {
     groupData: PropTypes.object,
-    players: PropTypes.object
+    players: PropTypes.object,
+    currentRound: PropTypes.bool,
+    isCurrentRoundFinished: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     groupData: state.data.groupData,
-    players: state.data.players
+    players: state.data.players,
+    currentRound: state.data.currentRound,
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished
 });
 
 export default connect(mapStateToProps)(Grupper);

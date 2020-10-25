@@ -33,6 +33,7 @@ import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.j
 import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData, getTestNoe} from './api.js';
 import TeamStatsModal from "./components/TeamStatsModal";
 import {getEntryPicks} from "./api";
+import {roundLiveScore} from "./matches/Runder";
 
 let groupData = {};
 export let roundStats = {};
@@ -73,9 +74,9 @@ function newMatchesLostFor(team, winningTeam) {
     return winningTeam !== 'draw' && winningTeam !== team ? originalValue + 1 : originalValue;
 }
 
-function updateGroupData(team1, team2, round, dataz) {
-    const team1Score = roundScore(team1, round, dataz);
-    const team2Score = roundScore(team2, round, dataz);
+function updateGroupData(team1, team2, round, dataz, liveData) {
+    const team1Score = round === dataz.currentRound && liveData ? roundLiveScore(team1, liveData) : roundScore(team1, round, dataz);
+    const team2Score = round === dataz.currentRound && liveData ? roundLiveScore(team2, liveData) : roundScore(team2, round, dataz);
     const winningTeam = team1Score > team2Score ? team1 : team1Score === team2Score ? 'draw' : team2;
     Object.assign(groupData, {
         [team1]: {
@@ -112,13 +113,15 @@ class Login extends Component {
         this.props.onAapneNySide('');
     };
 
-    makeGroupData = () => {
+    // TODO flytt til reducer
+    makeGroupData = (liveData) => {
         const {currentRound, onUpdateGroupData, dataz} = this.props;
+        groupData = {};
         participatingRounds.filter(pr => pr <= currentRound).forEach(function (r) {
             groups.forEach(function (groupLetter) {
                 const groupId = 'group' + groupLetter;
                 gamesPrGroupAndRound[getRoundNr(r)][groupId].forEach(match => {
-                    updateGroupData(match[0], match[1], 'round' + r, dataz);
+                    updateGroupData(match[0], match[1], 'round' + r, dataz, liveData);
                 })
             })
         });
@@ -126,10 +129,15 @@ class Login extends Component {
     };
 
     fetchLiveData() {
-        const { currentRound, onSetLiveData, isCurrentRoundFinished } = this.props;
-        if (!isCurrentRoundFinished){
+        const {currentRound, onSetLiveData, isCurrentRoundFinished, liveScore} = this.props;
+        if (!isCurrentRoundFinished) {
             getLiveData(currentRound)
-                .then(liveData => onSetLiveData(liveData));
+                .then(liveData => {
+                    if (liveScore.averageScore) {
+                        this.makeGroupData(liveScore)
+                    }
+                    onSetLiveData(liveData)
+                });
         } else {
             clearInterval(this.intervalId);
         }
@@ -412,7 +420,8 @@ Login.propTypes = {
     managerIds: PropTypes.array,
     isLoadingData: PropTypes.bool,
     dataz: PropTypes.object,
-    isCurrentRoundFinished: PropTypes.bool
+    isCurrentRoundFinished: PropTypes.bool,
+    liveScore: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -422,7 +431,8 @@ const mapStateToProps = state => ({
     managerIds: state.data.managerIds,
     isLoadingData: state.data.isLoadingData,
     dataz: state.data.dataz,
-    isCurrentRoundFinished: state.data.isCurrentRoundFinished
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished,
+    liveScore: state.liveData
 });
 
 const mapDispatchToProps = dispatch => ({

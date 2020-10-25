@@ -12,7 +12,6 @@ class Kamper extends Component {
         super(props);
         this.state = {
             selectedRound: null,
-
         };
     };
 
@@ -35,16 +34,16 @@ class Kamper extends Component {
     }
 
     render() {
-        const { dataz, onShowTeamStatsModal, isCurrentRoundFinished, fplManagersLiveScore, averageScore, currentRound } = this.props;
-        let skalBrukeLiveData = !isCurrentRoundFinished && currentRound == this.state.selectedRound;
+        const { dataz, onShowTeamStatsModal, isCurrentRoundFinished, currentRound, liveData } = this.props;
+        let skalBrukeLiveData = !isCurrentRoundFinished && (this.state.selectedRound === null || currentRound == this.state.selectedRound);
         return (
             <div className="matches-content">
                 {skalBrukeLiveData && <LiveDataShown/>}
                 <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å få opp info om valgt lag pr. runde)</p>
                 {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
                 <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
-                                 onToggleDialog={onShowTeamStatsModal} dataz={dataz} averageScore={averageScore}
-                                 liveScore={skalBrukeLiveData ? fplManagersLiveScore : false}/>
+                                 onToggleDialog={onShowTeamStatsModal} dataz={dataz} skalBrukeLiveData={skalBrukeLiveData}
+                                 liveScore={liveData}/>
             </div>
         );
     }
@@ -62,16 +61,14 @@ Kamper.propTypes = {
     currentRound: PropTypes.number,
     onShowTeamStatsModal: PropTypes.func,
     isCurrentRoundFinished: PropTypes.bool,
-    fplManagersLiveScore: PropTypes.object,
-    averageScore: PropTypes.number
+    liveData: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     currentRound: state.data.currentRound,
     dataz: state.data.dataz,
     isCurrentRoundFinished: state.data.isCurrentRoundFinished,
-    fplManagersLiveScore: state.liveData.fplManagersLiveScore,
-    averageScore: state.liveData.averageScore
+    liveData: state.liveData
 });
 
 const mapDispatchToProps = dispatch => ({
