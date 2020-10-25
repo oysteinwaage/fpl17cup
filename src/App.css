@@ -62,7 +62,7 @@ ul.header li a {
 .content {
     display: flex;
     justify-content: center;
-    padding: 20px 0px;
+    padding: 20px 0;
     background-color: rgba(235, 235, 235, 0.19);
     height: 100%;
 }
@@ -91,4 +91,8 @@ ul.header li a {
 
 .leagueIdInputField {
     width: 75%;
+}
+
+.sentrér {
+    text-align: center;
 }

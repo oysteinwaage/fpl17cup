@@ -99,7 +99,7 @@ class Transfers extends Component {
                     </div>
                 )
             });
-            const diff = totalPointsIn - totalPointsOut;
+            const diff = totalPointsIn - (totalPointsOut + dataz[teamId][roundId].takenHit);
             transferDiff = {
                 ...transferDiff,
                 [teamId]: {
@@ -143,6 +143,7 @@ class Transfers extends Component {
                 { !isCurrentRoundFinished && <LiveDataShown /> }
                 <div className="transfer-header"> {(chosenRound === currentRound && chosenRound !== null) && 'Runde ' + chosenRound}</div>
                 {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
+                <div className="subName sentrér">(Alle poeng for total differanse inkluderer potensielle minuspoeng for hits)</div>
                 {managerIds.map(teamId => {
                     return this.transfersForTeamAndRound(teamId, chosenRound);
                 })}
