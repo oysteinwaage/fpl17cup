@@ -79,8 +79,9 @@ class Transfers extends Component {
             const roundId = 'round' + round;
             const transfers = dataz[teamId][roundId] ? dataz[teamId][roundId].transfers : [];
             const transfersForTeam = transfers && transfers.map(t => {
-                const pointsIn = pp[t[0]].find(s => s.round === round).total_points;
-                const pointsOut = pp[t[1]].find(s => s.round === round).total_points;
+                // TODO må tenke på hvordan dette her blir for dobbelt-runder.. det vil nok ikke bli helt riktig..
+                const pointsIn = (pp[t[0]].find(s => s.round === round) || {total_points: 0}).total_points;
+                const pointsOut = (pp[t[1]].find(s => s.round === round) || {total_points: 0}).total_points;
                 totalPointsIn += pointsIn;
                 totalPointsOut += pointsOut;
                 const transferDiffClassname = `row-transfer-diff${pointsIn - pointsOut > 0 ? '-pluss' : pointsIn - pointsOut < 0 ? '-minus' : ''}`;
