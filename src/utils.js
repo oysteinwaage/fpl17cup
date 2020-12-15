@@ -49,7 +49,7 @@ export const leaguesInDropdownList = [
     {id: 524841, name: "Progit",},
     {id: 196004, name: "KJEMPEBRALIGA",},
     {id: 361712, name: "Schmekeligaen (Sterriligaen)",},
-    // {id: 10724, name: "200-kronersligaen",},
+    {id: 320313, name: "Øliteserien",},
 ];
 
 export const participatingRounds = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 'Playoff', 'Utslagningsrunder'];
@@ -123,8 +123,6 @@ export function getLeagueManagers(leagueId) {
             return progitManagers;
         case 437181:
             return lillohoydenFcManagers;
-        case 10724:
-            return _200kronersligaen;
         default:
             return [];
     }
