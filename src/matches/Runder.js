@@ -40,7 +40,7 @@ export const gamesPrGroupAndRound = {
         groupE: [[2218701, 0], [3126178, 404123], [219691, 493380]],
     },
     extraround: {
-        groupA: [],
+        groupA: [[1259705, 4984122]],
         groupB: [],
         groupC: [],
         groupD: [],
@@ -160,7 +160,7 @@ export function MatchesForGroup(props) {
                     }
                 } else if (round === 'extraround') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Ingen playoff i år boys! Yolo';
+                        groupHeader = 'Playoff mellom gutta på 18p';
                 //    } else if (groupLetter === 'B') {
                 //        groupHeader = 'Playoff gruppe E';
                     } else {
