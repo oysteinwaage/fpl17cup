@@ -160,7 +160,7 @@ export function MatchesForGroup(props) {
                     }
                 } else if (round === 'extraround') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Playoff mellom gutta på 18p';
+                        groupHeader = 'Playoff (runde 24) mellom gutta på 18p';
                 //    } else if (groupLetter === 'B') {
                 //        groupHeader = 'Playoff gruppe E';
                     } else {
