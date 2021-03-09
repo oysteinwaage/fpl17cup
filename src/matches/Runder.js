@@ -48,7 +48,7 @@ export const gamesPrGroupAndRound = {
     },
     utslagning: {
         groupA: [[493380, 3930276], [210166, 4984122], [1159430, 3958980], [2218701, 1260577]],
-        groupB: [],
+        groupB: [[493380, 1159430], [4984122, 1260577]],
         groupC: [],
         groupD: [],
         groupE: [],
