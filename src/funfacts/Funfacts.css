@@ -30,7 +30,7 @@
 
 .ff-round-facts {
     width: 50%;
-    min-width: 333px;
+    min-width: 375px;
     background-color: #c1ead6;
 }
 .ff-round-facts .select_style {
@@ -80,7 +80,7 @@
 
 .ff-total-facts {
     width: 50%;
-    min-width: 333px;
+    min-width: 375px;
     background-color: #a7c8f2;
 }
 .ff-total-facts .ff-normal-fact-container {

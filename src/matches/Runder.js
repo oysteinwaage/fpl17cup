@@ -1,6 +1,6 @@
 import React from 'react';
 import './Runder.css';
-import {score} from '../Login.js';
+import {roundScore} from '../Login.js';
 import {players, fplAvgTeams} from '../utils.js';
 
 export const gamesPrGroupAndRound = {
@@ -40,15 +40,15 @@ export const gamesPrGroupAndRound = {
         groupE: [[2218701, 0], [3126178, 404123], [219691, 493380]],
     },
     extraround: {
-        groupA: [],
+        groupA: [[1259705, 4984122]],
         groupB: [],
         groupC: [],
         groupD: [],
         groupE: [],
     },
     utslagning: {
-        groupA: [],
-        groupB: [],
+        groupA: [[493380, 3930276], [210166, 4984122], [1159430, 3958980], [2218701, 1260577]],
+        groupB: [[493380, 1159430], [4984122, 1260577]],
         groupC: [],
         groupD: [],
         groupE: [],
@@ -96,6 +96,19 @@ export function getRoundNr(round) {
     }
 }
 
+export const roundLiveScore = (team, liveScore) =>
+    fplAvgTeams.includes(team) ? liveScore.averageScore : liveScore.fplManagersLiveScore[team].totalPoints || 0;
+
+export const score = (t1, t2, round, dataz, liveScore, skalBrukeLiveData) => {
+    if (skalBrukeLiveData){
+        return roundLiveScore(t1, liveScore) + (' - ' + roundLiveScore(t2, liveScore));
+    }
+
+    return (dataz[t1] && dataz[t1][round]) || (dataz[t2] && dataz[t2][round])
+        ? roundScore(t1, round, dataz) + (' - ' + roundScore(t2, round, dataz))
+        : ' - ';
+};
+
 function Match(props) {
     return (
         <div className="match-score-container">
@@ -106,7 +119,7 @@ function Match(props) {
                         <div className="subName">{fplAvgTeams.includes(props.team1) ? props.round : props.dataz[props.team1] && props.dataz[props.team1].managerName}</div>
                     </a>
                 </div>
-                <div className="score">{score(props.team1, props.team2, props.round, props.dataz)}</div>
+                <div className="score">{score(props.team1, props.team2, props.round, props.dataz, props.liveScore, props.skalBrukeLiveData)}</div>
                 <div className="awayTeam team">
                     <a onClick={() => props.onToggleDialog(props.team2)}>
                         {fplAvgTeams.includes(props.team2) ? "Fantasy Average" : players[props.team2]}<br/>
@@ -147,7 +160,7 @@ export function MatchesForGroup(props) {
                     }
                 } else if (round === 'extraround') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Ingen playoff i år boys! Yolo';
+                        groupHeader = 'Playoff (runde 24) mellom gutta på 18p';
                 //    } else if (groupLetter === 'B') {
                 //        groupHeader = 'Playoff gruppe E';
                     } else {
@@ -166,6 +179,8 @@ export function MatchesForGroup(props) {
                                           round={'round' + roundNr}
                                           onToggleDialog={props.onToggleDialog}
                                           dataz={props.dataz}
+                                          liveScore={props.liveScore}
+                                          skalBrukeLiveData={props.skalBrukeLiveData}
                             />;
                         })}
                     </div>);

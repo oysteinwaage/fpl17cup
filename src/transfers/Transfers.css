@@ -1,3 +1,6 @@
+.transfer-content {
+    padding-right: 10px;
+}
 .transfer-container {
     font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
     display: flex;

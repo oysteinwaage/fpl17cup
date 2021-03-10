@@ -6,10 +6,10 @@ export function updateChosenLeagueId(leagueId) {
     };
 }
 
-export const SET_CURRENT_ROUND = 'SET_CURRENT_ROUND';
-export function setCurrentRound(roundScore) {
+export const SET_SCORE_DATA = 'SET_SCORE_DATA';
+export function setScoreData(roundScore) {
     return {
-        type: SET_CURRENT_ROUND,
+        type: SET_SCORE_DATA,
         roundScore,
     };
 }
@@ -62,10 +62,27 @@ export function updateIsLoadingData(isLoading) {
     };
 }
 
-export const TOGGLE_SHOW_TEAM_STATS = 'SET_LAG_STATS_MODAL_DATA';
+export const TOGGLE_SHOW_TEAM_STATS = 'TOGGLE_SHOW_TEAM_STATS';
 export function showTeamsStatsModalFor(teamId) {
     return {
         type: TOGGLE_SHOW_TEAM_STATS,
         teamId
+    };
+}
+
+export const SET_LIVE_DATA = 'SET_LIVE_DATA';
+export function setLiveData(liveData, averageScore) {
+    return {
+        type: SET_LIVE_DATA,
+        liveData,
+        averageScore
+    };
+}
+
+export const ENTRY_PICKS_FETCHED = 'ENTRY_PICKS_FETCHED';
+export function entryPicksFetched(entryPicks) {
+    return {
+        type: ENTRY_PICKS_FETCHED,
+        entryPicks
     };
 }

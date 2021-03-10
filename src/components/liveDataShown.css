@@ -1,0 +1,60 @@
+@keyframes blinking {
+    0% {
+    opacity: .25
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: .25;
+    }
+}
+.circle {
+    margin-left: 10px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    opacity: .25;
+}
+.green {
+    background-color: forestgreen;
+    top: 50%;
+    left: 50%;
+    -webkit-animation: blinking 1s infinite;
+    -moz-animation: blinking 1s infinite;
+    -o-animation: blinking 1s infinite;
+    animation: blinking 1s infinite;
+}
+
+.liveDataContainer {
+    display: flex;
+    align-items:center;
+    margin-left: 10px;
+}
+
+.liveDataShownComponent {
+    display: flex;
+    width: 75px;
+    min-width: 75px;
+    height: 20px;
+    max-height: 20px;
+    background-color: rgba(42, 213, 42, 0.24);
+    border-radius: 25px;
+    padding: 10px 5px;
+    border: forestgreen 2px solid;
+    margin: 0 10px 15px 0;
+}
+
+.liveText {
+    margin: 2px 0 0 5px;
+    font-weight: bold;
+}
+
+.disclaimerText {
+    display: flex;
+    height: 20px;
+    font-size: small;
+    align-items:center;
+    justify-content:center;
+}
+

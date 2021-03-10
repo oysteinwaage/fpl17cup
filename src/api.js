@@ -2,7 +2,7 @@ import {getLeagueManagers, leaguesInDropdownList} from "./utils";
 
 let leagueId = 120053;
 
-export let loadedPlayerIds = [210166, 4984122, 2249091, 1159430, 126466, 404123, 130438, 1025143, 493380, 552453, 1260577, 1618273, 219691, 1259705, 3958980, 444051, 3034647, 531121, 2218701, 131342, 3524888, 3930276, 3126178, 737536, 18575, 1884253 ];
+export let loadedPlayerIds = [210166, 4984122, 2249091, 1159430, 126466, 404123, 130438, 1025143, 493380, 552453, 1260577, 1618273, 219691, 1259705, 3958980, 444051, 3034647, 531121, 2218701, 131342, 3524888, 3930276, 3126178, 737536, 18575, 1884253];
 
 export function getManagerList(chosenLeagueId) {
     leagueId = chosenLeagueId;
@@ -20,7 +20,7 @@ export function getManagerList(chosenLeagueId) {
                     });
                 })
                 .catch(error => {
-                    if( chosenLeagueId === 120053) {
+                    if (chosenLeagueId === 120053) {
                         let leagueName = leaguesInDropdownList.find(l => l.id === chosenLeagueId).name;
                         loadedPlayerIds = getLeagueManagers(chosenLeagueId);
                         return Promise.resolve({
@@ -107,10 +107,36 @@ export function getTransfers(managerIds) {
     });
 }
 
+export const getLiveData = (round) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            fetch(`/api/getLiveData?round=${round}`)
+                .then(r => r.json())
+                .then(data => {
+                    return resolve(data);
+                })
+                .catch(error => reject(error));
+        });
+    });
+};
+
+export const getEntryPicks = (teams, round) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            fetch(`/api/getEntryPicks?round=${round}&teams=${teams}`)
+                .then(r => r.json())
+                .then(data => {
+                    return resolve(data);
+                })
+                .catch(error => reject(error));
+        });
+    });
+};
+
 export function getTestNoe() {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
-            fetch(`/api/testDirekte`)
+            fetch(`/api/test`)
                 .then(r => r.json())
                 .then(data => {
                     console.log('testDirekte', data);

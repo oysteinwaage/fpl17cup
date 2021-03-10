@@ -5,7 +5,7 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const {makeExecutableSchema} = require('graphql-tools');
 const {typeDefs, resolvers} = require('fpl-api-graphql');
-const {fetchBootstrap, fetchEntry, fetchEntryHistory, fetchClassicLeague, fetchElementSummary, fetchEntryEvent} = require('fpl-api');
+const {fetchBootstrap, fetchEntry, fetchEntryHistory, fetchClassicLeague, fetchElementSummary, fetchLive, fetchEntryEvent} = require('fpl-api');
 
 // build executable schema from typedefs and resolvers
 const schema = makeExecutableSchema({typeDefs, resolvers});
@@ -165,7 +165,7 @@ app.get('/api/playerscores', function (req, res) {
 });
 
 app.get('/api/test', function (req, res) {
-    fetchEntryEvent(531121, 4)
+    fetchLive(4)
         .then(values => {
             res.type('application/json')
                 .send(values)
@@ -257,6 +257,39 @@ app.get('/api/getTransfers', function (req, res) {
         })
 });
 
+app.get('/api/getLiveData', function (req, res) {
+    let round = req.query.round;
+    fetchLive(round)
+        .then(values => {
+            res.type('application/json')
+                .send(values)
+                .end();
+        }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
+
+app.get('/api/getEntryPicks', function (req, res) {
+    let round = req.query.round;
+    let teams = req.query.teams.split(',');
+    Promise.all(teams.map(teamId => {
+        return fetchEntryEvent(teamId, round)
+            .then(values => { return {
+                ...values,
+                entryId: teamId
+            }})
+    })).then(values => {
+        res.type('application/json')
+            .send(values)
+            .end();
+    }).catch((error) => {
+        res.type('application/json')
+            .send(error)
+            .end();
+    });
+});
 
 const server = http.createServer(app);
 

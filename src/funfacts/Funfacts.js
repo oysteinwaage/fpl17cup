@@ -6,6 +6,7 @@ import {roundStats, isForFameAndGloryLeague} from '../Login.js';
 import {transferDiff} from '../transfers/Transfers.js';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
+import LiveDataShown from "../components/liveDataShown";
 
 function tempNullCheck(teamId, dataz) {
     return dataz[teamId] || {};
@@ -26,7 +27,7 @@ function calculateCaptainPointsForPlayer(playerPoints, captainData, p) {
         (playerPoints[captainData[p].vicePlayer].stats.total_points * multiplier);
 }
 
-function populateHighestValueListFor(list, value, player){
+function populateHighestValueListFor(list, value, player) {
     if (list.length === 0 || value > list[0][0]) {
         list = [[value, player]];
     } else if (list.length > 0 && value === list[0][0]) {
@@ -34,7 +35,8 @@ function populateHighestValueListFor(list, value, player){
     }
     return list;
 }
-function populateLowestValueListFor(list, value, player){
+
+function populateLowestValueListFor(list, value, player) {
     if (list.length === 0 || value < list[0][0]) {
         list = [[value, player]];
     } else if (list.length > 0 && value === list[0][0]) {
@@ -214,61 +216,72 @@ class Funfacts extends Component {
     }
 
     render() {
-        const { currentRound, managerIds, dataz, players } = this.props;
-        const { playerPoints, selectedRound, captainData} = this.state;
+        const {currentRound, managerIds, dataz, players, isCurrentRoundFinished, liveScore} = this.props;
+        const {playerPoints, selectedRound, captainData} = this.state;
 
         // TODO dette her er ikke riktig lenger. Hent kapteinsdata samtidig som alt annet i Login om det er mulig
         if (playerPoints === null) {
             this.fetchCaptainData(selectedRound);
         }
+        if (!isCurrentRoundFinished) {
+            managerIds.forEach(id => {
+                dataz[id]['round' + currentRound].points = liveScore[id] && liveScore[id].totalPoints;
+                dataz[id]['round' + currentRound].pointsOnBench = liveScore[id] && liveScore[id].benchPoints;
+            })
+        }
+
         let score = calculateStats(selectedRound, managerIds, playerPoints, captainData, currentRound, dataz);
         let totalHits = score.mostTotalHitsTaken || [];
-        if(totalHits[0]){
+        if (totalHits[0]) {
             totalHits[0] = ['-' + score.mostTotalHitsTaken[0][0] + 'p', score.mostTotalHitsTaken[0][1]];
         }
         let totalFewestHits = score.lowestTotalHitsTaken || [];
-        if(totalFewestHits[0]){
-            totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' :'-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
+        if (totalFewestHits[0]) {
+            totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' : '-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
         }
         const roundJackasText = roundJackass['round' + selectedRound];
-        // TODO midlertidig fjernet teksten om at kapteinspoeng oppdateres fortløpende inntil det er tilbake
+        const disclaimerText = "(Pr. nå er alt utenom endring i ligaplassering live for valgt runde. Stats totalt er ikke live)";
         return (
-            <div className="ff-content-container">
-                {(!roundJackasText || !isForFameAndGloryLeague()) && false &&
-                <p style={{'textAlign': 'center', 'fontSize': 'small', 'width': '100%'}}>(Kun kapteinspoeng oppdateres
-                    live, resten oppdateres når FPL oppdaterer sine data)</p>
-                }
-                {roundJackasText && isForFameAndGloryLeague() &&
-                <div className="ff-rundens-smell">
-                    <div className="ff-rundens-smell-header">Velkommen folkens!!</div>
-                    <div className="ff-rundens-smell-content"><span
-                        dangerouslySetInnerHTML={{__html: roundJackasText}}/></div>
-                    <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. Waage</div>
-                </div>
-                }
-                <div className="ff-round-facts">
-                    <div className="ff-facts-header">Stats runde {selectedRound}</div>
-                    {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
-                    {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore, players)}
-                    {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore, players)}
-                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench, players)}
-                    {makeMultipleResultsRowsWithSameScore('Best diff bytter', score.bestTransferDiff, players)}
-                    {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff, players)}
-                    {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber, players)}
-                    {normalFact('Største fall i vår liga', score.largestLeageDrop, players)}
-                    {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints, players)}
-                    {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints, players)}
-                    {makeMultipleResultsRows('Brukt chips', score.chipsUsed, players)}
-                    {makeMultipleResultsRows('Tatt hit', score.hitsTaken, players)}
-                </div>
-                <div className="ff-total-facts">
-                    <div className="ff-facts-header">Stats totalt</div>
-                    {makeMultipleResultsRowsWithSameScore('Flest bytter', score.mostTransfersUsed, players)}
-                    {makeMultipleResultsRowsWithSameScore('Færrest bytter', score.fewestTransfersUsed, players)}
-                    {makeMultipleResultsRowsWithSameScore('Mest hits tatt', totalHits, players)}
-                    {makeMultipleResultsRowsWithSameScore('Minst hits tatt', totalFewestHits, players)}
-                    {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench, players)}
-                    {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench, players)}
+            <div className="table-content">
+                {!isCurrentRoundFinished && currentRound == this.state.selectedRound && <LiveDataShown text={disclaimerText}/> }
+                <div className="ff-content-container">
+                    {(!roundJackasText || !isForFameAndGloryLeague()) && false &&
+                    <p style={{'textAlign': 'center', 'fontSize': 'small', 'width': '100%'}}>(Kun kapteinspoeng
+                        oppdateres
+                        live, resten oppdateres når FPL oppdaterer sine data)</p>
+                    }
+                    {roundJackasText && isForFameAndGloryLeague() &&
+                    <div className="ff-rundens-smell">
+                        <div className="ff-rundens-smell-header">Velkommen folkens!!</div>
+                        <div className="ff-rundens-smell-content"><span
+                            dangerouslySetInnerHTML={{__html: roundJackasText}}/></div>
+                        <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. Waage</div>
+                    </div>
+                    }
+                    <div className="ff-round-facts">
+                        <div className="ff-facts-header">Stats runde {selectedRound}</div>
+                        {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
+                        {makeMultipleResultsRowsWithSameScore('Høyest score', score.highestRoundScore, players)}
+                        {makeMultipleResultsRowsWithSameScore('Lavest score', score.lowestRoundScore, players)}
+                        {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench, players)}
+                        {makeMultipleResultsRowsWithSameScore('Best diff bytter', score.bestTransferDiff, players)}
+                        {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff, players)}
+                        {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber, players)}
+                        {normalFact('Største fall i vår liga', score.largestLeageDrop, players)}
+                        {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints, players)}
+                        {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints, players)}
+                        {makeMultipleResultsRows('Brukt chips', score.chipsUsed, players)}
+                        {makeMultipleResultsRows('Tatt hit', score.hitsTaken, players)}
+                    </div>
+                    <div className="ff-total-facts">
+                        <div className="ff-facts-header">Stats totalt</div>
+                        {makeMultipleResultsRowsWithSameScore('Flest bytter', score.mostTransfersUsed, players)}
+                        {makeMultipleResultsRowsWithSameScore('Færrest bytter', score.fewestTransfersUsed, players)}
+                        {makeMultipleResultsRowsWithSameScore('Mest hits tatt', totalHits, players)}
+                        {makeMultipleResultsRowsWithSameScore('Minst hits tatt', totalFewestHits, players)}
+                        {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench, players)}
+                        {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench, players)}
+                    </div>
                 </div>
             </div>
         );
@@ -331,14 +344,18 @@ Funfacts.propTypes = {
     players: PropTypes.object,
     dataz: PropTypes.object,
     currentRound: PropTypes.number,
-    managerIds: PropTypes.array
+    managerIds: PropTypes.array,
+    isCurrentRoundFinished: PropTypes.bool,
+    liveScore: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     players: state.data.players,
     currentRound: state.data.currentRound,
     managerIds: state.data.managerIds,
-    dataz: state.data.dataz
+    dataz: state.data.dataz,
+    isCurrentRoundFinished: state.data.isCurrentRoundFinished,
+    liveScore: state.liveData.fplManagersLiveScore
 });
 
 export default connect(mapStateToProps)(Funfacts);
