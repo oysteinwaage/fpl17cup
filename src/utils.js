@@ -51,6 +51,7 @@ export const leaguesInDropdownList = [
     {id: 196004, name: "KJEMPEBRALIGA",},
     {id: 361712, name: "Schmekeligaen (Sterriligaen)",},
     {id: 320313, name: "Øliteserien",},
+    {id: 704258, name: "Eika BIL",},
 ];
 
 export const participatingRounds = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 'Playoff', 'Utslagningsrunder'];
