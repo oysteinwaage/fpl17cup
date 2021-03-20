@@ -96,3 +96,7 @@ ul.header li a {
 .sentrér {
     text-align: center;
 }
+
+.byttLiga {
+    color: rgba(255, 187, 0, 0.89) !important;
+}

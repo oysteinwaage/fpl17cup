@@ -30,7 +30,7 @@ import {
 } from './actions/actions';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData, getTestNoe} from './api.js';
+import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData} from './api.js';
 import TeamStatsModal from "./components/TeamStatsModal";
 import {getEntryPicks} from "./api";
 import {roundLiveScore} from "./matches/Runder";
@@ -310,6 +310,9 @@ class Login extends Component {
                         <li>
                             <a className={currentPage === '/leaguetable' ? 'active' : ''}
                                onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
+                        </li>
+                        <li>
+                            <a className="byttLiga" onClick={() => window.location.reload()}>Bytt liga</a>
                         </li>
                     </div>
                 </ul>
