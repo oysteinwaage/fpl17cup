@@ -271,6 +271,11 @@ class Login extends Component {
             },
         }))(Tooltip);
 
+        const onByttLiga = () => {
+            onAapneNySide('');
+            window.location.reload();
+        };
+
         return (
             <div>
                 <div className="overHeader">
@@ -312,7 +317,7 @@ class Login extends Component {
                                onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
                         </li>
                         <li>
-                            <a className="byttLiga" onClick={() => window.location.reload()}>Bytt liga</a>
+                            <a className="byttLiga" onClick={onByttLiga}>Bytt liga</a>
                         </li>
                     </div>
                 </ul>
