@@ -44,14 +44,13 @@ export let players = {
 export const fplAvgTeams = [0, 1, 2, 3];
 
 export const leaguesInDropdownList = [
-    {id: 120053, name: "For Fame And Glory",},
-    {id: 104768, name: "Graduates 2012 FTW!",},
-    {id: 524841, name: "Progit",},
-    {id: 1753380, name: "Never Give Up",},
-    {id: 196004, name: "KJEMPEBRALIGA",},
-    {id: 361712, name: "Schmekeligaen (Sterriligaen)",},
-    {id: 320313, name: "Øliteserien",},
-    {id: 704258, name: "Eika BIL",},
+    {id: 819162, name: "For Fame And Glory",},
+    {id: 82644, name: "Graduates 2012 FTW!",},
+    {id: 160380, name: "Progit",},
+    {id: 821762, name: "Never Give Up",},
+    {id: 820777, name: "Holmen League",},
+    {id: 149222, name: "200-kroners ligaen",},
+    {id: 1308129, name: "Oversikt Alumni",},
 ];
 
 export const participatingRounds = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 'Playoff', 'Utslagningsrunder'];
