@@ -39,7 +39,7 @@ let groupData = {};
 export let roundStats = {};
 
 export function isForFameAndGloryLeague(id) {
-    return id === 120053;
+    return id === 819162;
 }
 
 export function roundScore(team, round, dataz) {
