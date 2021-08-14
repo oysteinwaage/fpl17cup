@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import '../App.css';
 import './Groups.css';
@@ -33,37 +33,40 @@ class Grupper extends Component {
     tempNullCheck = (teamId) => this.props.groupData[teamId] || {};
 
     render() {
-        const { players, currentRound, isCurrentRoundFinished } = this.props;
+        const {players, currentRound, isCurrentRoundFinished} = this.props;
         let that = this;
         return (
-            <div className="group-content">
-                {!isCurrentRoundFinished && participatingRounds.includes(currentRound) && <LiveDataShown />}
-                {groups.map(function (groupLetter) {
-                    const groupId = 'group' + groupLetter;
-                    const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
-                        return that.tempNullCheck(b).difference - that.tempNullCheck(a).difference;
-                    }).sort(function (a, b) {
-                        return that.tempNullCheck(b).points - that.tempNullCheck(a).points;
-                    });
-                    return (<div key={groupId}>
-                        <div className='groupName'>{'Gruppe ' + groupLetter}</div>
-                        {makeRow('Lag', 'K', 'S', 'U', 'T', 'Diff', 'Poeng', 'Header')}
-                        {sortedGroupMembers.map(team => {
-                            const teamData = that.tempNullCheck(team);
-                            const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
-                            return makeRow(
-                                team < 4  ? "Fantasy Average" : players[team],
-                                teamData.matches,
-                                teamData.matchesWon,
-                                teamData.matchesDrawn,
-                                teamData.matchesLost,
-                                diff,
-                                teamData.points
-                            );
-                        })}
-                    </div>);
-                })}
-            </div>
+            currentRound === 1 ?
+                <div>Cup'en har ikke startet enda</div>
+                :
+                <div className="group-content">
+                    {!isCurrentRoundFinished && participatingRounds.includes(currentRound) && <LiveDataShown/>}
+                    {groups.map(function (groupLetter) {
+                        const groupId = 'group' + groupLetter;
+                        const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
+                            return that.tempNullCheck(b).difference - that.tempNullCheck(a).difference;
+                        }).sort(function (a, b) {
+                            return that.tempNullCheck(b).points - that.tempNullCheck(a).points;
+                        });
+                        return (<div key={groupId}>
+                            <div className='groupName'>{'Gruppe ' + groupLetter}</div>
+                            {makeRow('Lag', 'K', 'S', 'U', 'T', 'Diff', 'Poeng', 'Header')}
+                            {sortedGroupMembers.map(team => {
+                                const teamData = that.tempNullCheck(team);
+                                const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
+                                return makeRow(
+                                    team < 4 ? "Fantasy Average" : players[team],
+                                    teamData.matches,
+                                    teamData.matchesWon,
+                                    teamData.matchesDrawn,
+                                    teamData.matchesLost,
+                                    diff,
+                                    teamData.points
+                                );
+                            })}
+                        </div>);
+                    })}
+                </div>
         );
     }
 }
