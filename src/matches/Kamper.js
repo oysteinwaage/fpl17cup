@@ -37,7 +37,7 @@ class Kamper extends Component {
         const {dataz, onShowTeamStatsModal, isCurrentRoundFinished, currentRound, liveData} = this.props;
         let skalBrukeLiveData = !isCurrentRoundFinished && (this.state.selectedRound === null || currentRound == this.state.selectedRound);
         return (
-            currentRound === 1 ?
+            currentRound < 4 ?
                 <div>Cup'en har ikke startet enda</div>
                 :
                 <div className="matches-content">

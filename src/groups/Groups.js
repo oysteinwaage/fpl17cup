@@ -36,7 +36,7 @@ class Grupper extends Component {
         const {players, currentRound, isCurrentRoundFinished} = this.props;
         let that = this;
         return (
-            currentRound === 1 ?
+            currentRound < 4 ?
                 <div>Cup'en har ikke startet enda</div>
                 :
                 <div className="group-content">
