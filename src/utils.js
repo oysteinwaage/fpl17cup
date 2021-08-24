@@ -51,6 +51,7 @@ export const leaguesInDropdownList = [
     {id: 820777, name: "Holmen League",},
     {id: 149222, name: "200-kroners ligaen",},
     {id: 1308129, name: "Oversikt Alumni",},
+    {id: 583961, name: "Øliteserien",},
 ];
 
 export const participatingRounds = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 'Playoff', 'Utslagningsrunder'];
