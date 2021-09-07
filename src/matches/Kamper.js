@@ -30,26 +30,23 @@ class Kamper extends Component {
     lastCupRound() {
         const {currentRound} = this.props;
         let roundNr = currentRound % 2 === 0 ? currentRound : currentRound - 1;
-        return roundNr < 4 ? 0 : roundNr === 28 ? 'Playoff' : roundNr >= 30 ? 'Utslagningsrunder' : roundNr;
+        return roundNr < 4 ? 4 : roundNr === 28 ? 'Playoff' : roundNr >= 30 ? 'Utslagningsrunder' : roundNr;
     }
 
     render() {
         const {dataz, onShowTeamStatsModal, isCurrentRoundFinished, currentRound, liveData} = this.props;
         let skalBrukeLiveData = !isCurrentRoundFinished && (this.state.selectedRound === null || currentRound == this.state.selectedRound);
         return (
-            currentRound < 4 ?
-                <div>Cup'en har ikke startet enda</div>
-                :
-                <div className="matches-content">
-                    {skalBrukeLiveData && <LiveDataShown/>}
-                    <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å
-                        få opp info om valgt lag pr. runde)</p>
-                    {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
-                    <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
-                                     onToggleDialog={onShowTeamStatsModal} dataz={dataz}
-                                     skalBrukeLiveData={skalBrukeLiveData}
-                                     liveScore={liveData}/>
-                </div>
+            <div className="matches-content">
+                {skalBrukeLiveData && <LiveDataShown/>}
+                <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å
+                    få opp info om valgt lag pr. runde)</p>
+                {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
+                <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
+                                 onToggleDialog={onShowTeamStatsModal} dataz={dataz}
+                                 skalBrukeLiveData={skalBrukeLiveData}
+                                 liveScore={liveData}/>
+            </div>
         );
     }
 }
