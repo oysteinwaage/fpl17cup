@@ -11,6 +11,11 @@
     color: #00b75f;
 }
 
+.match-score-container a {
+    text-decoration: none !important;
+    color: #00FF87;
+}
+
 .match-result {
     display: flex;
     justify-content: space-between;

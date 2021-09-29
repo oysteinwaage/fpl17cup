@@ -102,22 +102,22 @@ export const score = (t1, t2, round, dataz, liveScore, skalBrukeLiveData) => {
         : ' - ';
 };
 
+const matchComponent = (team, round, linkRound, dataz) =>
+    <a className="team-link" href={`https://fantasy.premierleague.com/entry/${team}/event/${linkRound}`} target="_blank">
+        {fplAvgTeams.includes(team) ? "Fantasy Average" : players[team]}<br/>
+        <div className="subName">{fplAvgTeams.includes(team) ? 'Runde ' + round : dataz[team] && dataz[team].managerName}</div>
+    </a>;
+
 function Match(props) {
     return (
         <div className="match-score-container">
             <div className="match-result">
                 <div className="homeTeam team">
-                    <a onClick={() => props.onToggleDialog(props.team1)}>
-                        {fplAvgTeams.includes(props.team1) ? "Fantasy Average" : players[props.team1]}<br/>
-                        <div className="subName">{fplAvgTeams.includes(props.team1) ? props.round : props.dataz[props.team1] && props.dataz[props.team1].managerName}</div>
-                    </a>
+                    {matchComponent(props.team1, props.round, props.linkRound, props.dataz)}
                 </div>
-                <div className="score">{score(props.team1, props.team2, props.round, props.dataz, props.liveScore, props.skalBrukeLiveData)}</div>
+                <div className="score">{score(props.team1, props.team2, 'round'+props.round, props.dataz, props.liveScore, props.skalBrukeLiveData)}</div>
                 <div className="awayTeam team">
-                    <a onClick={() => props.onToggleDialog(props.team2)}>
-                        {fplAvgTeams.includes(props.team2) ? "Fantasy Average" : players[props.team2]}<br/>
-                        <div className="subName">{fplAvgTeams.includes(props.team2) ? props.round : props.dataz[props.team2] && props.dataz[props.team2].managerName}</div>
-                    </a>
+                    {matchComponent(props.team2, props.round, props.linkRound, props.dataz)}
                 </div>
             </div>
         </div>
@@ -163,15 +163,16 @@ export function MatchesForGroup(props) {
                 return groupHeader && (
                     <div key={groupId}>
                         <div className='groupName'>{groupHeader}</div>
-                        {gamesPrGroupAndRound[round][groupId].map(function (match) {
+                        {gamesPrGroupAndRound[round][groupId].map(match => {
                             return <Match key={match[0] + match[1]}
                                           team1={match[0]}
                                           team2={match[1]}
-                                          round={'round' + roundNr}
+                                          round={roundNr}
                                           onToggleDialog={props.onToggleDialog}
                                           dataz={props.dataz}
                                           liveScore={props.liveScore}
                                           skalBrukeLiveData={props.skalBrukeLiveData}
+                                          linkRound={props.linkRound}
                             />;
                         })}
                     </div>);

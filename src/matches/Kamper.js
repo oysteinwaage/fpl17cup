@@ -36,16 +36,19 @@ class Kamper extends Component {
     render() {
         const {dataz, onShowTeamStatsModal, isCurrentRoundFinished, currentRound, liveData} = this.props;
         let skalBrukeLiveData = !isCurrentRoundFinished && (this.state.selectedRound === null || currentRound == this.state.selectedRound) && currentRound === this.lastCupRound();
+        const chosenRound = this.state.selectedRound || this.lastCupRound();
+        // TODO denne må fikses før vi kommer til utslagningsrunder da lastCupRound ikke lenger er et tall
+        const linkRound = chosenRound < currentRound ? chosenRound : currentRound;
         return (
             <div className="matches-content">
                 {skalBrukeLiveData && <LiveDataShown/>}
-                <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Tips: Du kan trykke på hvert lag for å
-                    få opp info om valgt lag pr. runde)</p>
-                {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', this.state.selectedRound || this.lastCupRound())}
-                <MatchesForGroup chosenRound={this.state.selectedRound || this.lastCupRound()}
+                <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Nyhet: Du kan trykke på hvert lag for å åpne vedkommendes lag i FPL )</p>
+                {SelectBox(participatingRounds, this.changeSelectedRound.bind(this), '', '', chosenRound)}
+                <MatchesForGroup chosenRound={chosenRound}
                                  onToggleDialog={onShowTeamStatsModal} dataz={dataz}
                                  skalBrukeLiveData={skalBrukeLiveData}
-                                 liveScore={liveData}/>
+                                 liveScore={liveData}
+                                 linkRound={linkRound}/>
             </div>
         );
     }
