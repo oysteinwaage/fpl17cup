@@ -35,7 +35,7 @@ export const gamesPrGroupAndRound = {
         groupD: [[5142137, 0], [3986698, 2690935], [775134, 3199103]],
     },
     extraround: {
-        groupA: [],
+        groupA: [[190505], [3605267], [1538696]],
         groupB: [],
         groupC: [],
         groupD: [],
@@ -153,7 +153,7 @@ export function MatchesForGroup(props) {
                     }
                 } else if (round === 'extraround') {
                     if (groupLetter === 'A') {
-                        groupHeader = 'Playoff (runde 24)';
+                        groupHeader = 'Playoff Gruppe A (runde 24)';
                     } else {
                         groupHeader = false;
                     }

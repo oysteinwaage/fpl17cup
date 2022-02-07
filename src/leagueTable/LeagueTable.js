@@ -46,7 +46,13 @@ class LeagueTable extends Component {
 
         return (
             <div key="jallajalla" className="table-content">
-                {!isCurrentRoundFinished && <LiveDataShown/>}
+                {!isCurrentRoundFinished &&
+                <>
+                    <LiveDataShown/>
+                    <p style={{'textAlign': 'center', 'fontSize': 'small'}}>(Gameweek og Total score presenteres her med
+                        eventuelle hits allerede trukket fra!)</p>
+                </>
+                }
                 {makeRow('', '', 'Lag', 'GW', 'TOT', 'Header')}
                 {(leagueDataSorted || []).map((team, index) => {
                     const teamAndManager = (
