@@ -35,13 +35,13 @@ export const gamesPrGroupAndRound = {
         groupD: [[5142137, 0], [3986698, 2690935], [775134, 3199103]],
     },
     extraround: {
-        groupA: [[190505], [3605267], [1538696]],
+        groupA: [[190505, null], [3605267, null], [1538696, null]],
         groupB: [],
         groupC: [],
         groupD: [],
     },
     utslagning: {
-        groupA: [],
+        groupA: [[775134,1033331], [828403,1538696], [5375037,381029], [3605267, 2690935]],
         groupB: [],
         groupC: [],
         groupD: [],
