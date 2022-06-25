@@ -14,7 +14,7 @@
     "graphql-tools": "^4.0.5",
     "history": "^4.7.2",
     "material-ui": "^0.19.4",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "prop-types": "^15.6.2",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
