@@ -6,7 +6,7 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "connected-react-router": "^4.5.0",
-    "express": "^4.15.4",
+    "express": "^4.17.3",
     "express-graphql": "^0.9.0",
     "fpl-api": "^2.2.1",
     "fpl-api-graphql": "^0.0.8",
