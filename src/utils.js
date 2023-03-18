@@ -4,54 +4,48 @@ import MenuItem from 'material-ui/MenuItem';
 
 export let players = {
 //Gruppe A
-    737536: "Verdiløse Menn",
-    1259705: "Puthinos",
-    1618273: "Lé Spéciellé Óne",
-    130438: "Dale of Norway",
-    2249091: "FireFartingUnicorns",
-    3958980: "Sk Bunn",
-//Gruppe B
-    3930276: "GunSquad",
-    126466: "Skøelv",
-    3034647: "pollyeid",
-    1025143: "SuperStar",
-    3524888: "Champs",
-    1: "Fantasy Average",
-//Gruppe C
-    18575: "Tryhards United",
-    2: "Fantasy Average",
-    1260577: "Peanutbutterfalcons",
-    444051: "The Red's",
-    552453: "Minipool",
-    210166: "Stupakjæll_v2",
-//Gruppe D
-    531121: "Team Waage",
-    1884253: "KistebakkaneClimbers",
-    4984122: "tEAM eXtreMe",
-    131342: "Ji- Sung Parkthebus",
-    1159430: "Marka",
-    3: "Fantasy Average",
+    2119845: "F.C. Syversen",
+    1538696: "Sk Bunn",
+    190505: "Endurers United FC",
+    493208: "Dale of Norway",
+    4967979: "tEAM eXtreMe",
+    3605267: "GunSquad",
 
-//Gruppe E
-    2218701: "F.C. Syversen",
-    493380: "Anulaibar Teoma",
-    219691: "Fk Matre",
-    3126178: "All Or Nothing",
-    404123: "Los Maestros",
+//Gruppe B
+    828403: "Verdiløse Menn",
+    1166619: "Stupakjæll_v3",
+    455789: "Team Waage",
+    3476572: "Champs",
+    1033331: "Fk Matre",
+    1: "Fantasy Average",
+
+//Gruppe C
+    2512093: "Ole Gunnar Brunost",
+    381029: "SuperStar",
+    5375037: "#KroenkeOut",
+    143741: "Anulaibar TeOmanohit",
+    3434339: "Åsane Burgunder",
+    2: "Fantasy Average",
+
+//Gruppe D
+    5142137: "Polly85",
+    3199103: "Puthinos",
+    775134: "Hail Mary",
+    3986698: "FireFartingUnicorns",
+    2690935: "Minipool",
     0: "Fantasy Average",
 };
 
-export const fplAvgTeams = [0, 1, 2, 3];
+export const fplAvgTeams = [0, 1, 2];
 
 export const leaguesInDropdownList = [
-    {id: 120053, name: "For Fame And Glory",},
-    {id: 104768, name: "Graduates 2012 FTW!",},
-    {id: 524841, name: "Progit",},
-    {id: 1753380, name: "Never Give Up",},
-    {id: 196004, name: "KJEMPEBRALIGA",},
-    {id: 361712, name: "Schmekeligaen (Sterriligaen)",},
-    {id: 320313, name: "Øliteserien",},
-    {id: 704258, name: "Eika BIL",},
+    {id: 279402, name: "Graduates 2012 FTW!",},
+    {id: 470343, name: "Progit",},
+    {id: 40786, name: "Never Give Up",},
+    {id: 279406, name: "Holmen League",},
+    {id: 511739, name: "200-kroners ligaen",},
+    {id: 985244, name: "Oversikt Alumni",},
+    {id: 1102977, name: "Dataligaen",},
 ];
 
 export const participatingRounds = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 'Playoff', 'Utslagningsrunder'];

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import '../App.css';
 import './Groups.css';
@@ -8,11 +8,10 @@ import {participatingRounds} from "../utils";
 import LiveDataShown from "../components/liveDataShown";
 
 const groupsMenmbers = {
-    groupA: [737536, 1259705, 1618273, 130438, 2249091, 3958980],
-    groupB: [3930276, 126466, 3034647, 1025143, 3524888, 1],
-    groupC: [18575, 2, 1260577, 444051, 552453, 210166],
-    groupD: [531121, 1884253, 4984122, 131342, 1159430, 3],
-    groupE: [2218701, 493380, 219691, 3126178, 404123, 0],
+    groupA: [2119845, 1538696, 190505, 493208, 4967979, 3605267],
+    groupB: [828403, 1166619, 455789, 3476572, 1033331, 1],
+    groupC: [2512093, 2, 381029, 5375037, 143741, 3434339],
+    groupD: [5142137, 3199103, 775134, 3986698, 2690935, 0],
 };
 
 function makeRow(team, matches, wins, draws, lost, goalDiff, points, extraClassname = "") {
@@ -33,11 +32,11 @@ class Grupper extends Component {
     tempNullCheck = (teamId) => this.props.groupData[teamId] || {};
 
     render() {
-        const { players, currentRound, isCurrentRoundFinished } = this.props;
+        const {players, currentRound, isCurrentRoundFinished} = this.props;
         let that = this;
         return (
             <div className="group-content">
-                {!isCurrentRoundFinished && participatingRounds.includes(currentRound) && <LiveDataShown />}
+                {!isCurrentRoundFinished && participatingRounds.includes(currentRound) && <LiveDataShown/>}
                 {groups.map(function (groupLetter) {
                     const groupId = 'group' + groupLetter;
                     const sortedGroupMembers = groupsMenmbers[groupId].sort(function (a, b) {
@@ -52,7 +51,7 @@ class Grupper extends Component {
                             const teamData = that.tempNullCheck(team);
                             const diff = teamData.difference > 0 ? '+' + teamData.difference : teamData.difference;
                             return makeRow(
-                                team < 4  ? "Fantasy Average" : players[team],
+                                team < 4 ? "Fantasy Average" : players[team],
                                 teamData.matches,
                                 teamData.matchesWon,
                                 teamData.matchesDrawn,
@@ -71,7 +70,7 @@ class Grupper extends Component {
 Grupper.propTypes = {
     groupData: PropTypes.object,
     players: PropTypes.object,
-    currentRound: PropTypes.bool,
+    currentRound: PropTypes.number,
     isCurrentRoundFinished: PropTypes.bool
 };
 

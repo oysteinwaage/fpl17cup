@@ -30,7 +30,7 @@ import {
 } from './actions/actions';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData, getTestNoe} from './api.js';
+import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData} from './api.js';
 import TeamStatsModal from "./components/TeamStatsModal";
 import {getEntryPicks} from "./api";
 import {roundLiveScore} from "./matches/Runder";
@@ -39,7 +39,7 @@ let groupData = {};
 export let roundStats = {};
 
 export function isForFameAndGloryLeague(id) {
-    return id === 120053;
+    return id === 819162;
 }
 
 export function roundScore(team, round, dataz) {
@@ -271,6 +271,11 @@ class Login extends Component {
             },
         }))(Tooltip);
 
+        const onByttLiga = () => {
+            onAapneNySide('');
+            window.location.reload();
+        };
+
         return (
             <div>
                 <div className="overHeader">
@@ -310,6 +315,9 @@ class Login extends Component {
                         <li>
                             <a className={currentPage === '/leaguetable' ? 'active' : ''}
                                onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
+                        </li>
+                        <li>
+                            <a className="byttLiga" onClick={onByttLiga}>Bytt liga</a>
                         </li>
                     </div>
                 </ul>
