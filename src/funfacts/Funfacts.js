@@ -266,8 +266,8 @@ class Funfacts extends Component {
                         {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench, players)}
                         {makeMultipleResultsRowsWithSameScore('Best diff bytter', score.bestTransferDiff, players)}
                         {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff, players)}
-                        {normalFact('Beste klatrer i vår liga', score.highestLeagueClimber, players)}
-                        {normalFact('Største fall i vår liga', score.largestLeageDrop, players)}
+                        {normalFact('Beste klatrer', score.highestLeagueClimber, players)}
+                        {normalFact('Største fall', score.largestLeageDrop, players)}
                         {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints, players)}
                         {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints, players)}
                         {makeMultipleResultsRows('Brukt chips', score.chipsUsed, players)}
