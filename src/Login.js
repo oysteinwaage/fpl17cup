@@ -237,9 +237,10 @@ class Login extends Component {
     };
 
     toggleShowLeagueIdInfo(event) {
+        const anchorEl = event && event.currentTarget;
         this.setState({
             showLeagueIdInfo: !this.state.showLeagueIdInfo,
-            anchorEl: event.currentTarget,
+            anchorEl,
         });
     };
 
@@ -322,7 +323,7 @@ class Login extends Component {
                 <div>
                     <TeamStatsModal/>
                     {isLoadingData &&
-                    <Dialog open={isLoadingData} PaperProps={{ style: customContentStyle }}>
+                    <Dialog open={isLoadingData} slotProps={{ paper: { style: customContentStyle } }}>
                         <DialogTitle>Laster og kalkulerer data</DialogTitle>
                         <DialogContent>
                             <CircularProgress size={80} thickness={5}/>
@@ -330,7 +331,7 @@ class Login extends Component {
                     </Dialog>
                     }
                     {!this.state.chosenLeagueId &&
-                    <Dialog open={!this.state.chosenLeagueId} PaperProps={{ style: customContentStyle }}>
+                    <Dialog open={!this.state.chosenLeagueId} slotProps={{ paper: { style: customContentStyle } }}>
                         <DialogTitle>Velg din liga fra listen eller skriv inn egen liga id</DialogTitle>
                         <DialogContent>
                             <p style={{color: 'red', fontSize: 'small'}}>

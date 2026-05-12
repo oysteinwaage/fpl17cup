@@ -55,7 +55,7 @@ class TeamStatsModal extends Component {
                 open={!!chosenTeamIdForModal}
                 onClose={() => onShowTeamStatsModal(null)}
                 scroll="paper"
-                PaperProps={{ style: customContentStyle }}
+                slotProps={{ paper: { style: customContentStyle } }}
             >
                 <DialogTitle>{players[chosenTeamIdForModal] + ' - ' + managerName}</DialogTitle>
                 <DialogContent>

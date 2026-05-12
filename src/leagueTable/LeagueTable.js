@@ -29,8 +29,9 @@ class LeagueTable extends Component {
         const {leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound} = this.props;
 
         const leagueDataSorted = leagueData.standings && leagueData.standings.results.reduce((acc, team) => {
-            const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : liveScore[team.entry].totalPoints;
-            const totalPoints = isCurrentRoundFinished ? team.total : (currentRound > 1 ? dataz[team.entry]['round' + (currentRound - 1)].totalPoints : 0) + liveScore[team.entry].totalPoints;
+            const liveEntry = liveScore && liveScore[team.entry];
+            const gwPoints = isCurrentRoundFinished ? dataz[team.entry]['round' + currentRound].points : (liveEntry ? liveEntry.totalPoints : 0);
+            const totalPoints = isCurrentRoundFinished ? team.total : (currentRound > 1 ? dataz[team.entry]['round' + (currentRound - 1)].totalPoints : 0) + (liveEntry ? liveEntry.totalPoints : 0);
             acc.push({
                 entry: team.entry,
                 entry_name: team.entry_name,

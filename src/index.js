@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Route } from 'react-router';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import App from './App';
 import { configureStore, history } from './store/configureStore';
@@ -14,6 +15,7 @@ ReactDOM.render(
         <ConnectedRouter history={history}>
             <Route path="/" component={App} />
         </ConnectedRouter>
+        <Analytics />
     </Provider>, document.getElementById('root'),
 );
 // registerServiceWorker();
