@@ -1,20 +1,22 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-// TODO disse her må du bli kvitt og bytte ut med nye @material-ui
-import Dialog from 'material-ui/Dialog';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Popover from 'material-ui/Popover/Popover';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Popover from '@mui/material/Popover';
 
-import Tooltip from '@material-ui/core/Tooltip';
-import HelpIcon from '@material-ui/icons/Help';
-import TextField from '@material-ui/core/TextField';
-import withStyles from "@material-ui/core/styles/withStyles";
-import Typography from "@material-ui/core/Typography";
+import Tooltip from '@mui/material/Tooltip';
+import HelpIcon from '@mui/icons-material/Help';
+import TextField from '@mui/material/TextField';
+import { styled } from "@mui/material/styles";
+import { tooltipClasses } from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import {push} from "connected-react-router";
 import './App.css';
 import {
@@ -34,6 +36,18 @@ import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData} fro
 import TeamStatsModal from "./components/TeamStatsModal";
 import {getEntryPicks} from "./api";
 import {roundLiveScore} from "./matches/Runder";
+
+const HtmlTooltip = styled(({ className, children, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }}>{children}</Tooltip>
+))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: '#f5f5f9',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 450,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
+    },
+}));
 
 let groupData = {};
 export let roundStats = {};
@@ -233,7 +247,8 @@ class Login extends Component {
         // This prevents ghost click.
     };
 
-    handleLigavalgFraDropdown = (event, index, value) => {
+    handleLigavalgFraDropdown = (event) => {
+        const value = event.target.value;
         this.setState({leagueIdInputField: value});
         this.props.onUpdateChosenLeagueId(value);
     };
@@ -252,24 +267,6 @@ class Login extends Component {
     render() {
         const {onAapneNySide, currentPage, leagueIdChosenByUser, isLoadingData} = this.props;
 
-        const brukValgtLigaKnapp = [
-            <RaisedButton
-                label="Gå videre med valgt liga"
-                onClick={() => this.triggerFetchDataFromServer()}
-                disabled={!leagueIdChosenByUser}
-            />,
-        ];
-
-        const HtmlTooltip = withStyles((theme) => ({
-            tooltip: {
-                backgroundColor: '#f5f5f9',
-                color: 'rgba(0, 0, 0, 0.87)',
-                maxWidth: 450,
-                fontSize: theme.typography.pxToRem(12),
-                border: '1px solid #dadde9',
-                disableFocusListener: true
-            },
-        }))(Tooltip);
 
         const onByttLiga = () => {
             onAapneNySide('');
@@ -325,76 +322,80 @@ class Login extends Component {
                 <div>
                     <TeamStatsModal/>
                     {isLoadingData &&
-                    <MuiThemeProvider>
-                        <Dialog
-                            title={"Laster og kalkulerer data"}
-                            open={isLoadingData}
-                            contentStyle={customContentStyle}
-                        >
+                    <Dialog open={isLoadingData} PaperProps={{ style: customContentStyle }}>
+                        <DialogTitle>Laster og kalkulerer data</DialogTitle>
+                        <DialogContent>
                             <CircularProgress size={80} thickness={5}/>
-                        </Dialog>
-                    </MuiThemeProvider>
+                        </DialogContent>
+                    </Dialog>
                     }
                     {!this.state.chosenLeagueId &&
-                    <MuiThemeProvider>
-                        <Dialog
-                            title={"Velg din liga fra listen eller skriv inn egen liga id"}
-                            open={!this.state.chosenLeagueId}
-                            contentStyle={customContentStyle}
-                            actions={brukValgtLigaKnapp}
-                        >
+                    <Dialog open={!this.state.chosenLeagueId} PaperProps={{ style: customContentStyle }}>
+                        <DialogTitle>Velg din liga fra listen eller skriv inn egen liga id</DialogTitle>
+                        <DialogContent>
                             <p style={{color: 'red', fontSize: 'small'}}>
                                 Pga begrensninger i API'et til FPL får man pr.
                                 nå kun med data for de 50 beste i ligaen :/
                             </p>
-                            <div>
-                                <TextField
-                                    className="leagueIdInputField"
-                                    helperText="Fyll inn koden for din liga her"
-                                    value={this.state.leagueIdInputField}
-                                    onChange={this.handleLigavalgFraInput}
-                                />
-                                <HtmlTooltip
-                                    title={
-                                        <React.Fragment>
-                                            <Typography color="inherit">Her finner du din ligakode</Typography>
-                                            Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se
-                                            i
-                                            URL'en.<br/>
-                                            Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/leagues/<span
-                                            style={{fontStyle: 'italic', fontWeight: 'bold'}}>1234567</span>/standings/c
-                                        </React.Fragment>
-                                    }
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                <div style={{width: '75%', position: 'relative'}}>
+                                    <TextField
+                                        fullWidth
+                                        helperText="Fyll inn koden for din liga her"
+                                        value={this.state.leagueIdInputField}
+                                        onChange={this.handleLigavalgFraInput}
+                                    />
+                                    <HtmlTooltip
+                                        title={
+                                            <React.Fragment>
+                                                <Typography color="inherit">Her finner du din ligakode</Typography>
+                                                Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se
+                                                i
+                                                URL'en.<br/>
+                                                Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/leagues/<span
+                                                style={{fontStyle: 'italic', fontWeight: 'bold'}}>1234567</span>/standings/c
+                                            </React.Fragment>
+                                        }
+                                    >
+                                        <HelpIcon style={{position: 'absolute', right: -32, top: 8}}/>
+                                    </HtmlTooltip>
+                                </div>
+                                <Select
+                                    value={leaguesInDropdownList.find(l => l.id === leagueIdChosenByUser) ? leagueIdChosenByUser : ''}
+                                    onChange={this.handleLigavalgFraDropdown}
+                                    className="dropdownLeagues"
+                                    displayEmpty
                                 >
-                                    <HelpIcon/>
-                                </HtmlTooltip>
+                                <MenuItem value="">Velg liga her</MenuItem>
+                                {leaguesInDropdownList.map(league => (
+                                    <MenuItem key={league.id} value={league.id}>{league.name}</MenuItem>
+                                ))}
+                                </Select>
                             </div>
-                            <br/>
-                            <DropDownMenu
-                                value={leaguesInDropdownList.find(l => l.id === leagueIdChosenByUser) ? leagueIdChosenByUser : ''}
-                                onChange={this.handleLigavalgFraDropdown}
-                                autoWidth={false}
-                                className="dropdownLeagues"
-                            >
-                                {leaguesInDropdownList.map(league => <MenuItem key={league.id} value={league.id}
-                                                                               primaryText={league.name}/>)}
-                                <MenuItem value={''} primaryText="Velg liga her"/>
-                            </DropDownMenu>
                             <Popover
                                 open={this.state.showLeagueIdInfo}
                                 anchorEl={this.state.anchorEl}
-                                anchorOrigin={{"horizontal": "middle", "vertical": "top"}}
-                                targetOrigin={{"horizontal": "middle", "vertical": "bottom"}}
-                                onRequestClose={(event) => this.toggleShowLeagueIdInfo(event)}
-                                contentStyle={customContentStyle}
+                                anchorOrigin={{horizontal: "center", vertical: "top"}}
+                                transformOrigin={{horizontal: "center", vertical: "bottom"}}
+                                onClose={(event) => this.toggleShowLeagueIdInfo(event)}
                             >
                                 Du finner id'en til din liga ved å gå inn på ønsket liga i nettleseren og se i
                                 URL'en.<br/>
                                 Det ser typisk slik ut:<br/> https://fantasy.premierleague.com/leagues/<span
                                 style={{fontStyle: 'italic', fontWeight: 'bold'}}>976245</span>/standings/c
                             </Popover>
-                        </Dialog>
-                    </MuiThemeProvider>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => this.triggerFetchDataFromServer()}
+                                disabled={!leagueIdChosenByUser}
+                            >
+                                Gå videre med valgt liga
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                     }
                     {!isLoadingData && this.state.chosenLeagueId && this.props.children}
                 </div>
@@ -405,8 +406,6 @@ class Login extends Component {
 
 const customContentStyle = {
     maxWidth: '350px',
-    height: '90%',
-    maxHeight: '90%',
     textAlign: 'center',
 };
 

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import '../App.css';
 import './LeagueTable.css';
 import {showTeamsStatsModalFor} from "../actions/actions";

@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import Dialog from 'material-ui/Dialog';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FlatButton from 'material-ui/FlatButton';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import {SelectBox} from '../utils.js';
 import {
     calculateStats, normalFact, makeMultipleResultsRows,
@@ -41,13 +43,6 @@ class TeamStatsModal extends Component {
             return <React.Fragment/>;
         }
 
-        const actions = [
-            <FlatButton
-                label="Lukk"
-                primary={true}
-                onClick={() => onShowTeamStatsModal(null)}
-            />,
-        ];
         const managerName = dataz[chosenTeamIdForModal] ? dataz[chosenTeamIdForModal].managerName : '';
         const statsOnPlayer = chosenTeamIdForModal ?
             calculateStats(this.state.selectedRoundDialog || currentRound, [chosenTeamIdForModal], null, null, currentRound, dataz)
@@ -56,16 +51,14 @@ class TeamStatsModal extends Component {
         const totalHits = statsOnPlayer && statsOnPlayer.mostTotalHitsTaken &&
             (statsOnPlayer.mostTotalHitsTaken.length === 0 ? ['0p', 12345] : ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]]);
         return (
-            <MuiThemeProvider>
-                <Dialog
-                    title={players[chosenTeamIdForModal] + ' - ' + managerName}
-                    actions={actions}
-                    modal={false}
-                    open={!!chosenTeamIdForModal}
-                    onRequestClose={() => onShowTeamStatsModal(null)}
-                    contentStyle={customContentStyle}
-                    autoScrollBodyContent={true}
-                >
+            <Dialog
+                open={!!chosenTeamIdForModal}
+                onClose={() => onShowTeamStatsModal(null)}
+                scroll="paper"
+                PaperProps={{ style: customContentStyle }}
+            >
+                <DialogTitle>{players[chosenTeamIdForModal] + ' - ' + managerName}</DialogTitle>
+                <DialogContent>
                     {statsOnPlayer &&
                     <div className="dialog-content">
                         <div className="ff-round-facts">
@@ -88,8 +81,11 @@ class TeamStatsModal extends Component {
                         </div>
                     </div>
                     }
-                </Dialog>
-            </MuiThemeProvider>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={() => onShowTeamStatsModal(null)}>Lukk</Button>
+                </DialogActions>
+            </Dialog>
         );
     }
 }
@@ -97,8 +93,6 @@ class TeamStatsModal extends Component {
 export const customContentStyle = {
     width: '90%',
     maxWidth: 'none',
-    height: '90%',
-    maxHeight: 'none',
 };
 
 TeamStatsModal.propTypes = {

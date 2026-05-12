@@ -1,6 +1,6 @@
 import React from 'react';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 export let players = {
 //Gruppe A
@@ -89,17 +89,16 @@ const dropDownStyle = {
 export function MakeDropDownMenu(values, chosenValue, onchange) {
     return (
         <div className='selectBoxContainer'>
-            <DropDownMenu
-                value={parseInt(chosenValue, 10) || null}
+            <Select
+                value={parseInt(chosenValue, 10) || ''}
                 onChange={onchange}
                 style={dropDownStyle}
-                autoWidth={false}
             >
-                <MenuItem value={null} primaryText="Velg runde"/>
-                {values.map(val => {
-                    return <MenuItem key={val} value={val} primaryText={'Runde' + val}/>;
-                })}
-            </DropDownMenu>
+                <MenuItem value="">Velg runde</MenuItem>
+                {values.map(val => (
+                    <MenuItem key={val} value={val}>Runde{val}</MenuItem>
+                ))}
+            </Select>
         </div>
     )
 }

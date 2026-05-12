@@ -65,6 +65,12 @@ class Transfers extends Component {
         }
     }
 
+    componentDidMount() {
+        if (this.state.playerPoints === null && !loading) {
+            this.fetchPlayerPoints(this.getSelectedRound());
+        }
+    }
+
     getSelectedRound() {
         return this.state.selectedRound || this.props.currentRound;
     }
@@ -136,9 +142,6 @@ class Transfers extends Component {
     render() {
         const { currentRound, managerIds, isCurrentRoundFinished } = this.props;
         const chosenRound = this.getSelectedRound();
-        if (this.state.playerPoints === null && !loading) {
-            this.fetchPlayerPoints(chosenRound);
-        }
         return (
             <div className="transfer-content">
                 { !isCurrentRoundFinished && <LiveDataShown /> }
@@ -161,7 +164,7 @@ Transfers.propTypes = {
     dataz: PropTypes.object,
     roundStats: PropTypes.object,
     onUpdateIsLoadingData: PropTypes.func,
-    isCurrentRoundFinished: PropTypes.func
+    isCurrentRoundFinished: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
