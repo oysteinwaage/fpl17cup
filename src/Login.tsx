@@ -394,6 +394,7 @@ class Login extends Component<LoginProps, LoginState> {
                             placeholder="F.eks. 1234567"
                             value={leagueIdInputField}
                             onChange={this.handleLigavalgFraInput}
+                            inputMode="numeric"
                             className="pr-9"
                           />
                           <button
@@ -482,6 +483,7 @@ class Login extends Component<LoginProps, LoginState> {
                             placeholder="F.eks. 12345678"
                             value={entryIdInputField}
                             onChange={this.handleEntryIdInputChange}
+                            inputMode="numeric"
                             onKeyDown={e => {
                               if (e.key === 'Enter' && entryIdInputField && !isSearchingEntry) {
                                 this.handleEntrySearch();
