@@ -9,11 +9,12 @@ import {
     UPDATE_TRANSFERS,
     SET_CAPTAIN_HISTORY
 } from '../actions/actions';
+import { DataState } from '../types';
 
-export default function dataReducer(state = initialState.data, action) {
-    const createDatazObject = (roundScore, managerIds, leagueIdChosenByUser) => {
-        let datazObject = managerIds.reduce((acc, current) => {
-            acc[current] = roundScore.map(a => a.current)[Object.keys(acc).length].reduce((a, b) => {
+export default function dataReducer(state: DataState = initialState.data, action: any): DataState {
+    const createDatazObject = (roundScore: any[], managerIds: number[], leagueIdChosenByUser: number | null) => {
+        let datazObject: Record<number, any> = managerIds.reduce((acc: Record<number, any>, current: number) => {
+            acc[current] = roundScore.map((a: any) => a.current)[Object.keys(acc).length].reduce((a: any, b: any) => {
                 const totalPointsOnBench = (a.totalPointsOnBench !== undefined ? a.totalPointsOnBench : 0) + b.points_on_bench;
                 const totalHitsTaken = (a.totalHitsTaken !== undefined ? a.totalHitsTaken : 0) + b.event_transfers_cost;
                 Object.assign(a, {
@@ -33,10 +34,9 @@ export default function dataReducer(state = initialState.data, action) {
             }, {});
             return acc;
         }, {});
-        roundScore.forEach(player => {
-            const myLeague = player.entry.leagues.classic.find(league => league.id === leagueIdChosenByUser);
-            // TODO dette her blir litt feil. Det må inn pr runde sånn som for chips under (utenom managerName og name, det kan være her
-            const allRanks = player.current.map(r => r.overall_rank).filter(r => r > 0);
+        roundScore.forEach((player: any) => {
+            const myLeague = player.entry.leagues.classic.find((league: any) => league.id === leagueIdChosenByUser);
+            const allRanks = player.current.map((r: any) => r.overall_rank).filter((r: number) => r > 0);
             Object.assign(datazObject[player.entry.id], {
                 leagueClimb: myLeague.entry_last_rank - myLeague.entry_rank,
                 leagueRank: myLeague.entry_rank,
@@ -47,7 +47,7 @@ export default function dataReducer(state = initialState.data, action) {
                 bestOverallRank: allRanks.length > 0 ? Math.min(...allRanks) : null,
                 currentSquadValue: player.entry.last_deadline_value,
             });
-            player.chips.forEach(chip => {
+            player.chips.forEach((chip: any) => {
                 Object.assign(datazObject[player.entry.id]['round' + chip.event], {
                     chipsPlayed: {
                         chipName: chip.name === '3xc' ? 'Triple Captain' : chip.name,
@@ -66,14 +66,15 @@ export default function dataReducer(state = initialState.data, action) {
                 ...state,
                 leagueIdChosenByUser: action.leagueId
             };
-        case SET_SCORE_DATA:
+        case SET_SCORE_DATA: {
             const currentRound = action.roundScore[0].entry.current_event;
             return {
                 ...state,
                 currentRound,
-                isCurrentRoundFinished: state.roundStats[currentRound] && state.roundStats[currentRound].finished,
+                isCurrentRoundFinished: !!(state.roundStats[currentRound] && state.roundStats[currentRound].finished),
                 dataz: createDatazObject(action.roundScore, state.managerIds, state.leagueIdChosenByUser)
             };
+        }
         case SET_ROUND_STATS:
             return {
                 ...state,
@@ -100,11 +101,11 @@ export default function dataReducer(state = initialState.data, action) {
                 ...state,
                 isLoadingData: action.isLoading
             };
-        case UPDATE_TRANSFERS:
+        case UPDATE_TRANSFERS: {
             const newDataz = {...state.dataz};
             if (action.transferData && action.transferData.length > 0) {
-                action.transferData.forEach(function (i) {
-                    i.forEach(function (transfer) {
+                action.transferData.forEach(function (i: any[]) {
+                    i.forEach(function (transfer: any) {
                         const tidspunkt = new Date(transfer.time).toLocaleDateString() + ' ' + new Date(transfer.time).toLocaleTimeString();
                         if (newDataz[transfer.entry]['round' + transfer.event].transfers) {
                             newDataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, tidspunkt]);
@@ -121,6 +122,7 @@ export default function dataReducer(state = initialState.data, action) {
                 transferlist: action.transferData,
                 dataz: newDataz
             };
+        }
         case TOGGLE_SHOW_TEAM_STATS:
             return {
                 ...state,
@@ -128,7 +130,7 @@ export default function dataReducer(state = initialState.data, action) {
             };
         case SET_CAPTAIN_HISTORY: {
             const newDataz = {...state.dataz};
-            action.captainHistory.forEach(({ teamId, round, captain, vice, multiplier, multiplierVice, captainPoints }) => {
+            action.captainHistory.forEach(({ teamId, round, captain, vice, multiplier, multiplierVice, captainPoints }: any) => {
                 if (captain !== null && newDataz[teamId] && newDataz[teamId]['round' + round]) {
                     Object.assign(newDataz[teamId]['round' + round], {
                         captain: { player: captain, vicePlayer: vice, multiplier, multiplierVice, captainPoints }

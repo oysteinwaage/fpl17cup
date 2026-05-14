@@ -7,7 +7,7 @@ import Transfers from './transfers/Transfers';
 import LeagueTable from './leagueTable/LeagueTable';
 import Login from './Login';
 
-class App extends Component {
+class App extends Component<{}, {}> {
 
     render() {
         return (

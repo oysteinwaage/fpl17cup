@@ -1,4 +1,11 @@
-export default {
+import { DataState, LiveDataState } from '../types';
+
+export interface AppState {
+    data: DataState;
+    liveData: LiveDataState;
+}
+
+const initialState: AppState = {
     data: {
         dataz: {},
         groupData: {},
@@ -16,8 +23,10 @@ export default {
     liveData: {
         playersLiveScore: {},
         fplManagersLiveScore: {},
-        entryPicks: {},
+        entryPicks: [],
         roundHits: {},
         averageScore: null
     }
 };
+
+export default initialState;

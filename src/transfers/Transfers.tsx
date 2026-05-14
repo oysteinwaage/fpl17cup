@@ -1,17 +1,33 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
 import './Transfers.css';
 import {updateIsLoadingData} from '../actions/actions';
-import {roundsUpTilNow, SelectBox} from '../utils.js';
-import {getPlayerScoresFor} from '../api.js';
-import LiveDataShown from "../components/liveDataShown";
+import {roundsUpTilNow, SelectBox} from '../utils';
+import {getPlayerScoresFor} from '../api';
+import LiveDataShown from '../components/liveDataShown';
+import { RootState, DataState, RoundStats } from '../types';
 
 export let loading = false;
-export let transferDiff = {};
+export let transferDiff: Record<number, Record<number, number>> = {};
 
-class Transfers extends Component {
-    constructor(props) {
+interface TransfersProps {
+    players: Record<number, string>;
+    currentRound: number | null;
+    managerIds: number[];
+    transferlist: any[][];
+    dataz: DataState['dataz'];
+    roundStats: RoundStats;
+    onUpdateIsLoadingData: (isLoading: boolean) => void;
+    isCurrentRoundFinished: boolean;
+}
+
+interface TransfersState {
+    selectedRound: number | null;
+    playerPoints: any;
+}
+
+class Transfers extends Component<TransfersProps, TransfersState> {
+    constructor(props: TransfersProps) {
         super(props);
         this.state = {
             selectedRound: null,
@@ -19,94 +35,92 @@ class Transfers extends Component {
         };
         this.fetchPlayerPoints = this.fetchPlayerPoints.bind(this);
         this.transfersForTeamAndRound = this.transfersForTeamAndRound.bind(this);
-    };
+    }
 
-    changeSelectedRound() {
+    changeSelectedRound(): void {
         const { currentRound } = this.props;
-        const selectedRound = document.getElementsByName('selectBox')[0].value;
-        if(selectedRound === 'Velg runde'){
-            this.setState({
+        const selectEl = document.getElementsByName('selectBox')[0] as HTMLSelectElement;
+        const selectedRound = selectEl ? selectEl.value : 'Velg runde';
+        if (selectedRound === 'Velg runde') {
+            this.setState<'selectedRound'>({
                 selectedRound: null
             });
             this.fetchPlayerPoints(currentRound);
         } else {
-            this.setState({
+            this.setState<'selectedRound'>({
                 selectedRound: parseInt(selectedRound)
             });
             this.fetchPlayerPoints(parseInt(selectedRound));
         }
-    };
+    }
 
-    // TODO flytt ut herfra og inn i initial-data-opphenting. Hent da samtidig opp alt som trengs for alle runder frem til gjeldende
-    fetchPlayerPoints(round) {
+    fetchPlayerPoints(round: number | null): void {
         const { transferlist, onUpdateIsLoadingData } = this.props;
-        let that = this;
         if (round) {
             loading = true;
             onUpdateIsLoadingData(true);
-            let temp = transferlist.reduce(function (prev, curr) {
-                prev.push(...curr.reduce((p, c) => {
+            let temp = transferlist.reduce(function (prev: number[], curr: any[]) {
+                prev.push(...curr.reduce((p: number[], c: any) => {
                     if (c.event === round) p.push(c.element_out, c.element_in);
                     return p;
                 }, []));
                 return prev;
             }, []);
-            getPlayerScoresFor([...new Set(temp)])
+            getPlayerScoresFor([...new Set(temp)] as number[])
                 .then(points => {
                     loading = false;
                     onUpdateIsLoadingData(false);
-                    that.setState({playerPoints: points})
+                    this.setState<'playerPoints'>({playerPoints: points});
                 })
                 .catch(error => {
                     onUpdateIsLoadingData(false);
                     loading = false;
-                    console.log('Error getPlayerScoresFor: ', error)
+                    console.log('Error getPlayerScoresFor: ', error);
                 });
         }
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         if (this.state.playerPoints === null && !loading) {
             this.fetchPlayerPoints(this.getSelectedRound());
         }
     }
 
-    getSelectedRound() {
+    getSelectedRound(): number | null {
         return this.state.selectedRound || this.props.currentRound;
     }
 
-    transfersForTeamAndRound(teamId, round) {
+    transfersForTeamAndRound(teamId: number, round: number | null): React.ReactElement | null {
         const { dataz, roundStats } = this.props;
         const pp = this.state.playerPoints;
-        const fplPlayers = roundStats.allPlayers;
+        const fplPlayers = (roundStats as any).allPlayers;
         if (teamId && round && pp && !loading) {
             let totalPointsIn = 0;
             let totalPointsOut = 0;
             const roundId = 'round' + round;
             const transfers = dataz[teamId][roundId] ? dataz[teamId][roundId].transfers : [];
-            const transfersForTeam = transfers && transfers.map(t => {
-                // TODO må tenke på hvordan dette her blir for dobbelt-runder.. det vil nok ikke bli helt riktig..
-                const pointsIn = (pp[t[0]].find(s => s.round === round) || {total_points: 0}).total_points;
-                const pointsOut = (pp[t[1]].find(s => s.round === round) || {total_points: 0}).total_points;
+            const transfersForTeam = transfers && transfers.map((t: [number, number, string]) => {
+                const pointsIn = (pp[t[0]].find((s: any) => s.round === round) || {total_points: 0}).total_points;
+                const pointsOut = (pp[t[1]].find((s: any) => s.round === round) || {total_points: 0}).total_points;
                 totalPointsIn += pointsIn;
                 totalPointsOut += pointsOut;
                 const transferDiffClassname = `row-transfer-diff${pointsIn - pointsOut > 0 ? '-pluss' : pointsIn - pointsOut < 0 ? '-minus' : ''}`;
+                const tKey = `${t[0]}-${t[1]}`;
                 return (
-                    <div key={teamId + round + t} className={`transfer-row ${transferDiffClassname}`}>
-                        <div key={teamId + round + t + 'in'} className="transfer-player">
+                    <div key={teamId + round + tKey} className={`transfer-row ${transferDiffClassname}`}>
+                        <div key={teamId + round + tKey + 'in'} className="transfer-player">
                             {fplPlayers[t[0]].web_name + ' (' + pointsIn + 'p)'}
                         </div>
-                        <div key={teamId + round + t + 'out'} className="transfer-player">
+                        <div key={teamId + round + tKey + 'out'} className="transfer-player">
                             {fplPlayers[t[1]].web_name + ' (' + pointsOut + 'p)'}
                         </div>
-                        <div key={teamId + round + t + 'time'} className="transfer-player-time">
+                        <div key={teamId + round + tKey + 'time'} className="transfer-player-time">
                             {t[2]}
                         </div>
-
                     </div>
-                )
+                );
             });
-            const diff = totalPointsIn - (totalPointsOut + dataz[teamId][roundId].takenHit);
+            const diff = totalPointsIn - (totalPointsOut + (dataz[teamId][roundId].takenHit || 0));
             transferDiff = {
                 ...transferDiff,
                 [teamId]: {
@@ -115,7 +129,7 @@ class Transfers extends Component {
                 }
             };
 
-            return teamId && round && transfers && (
+            return teamId && round && transfers ? (
                 <div key={teamId} className="transfer-container">
                     <div className="transfer-team">
                         {dataz[teamId].name}
@@ -134,7 +148,7 @@ class Transfers extends Component {
                         {transfersForTeam}
                     </div>
                 </div>
-            );
+            ) : null;
         }
         return null;
     }
@@ -156,18 +170,7 @@ class Transfers extends Component {
     }
 }
 
-Transfers.propTypes = {
-    players: PropTypes.object,
-    currentRound: PropTypes.number,
-    managerIds: PropTypes.array,
-    transferlist: PropTypes.array,
-    dataz: PropTypes.object,
-    roundStats: PropTypes.object,
-    onUpdateIsLoadingData: PropTypes.func,
-    isCurrentRoundFinished: PropTypes.bool
-};
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
     players: state.data.players,
     currentRound: state.data.currentRound,
     managerIds: state.data.managerIds,
@@ -177,8 +180,8 @@ const mapStateToProps = state => ({
     isCurrentRoundFinished: state.data.isCurrentRoundFinished,
 });
 
-const mapDispatchToProps = dispatch => ({
-    onUpdateIsLoadingData: (isLoading) => dispatch(updateIsLoadingData(isLoading)),
+const mapDispatchToProps = (dispatch: any) => ({
+    onUpdateIsLoadingData: (isLoading: boolean) => dispatch(updateIsLoadingData(isLoading)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transfers);

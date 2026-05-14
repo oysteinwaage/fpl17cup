@@ -1,9 +1,19 @@
 import React from 'react';
 import './Runder.css';
-import {roundScore} from '../Login.js';
-import {players, fplAvgTeams} from '../utils.js';
+import {roundScore} from '../Login';
+import {players, fplAvgTeams} from '../utils';
+import { DataState, LiveDataState } from '../types';
 
-export const gamesPrGroupAndRound = {
+type GroupKey = 'groupA' | 'groupB' | 'groupC' | 'groupD';
+type RoundKey = 'round4_14' | 'round6_16' | 'round8_18' | 'round10_20' | 'round12_22' | 'extraround' | 'utslagning';
+
+type GamesPrGroupAndRound = {
+    [key in RoundKey]: {
+        [key in GroupKey]: (number | null)[][];
+    };
+};
+
+export const gamesPrGroupAndRound: GamesPrGroupAndRound = {
     round4_14: {
         groupA: [[2119845, 1538696], [190505, 493208], [4967979, 3605267]],
         groupB: [[828403, 1166619], [455789, 3476572], [1033331, 1]],
@@ -48,11 +58,9 @@ export const gamesPrGroupAndRound = {
     }
 };
 
-export const groups = ['A', 'B', 'C', 'D'];
+export const groups: string[] = ['A', 'B', 'C', 'D'];
 
-//TODO Flytt alle disse felles-funksjonene til utils. Brukes av mange
-//TODO også se om du kan fikse dette på en finere måte
-export function getRoundNr(round) {
+export function getRoundNr(round: number | string): RoundKey {
     switch (round) {
         case '4':
         case 4:
@@ -89,10 +97,19 @@ export function getRoundNr(round) {
     }
 }
 
-export const roundLiveScore = (team, liveScore) =>
-    fplAvgTeams.includes(team) ? liveScore.averageScore : liveScore.fplManagersLiveScore[team].totalPoints || 0;
+export const roundLiveScore = (team: number, liveScore: LiveDataState): number =>
+    fplAvgTeams.includes(team)
+        ? liveScore.averageScore || 0
+        : (liveScore.fplManagersLiveScore[team] ? liveScore.fplManagersLiveScore[team].totalPoints : 0) || 0;
 
-export const score = (t1, t2, round, dataz, liveScore, skalBrukeLiveData) => {
+export const score = (
+    t1: number,
+    t2: number,
+    round: string,
+    dataz: DataState['dataz'],
+    liveScore: LiveDataState,
+    skalBrukeLiveData: boolean
+): string => {
     if (skalBrukeLiveData){
         return roundLiveScore(t1, liveScore) + (' - ' + roundLiveScore(t2, liveScore));
     }
@@ -102,13 +119,24 @@ export const score = (t1, t2, round, dataz, liveScore, skalBrukeLiveData) => {
         : ' - ';
 };
 
-const matchComponent = (team, round, linkRound, dataz) =>
-    <a className="team-link" href={`https://fantasy.premierleague.com/entry/${team}/event/${linkRound}`} target="_blank">
+const matchComponent = (team: number, round: string | number, linkRound: number | string, dataz: DataState['dataz']): React.ReactElement =>
+    <a className="team-link" href={`https://fantasy.premierleague.com/entry/${team}/event/${linkRound}`} target="_blank" rel="noreferrer">
         {fplAvgTeams.includes(team) ? "Fantasy Average" : players[team]}<br/>
         <div className="subName">{fplAvgTeams.includes(team) ? 'Runde ' + round : dataz[team] && dataz[team].managerName}</div>
     </a>;
 
-function Match(props) {
+interface MatchProps {
+    team1: number;
+    team2: number;
+    round: number | string;
+    linkRound: number | string;
+    dataz: DataState['dataz'];
+    liveScore: LiveDataState;
+    skalBrukeLiveData: boolean;
+    onToggleDialog?: (teamId: number) => void;
+}
+
+function Match(props: MatchProps): React.ReactElement {
     return (
         <div className="match-score-container">
             <div className="match-result">
@@ -124,7 +152,7 @@ function Match(props) {
     );
 }
 
-function roundForCupPlay(groupHeader) {
+function roundForCupPlay(groupHeader: string): number | undefined {
     if (groupHeader.startsWith('Kvartfinale')) {
         return 26;
     } else if (groupHeader.startsWith('Semifinale')) {
@@ -134,13 +162,22 @@ function roundForCupPlay(groupHeader) {
     }
 }
 
-export function MatchesForGroup(props) {
+interface MatchesForGroupProps {
+    chosenRound: number | string;
+    onToggleDialog?: (teamId: number) => void;
+    dataz: DataState['dataz'];
+    liveScore: LiveDataState;
+    skalBrukeLiveData: boolean;
+    linkRound: number | string;
+}
+
+export function MatchesForGroup(props: MatchesForGroupProps): React.ReactElement {
     const round = getRoundNr(props.chosenRound);
     return (
         <div>
             {groups.map(function (groupLetter) {
-                const groupId = 'group' + groupLetter;
-                let groupHeader = 'Gruppe ' + groupLetter;
+                const groupId = ('group' + groupLetter) as GroupKey;
+                let groupHeader: string | false = 'Gruppe ' + groupLetter;
                 if (round === 'utslagning') {
                     if (groupLetter === 'A') {
                         groupHeader = 'Kvartfinaler (runde 26)';
@@ -164,10 +201,10 @@ export function MatchesForGroup(props) {
                     <div key={groupId}>
                         <div className='groupName'>{groupHeader}</div>
                         {gamesPrGroupAndRound[round][groupId].map(match => {
-                            return <Match key={match[0] + match[1]}
-                                          team1={match[0]}
-                                          team2={match[1]}
-                                          round={roundNr}
+                            return <Match key={match[0] + '' + match[1]}
+                                          team1={match[0] as number}
+                                          team2={match[1] as number}
+                                          round={roundNr as number | string}
                                           onToggleDialog={props.onToggleDialog}
                                           dataz={props.dataz}
                                           liveScore={props.liveScore}

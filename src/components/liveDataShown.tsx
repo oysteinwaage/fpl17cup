@@ -1,7 +1,11 @@
 import React, {Component} from 'react';
 import './liveDataShown.css';
 
-class LiveDataShown extends Component {
+interface LiveDataShownProps {
+    text?: string;
+}
+
+class LiveDataShown extends Component<LiveDataShownProps, {}> {
 
     render() {
         return (

@@ -1,5 +1,5 @@
 export const UPDATE_CHOSEN_LEAGUE_ID = 'UPDATE_CHOSEN_LEAGUE_ID';
-export function updateChosenLeagueId(leagueId) {
+export function updateChosenLeagueId(leagueId: number | null) {
     return {
         type: UPDATE_CHOSEN_LEAGUE_ID,
         leagueId,
@@ -7,7 +7,7 @@ export function updateChosenLeagueId(leagueId) {
 }
 
 export const SET_SCORE_DATA = 'SET_SCORE_DATA';
-export function setScoreData(roundScore) {
+export function setScoreData(roundScore: any) {
     return {
         type: SET_SCORE_DATA,
         roundScore,
@@ -15,7 +15,7 @@ export function setScoreData(roundScore) {
 }
 
 export const SET_ROUND_STATS = 'SET_ROUND_STATS';
-export function setRoundStats(roundStats) {
+export function setRoundStats(roundStats: any) {
     return {
         type: SET_ROUND_STATS,
         roundStats,
@@ -23,7 +23,7 @@ export function setRoundStats(roundStats) {
 }
 
 export const UPDATE_LEAGUE_DATA = 'UPDATE_LEAGUE_DATA';
-export function updateLeagueData(leagueData) {
+export function updateLeagueData(leagueData: any) {
     return {
         type: UPDATE_LEAGUE_DATA,
         leagueData,
@@ -31,7 +31,7 @@ export function updateLeagueData(leagueData) {
 }
 
 export const UPDATE_GROUP_DATA = 'UPDATE_GROUP_DATA';
-export function updateGroupData(groupData) {
+export function updateGroupData(groupData: any) {
     return {
         type: UPDATE_GROUP_DATA,
         groupData,
@@ -39,7 +39,7 @@ export function updateGroupData(groupData) {
 }
 
 export const UPDATE_PLAYERS_LIST = 'UPDATE_PLAYERS_LIST';
-export function updatePlayersList(players) {
+export function updatePlayersList(players: Record<number, string>) {
     return {
         type: UPDATE_PLAYERS_LIST,
         players,
@@ -47,7 +47,7 @@ export function updatePlayersList(players) {
 }
 
 export const UPDATE_TRANSFERS = 'UPDATE_TRANSFERS';
-export function updateTransfers(transferData) {
+export function updateTransfers(transferData: any) {
     return {
         type: UPDATE_TRANSFERS,
         transferData,
@@ -55,7 +55,7 @@ export function updateTransfers(transferData) {
 }
 
 export const UPDATE_IS_LOADING_DATA = 'UPDATE_IS_LOADING_DATA';
-export function updateIsLoadingData(isLoading) {
+export function updateIsLoadingData(isLoading: boolean) {
     return {
         type: UPDATE_IS_LOADING_DATA,
         isLoading,
@@ -63,7 +63,7 @@ export function updateIsLoadingData(isLoading) {
 }
 
 export const TOGGLE_SHOW_TEAM_STATS = 'TOGGLE_SHOW_TEAM_STATS';
-export function showTeamsStatsModalFor(teamId) {
+export function showTeamsStatsModalFor(teamId: number | null) {
     return {
         type: TOGGLE_SHOW_TEAM_STATS,
         teamId
@@ -71,7 +71,7 @@ export function showTeamsStatsModalFor(teamId) {
 }
 
 export const SET_LIVE_DATA = 'SET_LIVE_DATA';
-export function setLiveData(liveData, averageScore) {
+export function setLiveData(liveData: any, averageScore?: number) {
     return {
         type: SET_LIVE_DATA,
         liveData,
@@ -80,7 +80,7 @@ export function setLiveData(liveData, averageScore) {
 }
 
 export const ENTRY_PICKS_FETCHED = 'ENTRY_PICKS_FETCHED';
-export function entryPicksFetched(entryPicks) {
+export function entryPicksFetched(entryPicks: any) {
     return {
         type: ENTRY_PICKS_FETCHED,
         entryPicks
@@ -88,11 +88,9 @@ export function entryPicksFetched(entryPicks) {
 }
 
 export const SET_CAPTAIN_HISTORY = 'SET_CAPTAIN_HISTORY';
-export function setCaptainHistory(captainHistory) {
+export function setCaptainHistory(captainHistory: any) {
     return {
         type: SET_CAPTAIN_HISTORY,
         captainHistory,
     };
 }
-
-// export const getPlayerScores

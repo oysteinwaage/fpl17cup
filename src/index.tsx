@@ -7,6 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import App from './App';
 import { configureStore, history } from './store/configureStore';
+
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 const store = configureStore();
