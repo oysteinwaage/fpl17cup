@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { HelpCircle, CheckCircle, ChevronLeft, Loader2 } from 'lucide-react';
+import { HelpCircle, CheckCircle, ChevronLeft, Loader2, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from './components/ui/dialog';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/ui/tooltip';
 import {
   updateChosenLeagueId, updateSelectedEntryId, updatePlayersList, setScoreData, setRoundStats,
   updateTransfers, updateIsLoadingData, updateLeagueData,
@@ -23,9 +22,42 @@ import { RootState, DataState, LiveDataState } from './types';
 export let roundStats: any = {};
 
 interface EntryInfo {
+  entryId: number;
   teamName: string;
   managerName: string;
   privateLeagues: Array<{ id: number; name: string }>;
+}
+
+const STORAGE_KEY = 'fpl_recent_entries';
+const MAX_SAVED = 5;
+
+function loadSavedEntries(): EntryInfo[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveEntry(entry: EntryInfo): EntryInfo[] {
+  try {
+    const updated = [entry, ...loadSavedEntries().filter(e => e.entryId !== entry.entryId)].slice(0, MAX_SAVED);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    return updated;
+  } catch {
+    return loadSavedEntries();
+  }
+}
+
+function removeEntry(entryId: number): EntryInfo[] {
+  try {
+    const updated = loadSavedEntries().filter(e => e.entryId !== entryId);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    return updated;
+  } catch {
+    return loadSavedEntries();
+  }
 }
 
 interface LoginOwnProps extends RouteComponentProps {
@@ -64,6 +96,8 @@ interface LoginState {
   entrySearchError: string | null;
   selectedEntry: EntryInfo | null;
   showLeagueSwitcher: boolean;
+  savedEntries: EntryInfo[];
+  helpOpen: 'direct' | 'entry' | null;
 }
 
 class Login extends Component<LoginProps, LoginState> {
@@ -75,7 +109,7 @@ class Login extends Component<LoginProps, LoginState> {
       chosenLeagueId: false,
       leagueName: 'Liganavn',
       leagueIdInputField: '',
-      loginTab: 'direct',
+      loginTab: 'entry',
       entryIdInputField: '',
       searchedEntry: null,
       confirmedEntry: null,
@@ -83,6 +117,8 @@ class Login extends Component<LoginProps, LoginState> {
       entrySearchError: null,
       selectedEntry: null,
       showLeagueSwitcher: false,
+      savedEntries: loadSavedEntries(),
+      helpOpen: null,
     };
     this.props.history.push('/');
   }
@@ -186,8 +222,10 @@ class Login extends Component<LoginProps, LoginState> {
 
     this.setState<'isSearchingEntry' | 'entrySearchError' | 'searchedEntry'>({ isSearchingEntry: true, entrySearchError: null, searchedEntry: null });
     getEntryInfo(entryId)
-      .then((data: EntryInfo) => {
-        this.setState<'isSearchingEntry' | 'searchedEntry'>({ isSearchingEntry: false, searchedEntry: data });
+      .then((data: Omit<EntryInfo, 'entryId'>) => {
+        const entry: EntryInfo = { entryId, ...data };
+        const savedEntries = saveEntry(entry);
+        this.setState<'isSearchingEntry' | 'searchedEntry' | 'savedEntries'>({ isSearchingEntry: false, searchedEntry: entry, savedEntries });
       })
       .catch(() => {
         this.setState<'isSearchingEntry' | 'entrySearchError'>({
@@ -198,10 +236,9 @@ class Login extends Component<LoginProps, LoginState> {
   };
 
   selectLeagueFromEntry = (leagueId: number): void => {
-    const { confirmedEntry, entryIdInputField } = this.state;
-    const entryId = parseInt(entryIdInputField, 10);
+    const { confirmedEntry } = this.state;
     this.props.onUpdateChosenLeagueId(leagueId);
-    this.props.onUpdateSelectedEntryId(Number.isNaN(entryId) ? null : entryId);
+    this.props.onUpdateSelectedEntryId(confirmedEntry?.entryId ?? null);
     this.setState<'confirmedEntry' | 'selectedEntry'>({ confirmedEntry: null, selectedEntry: confirmedEntry }, () => {
       this.triggerFetchDataFromServer();
     });
@@ -230,7 +267,7 @@ class Login extends Component<LoginProps, LoginState> {
     const {
       chosenLeagueId, leagueName, leagueIdInputField,
       loginTab, entryIdInputField, searchedEntry, confirmedEntry,
-      isSearchingEntry, entrySearchError, selectedEntry, showLeagueSwitcher,
+      isSearchingEntry, entrySearchError, selectedEntry, showLeagueSwitcher, savedEntries, helpOpen,
     } = this.state;
     const currentPage = location.pathname;
 
@@ -359,25 +396,22 @@ class Login extends Component<LoginProps, LoginState> {
                             onChange={this.handleLigavalgFraInput}
                             className="pr-9"
                           />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  type="button"
-                                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                                >
-                                  <HelpCircle className="w-4 h-4" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent side="right">
-                                <p className="font-semibold mb-1 text-sm">Her finner du din ligakode</p>
-                                <p className="text-xs leading-relaxed">
-                                  Gå inn på ønsket liga i nettleseren og se i URL-en:<br />
-                                  fantasy.premierleague.com/leagues/<strong>1234567</strong>/standings/c
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <button
+                            type="button"
+                            className={`absolute right-2.5 top-1/2 -translate-y-1/2 focus:outline-none transition-colors ${helpOpen === 'direct' ? 'text-fpl-purple' : 'text-gray-400 hover:text-gray-600'}`}
+                            onClick={() => this.setState<'helpOpen'>({ helpOpen: helpOpen === 'direct' ? null : 'direct' })}
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                          </button>
+                          {helpOpen === 'direct' && (
+                            <div className="absolute right-0 top-full mt-1 z-50 w-80 rounded-lg border border-gray-200 bg-white px-3 py-2.5 shadow-lg">
+                              <p className="font-semibold mb-1 text-sm">Her finner du din ligakode</p>
+                              <p className="text-xs leading-relaxed text-gray-700">
+                                Gå inn på ønsket liga i nettleseren og se i URL-en:<br />
+                                fantasy.premierleague.com/leagues/<strong>1234567</strong>/standings/c
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -409,6 +443,38 @@ class Login extends Component<LoginProps, LoginState> {
 
                   {loginTab === 'entry' && (
                     <div className="space-y-3">
+                      {savedEntries.length > 0 && (
+                        <div>
+                          <label className="text-xs font-medium text-gray-600 mb-1.5 block">Tidligere søk</label>
+                          <div className="space-y-1.5">
+                            {savedEntries.map(entry => (
+                              <div
+                                key={entry.entryId}
+                                className="flex items-center border border-gray-200 rounded-lg px-3 py-2 hover:border-fpl-purple hover:bg-fpl-purple/5 transition-colors group"
+                              >
+                                <button
+                                  className="flex-1 min-w-0 text-left"
+                                  onClick={() => this.setState<'confirmedEntry'>({ confirmedEntry: entry })}
+                                >
+                                  <p className="font-semibold text-sm truncate leading-tight">{entry.teamName}</p>
+                                  <p className="text-xs text-gray-500 truncate leading-tight">{entry.managerName}</p>
+                                </button>
+                                <button
+                                  className="ml-2 shrink-0 text-gray-300 hover:text-gray-500 transition-colors"
+                                  onClick={() => this.setState<'savedEntries'>({ savedEntries: removeEntry(entry.entryId) })}
+                                  aria-label="Fjern"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="relative my-3">
+                            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+                            <div className="relative flex justify-center"><span className="bg-white px-2 text-xs text-gray-400">eller søk opp nytt lag</span></div>
+                          </div>
+                        </div>
+                      )}
                       <div>
                         <label className="text-xs font-medium text-gray-600 mb-1 block">Team-ID</label>
                         <div className="relative">
@@ -423,25 +489,23 @@ class Login extends Component<LoginProps, LoginState> {
                             }}
                             className="pr-9"
                           />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  type="button"
-                                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                                >
-                                  <HelpCircle className="w-4 h-4" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent side="right">
-                                <p className="font-semibold mb-1 text-sm">Her finner du din team-ID</p>
-                                <p className="text-xs leading-relaxed">
-                                  Gå inn på «Points» i FPL og se i URL-en:<br />
-                                  fantasy.premierleague.com/entry/<strong>12345678</strong>/event/...
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <button
+                            type="button"
+                            className={`absolute right-2.5 top-1/2 -translate-y-1/2 focus:outline-none transition-colors ${helpOpen === 'entry' ? 'text-fpl-purple' : 'text-gray-400 hover:text-gray-600'}`}
+                            onClick={() => this.setState<'helpOpen'>({ helpOpen: helpOpen === 'entry' ? null : 'entry' })}
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                          </button>
+                          {helpOpen === 'entry' && (
+                            <div className="absolute right-0 top-full mt-1 z-50 w-80 rounded-lg border border-gray-200 bg-white px-3 py-2.5 shadow-lg">
+                              <p className="font-semibold mb-1 text-sm">Her finner du din team-ID</p>
+                              <p className="text-xs leading-relaxed text-gray-700">
+                                Gå inn på «Points» i nettleser (ikke mobil app) FPL og se i URL-en:<br />
+                                fantasy.premierleague.com/entry/<strong>12345678</strong>/event/... <br /><br />
+                                Du trenger ikke gjøre dette hver gang, tidligere søk lagres lokalt for enklere login neste gang 👍🏼
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
 
