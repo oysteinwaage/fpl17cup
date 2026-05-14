@@ -15,6 +15,7 @@ const initialState: AppState = {
         leagueData: {},
         roundStats: {},
         leagueIdChosenByUser: null,
+        selectedEntryId: null,
         isLoadingData: false,
         players: {},
         showTeamStatsModal: null,

@@ -111,6 +111,18 @@ export function getCaptainHistory(teams: number[], rounds: number[]): Promise<an
     });
 }
 
+export function getEntryInfo(entryId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+        fetch(`/api/getEntryInfo?entryId=${entryId}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Laget ble ikke funnet');
+                return r.json();
+            })
+            .then(data => resolve(data))
+            .catch(error => reject(error));
+    });
+}
+
 export function getTestNoe(): Promise<any> {
     return new Promise((resolve, reject) => {
         setTimeout(function () {

@@ -12,20 +12,26 @@ interface LeagueTableProps {
   onShowTeamStatsModal: (teamId: number) => void;
   liveScore: LiveDataState['fplManagersLiveScore'];
   isCurrentRoundFinished: boolean;
+  selectedEntryId: number | null;
 }
 
 class LeagueTable extends Component<LeagueTableProps, {}> {
   render() {
-    const { leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound } = this.props;
+    const { leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound, selectedEntryId } = this.props;
 
     const sorted = leagueData.standings?.results.reduce((acc: any[], team: any) => {
+      const teamData = dataz[team.entry];
+      const roundKey = 'round' + currentRound;
+      if (!teamData || !teamData[roundKey]) return acc;
+
       const live = liveScore?.[team.entry];
       const gwPoints = isCurrentRoundFinished
-        ? dataz[team.entry]['round' + currentRound].points
+        ? teamData[roundKey].points
         : (live ? live.totalPoints : 0);
+      const prevRoundKey = 'round' + (currentRound! - 1);
       const totalPoints = isCurrentRoundFinished
         ? team.total
-        : (currentRound! > 1 ? dataz[team.entry]['round' + (currentRound! - 1)].totalPoints : 0) + (live ? live.totalPoints : 0);
+        : (currentRound! > 1 && teamData[prevRoundKey] ? teamData[prevRoundKey].totalPoints : 0) + (live ? live.totalPoints : 0);
       acc.push({ entry: team.entry, entry_name: team.entry_name, player_name: team.player_name, previous_rank: team.last_rank || team.rank, gwPoints, totalPoints });
       return acc;
     }, []).sort((a: any, b: any) => b.totalPoints - a.totalPoints);
@@ -55,15 +61,21 @@ class LeagueTable extends Component<LeagueTableProps, {}> {
           const prev = team.previous_rank;
           const moved = rank < prev ? 'up' : rank > prev ? 'down' : 'same';
 
+          const isHighlighted = team.entry === selectedEntryId;
+
           return (
             <div
               key={team.entry}
-              className="flex items-center bg-fpl-purple text-fpl-green py-3 px-4 border-b border-purple-900 hover:bg-[#4a0053] transition-colors cursor-pointer group"
+              className={`flex items-center py-3 px-4 border-b border-purple-900 hover:bg-[#4a0053] transition-colors cursor-pointer group ${
+                isHighlighted
+                  ? 'bg-fpl-green text-fpl-purple'
+                  : 'bg-fpl-purple text-fpl-green'
+              }`}
               onClick={() => onShowTeamStatsModal(team.entry)}
             >
               <div className="w-10 shrink-0 flex items-center gap-0.5 text-base font-bold">
                 {rank}
-                {moved === 'up'   && <ChevronUp   className="w-4 h-4 text-fpl-green" />}
+                {moved === 'up'   && <ChevronUp   className={`w-4 h-4 ${isHighlighted ? 'text-fpl-purple' : 'text-fpl-green'}`} />}
                 {moved === 'down' && <ChevronDown  className="w-4 h-4 text-red-400" />}
               </div>
 
@@ -85,11 +97,12 @@ class LeagueTable extends Component<LeagueTableProps, {}> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  currentRound:          state.data.currentRound,
-  dataz:                 state.data.dataz,
-  leagueData:            state.data.leagueData,
-  liveScore:             state.liveData.fplManagersLiveScore,
+  currentRound:           state.data.currentRound,
+  dataz:                  state.data.dataz,
+  leagueData:             state.data.leagueData,
+  liveScore:              state.liveData.fplManagersLiveScore,
   isCurrentRoundFinished: state.data.isCurrentRoundFinished,
+  selectedEntryId:        state.data.selectedEntryId,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

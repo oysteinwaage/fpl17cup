@@ -93,6 +93,7 @@ export interface DataState {
   leagueData: LeagueData;
   roundStats: RoundStats;
   leagueIdChosenByUser: number | null;
+  selectedEntryId: number | null;
   isLoadingData: boolean;
   players: Record<number, string>;
   showTeamStatsModal: number | null;

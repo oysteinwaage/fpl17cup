@@ -6,7 +6,7 @@ const TooltipProvider = TooltipPrimitive.Provider;
 const Tooltip = TooltipPrimitive.Root;
 const TooltipTrigger = TooltipPrimitive.Trigger;
 
-interface TooltipContentProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TooltipContentProps extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content> {
   sideOffset?: number;
 }
 

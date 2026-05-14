@@ -1,3 +1,11 @@
+export const UPDATE_SELECTED_ENTRY_ID = 'UPDATE_SELECTED_ENTRY_ID';
+export function updateSelectedEntryId(entryId: number | null) {
+    return {
+        type: UPDATE_SELECTED_ENTRY_ID,
+        entryId,
+    };
+}
+
 export const UPDATE_CHOSEN_LEAGUE_ID = 'UPDATE_CHOSEN_LEAGUE_ID';
 export function updateChosenLeagueId(leagueId: number | null) {
     return {

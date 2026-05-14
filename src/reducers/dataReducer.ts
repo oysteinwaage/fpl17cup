@@ -3,13 +3,13 @@ import {
     SET_SCORE_DATA,
     SET_ROUND_STATS, TOGGLE_SHOW_TEAM_STATS,
     UPDATE_CHOSEN_LEAGUE_ID,
-
+    UPDATE_SELECTED_ENTRY_ID,
     UPDATE_IS_LOADING_DATA, UPDATE_LEAGUE_DATA,
     UPDATE_PLAYERS_LIST,
     UPDATE_TRANSFERS,
     SET_CAPTAIN_HISTORY
-} from '../actions/actions';
-import { DataState } from '../types';
+} from '@/actions/actions';
+import { DataState } from '@/types';
 
 export default function dataReducer(state: DataState = initialState.data, action: any): DataState {
     const createDatazObject = (roundScore: any[], managerIds: number[], leagueIdChosenByUser: number | null) => {
@@ -65,6 +65,11 @@ export default function dataReducer(state: DataState = initialState.data, action
             return {
                 ...state,
                 leagueIdChosenByUser: action.leagueId
+            };
+        case UPDATE_SELECTED_ENTRY_ID:
+            return {
+                ...state,
+                selectedEntryId: action.entryId
             };
         case SET_SCORE_DATA: {
             const currentRound = action.roundScore[0].entry.current_event;
