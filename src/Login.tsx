@@ -364,7 +364,7 @@ class Login extends Component<LoginProps, LoginState> {
                   {/* Tabs */}
                   <div className="flex border-b border-gray-200 mb-4">
                     <button
-                      className={`flex-1 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                      className={`flex-1 py-2 text-sm font-medium border-b-2 -mb-px transition-colors focus:outline-none ${
                         loginTab === 'direct'
                           ? 'border-fpl-purple text-fpl-purple'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -374,7 +374,7 @@ class Login extends Component<LoginProps, LoginState> {
                       Liga-ID
                     </button>
                     <button
-                      className={`flex-1 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                      className={`flex-1 py-2 text-sm font-medium border-b-2 -mb-px transition-colors focus:outline-none ${
                         loginTab === 'entry'
                           ? 'border-fpl-purple text-fpl-purple'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
