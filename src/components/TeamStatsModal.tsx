@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { SelectBox, roundsUpTilNow } from '@/utils';
 import {
   calculateStats, normalFact, makeMultipleResultsRows,
-  makeMultipleResultsRowsWithSameScore,
+  makeMultipleResultsRowsWithSameScore, CHIP_NAMES,
 } from '@/funfacts/Funfacts';
 import { showTeamsStatsModalFor } from '@/actions/actions';
 import { RootState, DataState } from '@/types';
@@ -91,20 +91,20 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
             {/* Round stats */}
             {sectionHeader(`Stats runde ${selectedRound}`, 'bg-emerald-100', 'text-emerald-800')}
             {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRoundDialog.bind(this), '', 'Dialog')}
-            {makeMultipleResultsRowsWithSameScore('Score',          statsOnPlayer.highestRoundScore, players, true)}
-            {makeMultipleResultsRowsWithSameScore('Poeng på benken',statsOnPlayer.mostPointsOnBench, players, true)}
+            {makeMultipleResultsRowsWithSameScore('Score',          statsOnPlayer.highestRoundScore, players, true, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Poeng på benken',statsOnPlayer.mostPointsOnBench, players, true, 'p')}
             {captainPoints != null && <StatRow label="Kapteinspoeng" value={captainPoints + 'p'} />}
             {gwRank != null && <StatRow label="GW rank" value={gwRank.toLocaleString()} />}
             {normalFact('Klatring i ligaen', statsOnPlayer.highestLeagueClimber, players, true)}
             {normalFact('Fall i ligaen',     statsOnPlayer.largestLeageDrop,     players, true)}
-            {makeMultipleResultsRows('Brukt chips', statsOnPlayer.chipsUsed, players, true)}
+            {makeMultipleResultsRows('Brukt chips', statsOnPlayer.chipsUsed.map(([t, c]: [number, string]) => [t, CHIP_NAMES[c] ?? c]), players, true)}
             {makeMultipleResultsRows('Tatt hit',    statsOnPlayer.hitsTaken,  players, true)}
 
             {/* Total stats */}
             {sectionHeader('Stats totalt', 'bg-sky-100', 'text-sky-800')}
             {makeMultipleResultsRowsWithSameScore('Antall bytter',  statsOnPlayer.mostTransfersUsed,     players, true)}
             {normalFact('Hits tatt',                                totalHits,                           players, true)}
-            {makeMultipleResultsRowsWithSameScore('Poeng på benken',statsOnPlayer.mostTotalPointsOnBench,players, true)}
+            {makeMultipleResultsRowsWithSameScore('Poeng på benken',statsOnPlayer.mostTotalPointsOnBench,players, true, 'p')}
             {hasAnyCaptainData && <StatRow label="Total kapteinspoeng" value={totalCaptainPoints + 'p'} />}
             {squadValue != null && <StatRow label="Lagets verdi" value={'£' + (squadValue / 10).toFixed(1) + 'm'} />}
             {globalRank != null && <StatRow label="Global rank"  value={globalRank.toLocaleString()} />}

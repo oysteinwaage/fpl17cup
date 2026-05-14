@@ -180,7 +180,7 @@ export function makeMultipleResultsRows(text: string, data: any[], players: Reco
   );
 }
 
-export function makeMultipleResultsRowsWithSameScore(text: string, data: any[], players: Record<number, string>, onlyScore = false): React.ReactElement | null {
+export function makeMultipleResultsRowsWithSameScore(text: string, data: any[], players: Record<number, string>, onlyScore = false, unit = ''): React.ReactElement | null {
   if (!data.length) return null;
   let first = true;
   return (
@@ -193,7 +193,7 @@ export function makeMultipleResultsRowsWithSameScore(text: string, data: any[], 
           first = false;
           return (
             <div key={d[1] + 'r'} className="flex flex-col items-end">
-              {score != null && <span className="font-bold text-gray-900">{score}</span>}
+              {score != null && <span className="font-bold text-gray-900">{score}{unit}</span>}
               {player && <span className="text-gray-600 text-xs">{player}</span>}
             </div>
           );
@@ -203,9 +203,9 @@ export function makeMultipleResultsRowsWithSameScore(text: string, data: any[], 
   );
 }
 
-const CHIP_NAMES: Record<string, string> = { bboost: 'Bench Boost', freehit: 'Free Hit', wildcard: 'Wildcard' };
+export const CHIP_NAMES: Record<string, string> = { bboost: 'Bench Boost', freehit: 'Free Hit', wildcard: 'Wildcard' };
 
-export function makeChipsRow(text: string, data: any[], players: Record<number, string>): React.ReactElement | null {
+export function makeGroupedRow(text: string, data: any[], players: Record<number, string>): React.ReactElement | null {
   if (!data.length) return null;
   const groups: Record<string, number[]> = {};
   data.forEach(([teamId, chipName]: [number, string]) => {
@@ -328,19 +328,19 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
               Stats runde {selectedRound}
             </div>
             {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
-            {makeMultipleResultsRowsWithSameScore('Høyest score',         score.highestRoundScore,       players)}
-            {makeMultipleResultsRowsWithSameScore('Lavest score',          score.lowestRoundScore,        players)}
-            {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench,       players)}
+            {makeMultipleResultsRowsWithSameScore('Høyest score',         score.highestRoundScore,       players, false, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Lavest score',          score.lowestRoundScore,        players, false, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench,       players, false, 'p')}
             {makeMultipleResultsRowsWithSameScore('Best diff bytter',      score.bestTransferDiff,        players)}
             {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter',  score.worstTransferDiff,       players)}
             {normalFact('Beste klatrer',                                   score.highestLeagueClimber,    players)}
             {normalFact('Største fall',                                    score.largestLeageDrop,        players)}
             {makeMultipleResultsRowsStacked('Beste GW rank',  score.bestGlobalRankThisRound.map(([r, t]: [number, number])  => [r.toLocaleString(), t]), players)}
             {makeMultipleResultsRowsStacked('Lavest GW rank', score.worstGlobalRankThisRound.map(([r, t]: [number, number]) => [r.toLocaleString(), t]), players)}
-            {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng',   score.mostCaptainPoints,       players)}
-            {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints,     players)}
-            {makeChipsRow('Brukt chips',                                    score.chipsUsed,               players)}
-            {makeMultipleResultsRows('Tatt hit',                           score.hitsTaken,               players)}
+            {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng',   score.mostCaptainPoints,       players, false, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints,     players, false, 'p')}
+            {makeGroupedRow('Brukt chips',                                   score.chipsUsed,               players)}
+            {makeGroupedRow('Tatt hit',                                     score.hitsTaken,               players)}
           </div>
 
           {/* Total stats */}
@@ -350,10 +350,10 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
             {makeMultipleResultsRowsWithSameScore('Færrest bytter',        score.fewestTransfersUsed,     players)}
             {makeMultipleResultsRowsWithSameScore('Mest hits tatt',        totalHits,                     players)}
             {makeMultipleResultsRowsWithSameScore('Minst hits tatt',       totalFewestHits,               players)}
-            {makeMultipleResultsRowsWithSameScore('Flest poeng på benk',   score.mostTotalPointsOnBench,  players)}
-            {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench,players)}
-            {makeMultipleResultsRowsWithSameScore('Mest kapteinspoeng',    score.mostTotalCaptainPoints,  players)}
-            {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.fewestTotalCaptainPoints,players)}
+            {makeMultipleResultsRowsWithSameScore('Flest poeng på benk',   score.mostTotalPointsOnBench,  players, false, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench,players, false, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Mest kapteinspoeng',    score.mostTotalCaptainPoints,  players, false, 'p')}
+            {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.fewestTotalCaptainPoints,players, false, 'p')}
             {makeMultipleResultsRowsStacked('Best global rank',   score.bestOverallGlobalRank.map(([r, t]: [number, number])  => [r.toLocaleString(), t]), players)}
             {makeMultipleResultsRowsStacked('Lavest global rank', score.worstOverallGlobalRank.map(([r, t]: [number, number]) => [r.toLocaleString(), t]), players)}
             {makeMultipleResultsRowsStacked('Høyest squad-verdi', score.highestSquadValue.map(([v, t]: [number, number])      => ['£' + (v / 10).toFixed(1) + 'm', t]), players)}
