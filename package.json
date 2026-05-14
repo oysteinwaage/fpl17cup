@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^9.0.1",
-    "@mui/material": "^9.0.1",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "@vercel/analytics": "^2.0.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "fpl-api": "^2.2.1",
+    "lucide-react": "^1.16.0",
     "node-fetch": "^2.7.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
@@ -17,7 +19,8 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "tailwind-merge": "^3.6.0"
   },
   "scripts": {
     "start": "vite",
@@ -39,7 +42,11 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.7.0",
-    "typescript": "^6.0.3",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^3.4.19",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.8.3",
     "vite": "^6.4.2"
   }
 }

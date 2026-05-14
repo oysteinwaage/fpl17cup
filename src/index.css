@@ -1,10 +1,15 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-footer {
-  text-align: center;
-  font-size: small;
+@layer base {
+  body {
+    font-family: "PremierSans-Regular", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  footer {
+    text-align: center;
+    font-size: small;
+  }
 }
