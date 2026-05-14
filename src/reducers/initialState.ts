@@ -8,7 +8,7 @@ export interface AppState {
 const initialState: AppState = {
     data: {
         dataz: {},
-        groupData: {},
+
         currentRound: null,
         transferlist: [],
         managerIds: [],

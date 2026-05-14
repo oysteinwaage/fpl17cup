@@ -30,13 +30,6 @@ export function updateLeagueData(leagueData: any) {
     };
 }
 
-export const UPDATE_GROUP_DATA = 'UPDATE_GROUP_DATA';
-export function updateGroupData(groupData: any) {
-    return {
-        type: UPDATE_GROUP_DATA,
-        groupData,
-    };
-}
 
 export const UPDATE_PLAYERS_LIST = 'UPDATE_PLAYERS_LIST';
 export function updatePlayersList(players: Record<number, string>) {

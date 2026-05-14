@@ -19,7 +19,6 @@ import {push} from 'connected-react-router';
 import './App.css';
 import {
     updateChosenLeagueId,
-    updateGroupData as updateGroupDataAction,
     updatePlayersList,
     setScoreData,
     setRoundStats,
@@ -28,13 +27,11 @@ import {
     updateLeagueData,
     setLiveData, entryPicksFetched, setCaptainHistory
 } from './actions/actions';
-import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder';
-import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils';
+import {leaguesInDropdownList} from './utils';
 import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData, getCaptainHistory} from './api';
 import TeamStatsModal from './components/TeamStatsModal';
 import {getEntryPicks} from './api';
-import {roundLiveScore} from './matches/Runder';
-import { RootState, DataState, LiveDataState, GroupData } from './types';
+import { RootState, DataState, LiveDataState } from './types';
 
 const HtmlTooltip = styled(Tooltip)(({ theme }: any) => ({
     [`& .${tooltipClasses.tooltip}`]: {
@@ -46,78 +43,11 @@ const HtmlTooltip = styled(Tooltip)(({ theme }: any) => ({
     },
 }));
 
-let groupData: Record<string | number, GroupData> = {};
 export let roundStats: any = {};
 
-export function isForFameAndGloryLeague(id?: number | null): boolean {
-    return id === 819162;
-}
-
-export function roundScore(team: number, round: string, dataz: DataState['dataz']): number | string {
-    if (fplAvgTeams.includes(team)) {
-        return roundStats[round.slice(5)].average_entry_score;
-    }
-    return dataz[team] && dataz[team][round] ? dataz[team][round].points : 0;
-}
-
-function newPointsFor(team: number | string, winningTeam: number | string): number {
-    const originalPoints = groupData[team] ? groupData[team].points || 0 : 0;
-    if (winningTeam === team) {
-        return originalPoints + 3;
-    } else if (winningTeam === 'draw') {
-        return originalPoints + 1;
-    }
-    return originalPoints;
-}
-
-function newMatchesWonFor(team: number | string, winningTeam: number | string): number {
-    const originalValue = groupData[team] ? groupData[team].matchesWon || 0 : 0;
-    return winningTeam === team ? originalValue + 1 : originalValue;
-}
-
-function newMatchesDrawnFor(team: number | string, winningTeam: number | string): number {
-    const originalValue = groupData[team] ? groupData[team].matchesDrawn || 0 : 0;
-    return winningTeam === 'draw' ? originalValue + 1 : originalValue;
-}
-
-function newMatchesLostFor(team: number | string, winningTeam: number | string): number {
-    const originalValue = groupData[team] ? groupData[team].matchesLost || 0 : 0;
-    return winningTeam !== 'draw' && winningTeam !== team ? originalValue + 1 : originalValue;
-}
-
-function updateGroupDataLocal(
-    team1: number,
-    team2: number,
-    round: string,
-    dataz: DataState['dataz'],
-    liveData: LiveDataState | null
-): void {
-    const team1Score = round === ('round' + (dataz as any).currentRound) && liveData ? roundLiveScore(team1, liveData) : roundScore(team1, round, dataz);
-    const team2Score = round === ('round' + (dataz as any).currentRound) && liveData ? roundLiveScore(team2, liveData) : roundScore(team2, round, dataz);
-    const winningTeam = team1Score > team2Score ? team1 : team1Score === team2Score ? 'draw' : team2;
-    Object.assign(groupData, {
-        [team1]: {
-            points: newPointsFor(team1, winningTeam),
-            matches: groupData[team1] ? (groupData[team1].matches || 0) + 1 : 1,
-            matchesWon: newMatchesWonFor(team1, winningTeam),
-            matchesDrawn: newMatchesDrawnFor(team1, winningTeam),
-            matchesLost: newMatchesLostFor(team1, winningTeam),
-            difference: groupData[team1] ? (groupData[team1].difference || 0) + ((team1Score as number) - (team2Score as number)) : (team1Score as number) - (team2Score as number),
-        },
-        [team2]: {
-            points: newPointsFor(team2, winningTeam),
-            matches: groupData[team2] ? (groupData[team2].matches || 0) + 1 : 1,
-            matchesWon: newMatchesWonFor(team2, winningTeam),
-            matchesDrawn: newMatchesDrawnFor(team2, winningTeam),
-            matchesLost: newMatchesLostFor(team2, winningTeam),
-            difference: groupData[team2] ? (groupData[team2].difference || 0) + ((team2Score as number) - (team1Score as number)) : (team2Score as number) - (team1Score as number),
-        }
-    });
-}
 
 interface LoginProps {
     onUpdateChosenLeagueId: (leagueId: number | null) => void;
-    onUpdateGroupData: (groupData: any) => void;
     onUpdatePlayersList: (players: Record<number, string>) => void;
     onSetScoreData: (round: any) => void;
     onSetRoundStats: (roundStats: any) => void;
@@ -165,30 +95,11 @@ class Login extends Component<LoginProps, LoginState> {
         this.props.onAapneNySide('');
     }
 
-    makeGroupData = (liveData?: LiveDataState): void => {
-        const {currentRound, onUpdateGroupData, dataz} = this.props;
-        groupData = {};
-        participatingRounds.filter(pr => Number(pr) <= (currentRound || 0)).forEach(function (r) {
-            groups.forEach(function (groupLetter) {
-                const groupId = ('group' + groupLetter) as any;
-                gamesPrGroupAndRound[getRoundNr(r)][groupId].forEach((match: any) => {
-                    updateGroupDataLocal(match[0], match[1], 'round' + r, dataz, liveData || null);
-                });
-            });
-        });
-        onUpdateGroupData(groupData);
-    };
-
     fetchLiveData(): void {
-        const {currentRound, onSetLiveData, isCurrentRoundFinished, liveScore} = this.props;
+        const {currentRound, onSetLiveData, isCurrentRoundFinished} = this.props;
         if (!isCurrentRoundFinished) {
             getLiveData(currentRound!)
-                .then(liveData => {
-                    if (liveScore.averageScore) {
-                        this.makeGroupData(liveScore);
-                    }
-                    onSetLiveData(liveData);
-                });
+                .then(liveData => onSetLiveData(liveData));
         } else {
             clearInterval(this.intervalId);
         }
@@ -213,7 +124,6 @@ class Login extends Component<LoginProps, LoginState> {
                     getRoundScores(leagueData.managers).then(scoreData => {
                         console.log('score: ', scoreData);
                         onSetScoreData(scoreData);
-                        this.makeGroupData();
                         const localCurrentRound = scoreData[0].entry.current_event;
                         getEntryPicks(leagueData.managers, localCurrentRound)
                             .then((entryPicks: any) => {
@@ -301,29 +211,12 @@ class Login extends Component<LoginProps, LoginState> {
             <div>
                 <div className="overHeader">
                     <div className="headerText">
-                        {isForFameAndGloryLeague(leagueIdChosenByUser) &&
-                        <h1>For Fame And Glory FPL'20 Cup-O-Rama</h1>
-                        }
-                        {!isForFameAndGloryLeague(leagueIdChosenByUser) &&
                         <h1>{this.state.leagueName}</h1>
-                        }
                     </div>
                     <div className="headerArt"/>
                 </div>
                 <ul className="header">
                     <div>
-                        {isForFameAndGloryLeague(leagueIdChosenByUser) &&
-                        <React.Fragment>
-                            <li>
-                                <a className={currentPage === '/kamper' ? 'active' : ''}
-                                   onClick={() => onAapneNySide('kamper')}>Kamper</a>
-                            </li>
-                            <li>
-                                <a className={currentPage === '/grupper' ? 'active' : ''}
-                                   onClick={() => onAapneNySide('grupper')}>Grupper</a>
-                            </li>
-                        </React.Fragment>
-                        }
                         <li>
                             <a className={currentPage === '/funfacts' ? 'active' : ''}
                                onClick={() => onAapneNySide('funfacts')}>Funfacts</a>
@@ -445,7 +338,6 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
     onUpdateChosenLeagueId: (leagueId: number | null) => dispatch(updateChosenLeagueId(leagueId)),
-    onUpdateGroupData: (groupData: any) => dispatch(updateGroupDataAction(groupData)),
     onUpdatePlayersList: (players: Record<number, string>) => dispatch(updatePlayersList(players)),
     onSetScoreData: (round: any) => dispatch(setScoreData(round)),
     onSetRoundStats: (roundStats: any) => dispatch(setRoundStats(roundStats)),

@@ -72,6 +72,11 @@
     width: 100px;
 }
 
+.transfer-content .selectBoxContainer {
+    display: flex;
+    justify-content: center;
+}
+
 .transfer-content .selectBoxContainer .select_style {
     font-size: 16px;
     border-radius: 0;

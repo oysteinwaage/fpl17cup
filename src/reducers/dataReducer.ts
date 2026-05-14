@@ -3,7 +3,7 @@ import {
     SET_SCORE_DATA,
     SET_ROUND_STATS, TOGGLE_SHOW_TEAM_STATS,
     UPDATE_CHOSEN_LEAGUE_ID,
-    UPDATE_GROUP_DATA,
+
     UPDATE_IS_LOADING_DATA, UPDATE_LEAGUE_DATA,
     UPDATE_PLAYERS_LIST,
     UPDATE_TRANSFERS,
@@ -86,11 +86,7 @@ export default function dataReducer(state: DataState = initialState.data, action
                 leagueData: action.leagueData,
                 managerIds: action.leagueData.managers
             };
-        case UPDATE_GROUP_DATA:
-            return {
-                ...state,
-                groupData: action.groupData
-            };
+
         case UPDATE_PLAYERS_LIST:
             return {
                 ...state,

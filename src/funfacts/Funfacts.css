@@ -33,6 +33,11 @@
     min-width: 375px;
     background-color: #c1ead6;
 }
+.ff-round-facts .selectBoxContainer {
+    display: flex;
+    justify-content: center;
+}
+
 .ff-round-facts .select_style {
     width: 115px;
     padding: 0;

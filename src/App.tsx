@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Route, Switch} from 'react-router';
-import Kamper from './matches/Kamper';
-import Grupper from './groups/Groups';
 import Funfacts from './funfacts/Funfacts';
 import Transfers from './transfers/Transfers';
 import LeagueTable from './leagueTable/LeagueTable';
@@ -15,8 +13,6 @@ class App extends Component<{}, {}> {
                 <Login/>
                 <div className="content">
                     <Switch>
-                        <Route path="/kamper" component={Kamper}/>
-                        <Route path="/grupper" component={Grupper}/>
                         <Route exact path="/funfacts" component={Funfacts}/>
                         <Route path="/transfers" component={Transfers}/>
                         <Route path="/leaguetable" component={LeagueTable}/>

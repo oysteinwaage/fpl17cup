@@ -35,14 +35,6 @@ export interface TeamData {
   totalTransfers?: number;
 }
 
-export interface GroupData {
-  points?: number;
-  matches?: number;
-  matchesWon?: number;
-  matchesDrawn?: number;
-  matchesLost?: number;
-  difference?: number;
-}
 
 export interface LiveScore {
   totalPoints: number;
@@ -94,7 +86,7 @@ export interface LeagueData {
 
 export interface DataState {
   dataz: Record<number, TeamData>;
-  groupData: Record<string | number, GroupData>;
+
   currentRound: number | null;
   transferlist: any[][];
   managerIds: number[];

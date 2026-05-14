@@ -1,5 +1,3 @@
-import {getLeagueManagers, leaguesInDropdownList} from './utils';
-
 let leagueId: number;
 
 export let loadedPlayerIds: number[] = [];
@@ -19,18 +17,7 @@ export function getManagerList(chosenLeagueId: number): Promise<any> {
                         leagueName: data.league.name
                     });
                 })
-                .catch(error => {
-                    if (chosenLeagueId === 120053) {
-                        const leagueName = leaguesInDropdownList.find(l => l.id === chosenLeagueId)!.name;
-                        loadedPlayerIds = getLeagueManagers(chosenLeagueId);
-                        return Promise.resolve({
-                            managers: loadedPlayerIds,
-                            leagueName: leagueName,
-                        });
-                    } else {
-                        reject(error);
-                    }
-                });
+                .catch(error => {reject(error);});
         });
     });
 }

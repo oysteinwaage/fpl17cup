@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import '../App.css';
 import './Funfacts.css';
-import {SelectBox, roundsUpTilNow, roundJackass} from '../utils';
-import {roundStats, isForFameAndGloryLeague} from '../Login';
+import {SelectBox, roundsUpTilNow} from '../utils';
+import {roundStats} from '../Login';
 import {transferDiff} from '../transfers/Transfers';
 import {connect} from 'react-redux';
 import LiveDataShown from '../components/liveDataShown';
@@ -270,26 +270,12 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
         if (totalFewestHits[0]) {
             totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? 0 + 'p' : '-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
         }
-        const roundJackasText = roundJackass['round' + selectedRound];
         const disclaimerText = "(Pr. nå er alt utenom endring i ligaplassering live for valgt runde. Stats totalt er ikke live)";
         return (
             <div className="table-content">
                 {/* eslint-disable-next-line eqeqeq */}
                 {!isCurrentRoundFinished && currentRound == (this.state.selectedRound as any) && <LiveDataShown text={disclaimerText}/> }
                 <div className="ff-content-container">
-                    {(!roundJackasText || !isForFameAndGloryLeague()) && false &&
-                    <p style={{'textAlign': 'center', 'fontSize': 'small', 'width': '100%'}}>(Kun kapteinspoeng
-                        oppdateres
-                        live, resten oppdateres når FPL oppdaterer sine data)</p>
-                    }
-                    {roundJackasText && isForFameAndGloryLeague() &&
-                    <div className="ff-rundens-smell">
-                        <div className="ff-rundens-smell-header">Velkommen folkens!!</div>
-                        <div className="ff-rundens-smell-content"><span
-                            dangerouslySetInnerHTML={{__html: roundJackasText}}/></div>
-                        <div className="ff-rundens-smell-signature"> Koz&Klemz Mr. Waage</div>
-                    </div>
-                    }
                     <div className="ff-round-facts">
                         <div className="ff-facts-header">Stats runde {selectedRound}</div>
                         {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
