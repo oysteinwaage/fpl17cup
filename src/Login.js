@@ -28,11 +28,11 @@ import {
     updateTransfers,
     updateIsLoadingData,
     updateLeagueData,
-    setLiveData, entryPicksFetched
+    setLiveData, entryPicksFetched, setCaptainHistory
 } from './actions/actions';
 import {groups, gamesPrGroupAndRound, getRoundNr} from './matches/Runder.js';
 import {participatingRounds, leaguesInDropdownList, fplAvgTeams} from './utils.js';
-import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData} from './api.js';
+import {getManagerList, getStats, getRoundScores, getTransfers, getLiveData, getCaptainHistory} from './api.js';
 import TeamStatsModal from "./components/TeamStatsModal";
 import {getEntryPicks} from "./api";
 import {roundLiveScore} from "./matches/Runder";
@@ -160,7 +160,8 @@ class Login extends Component {
     fetchDataFromServer() {
         const {
             leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onAapneNySide, onUpdateLeagueData,
-            onSetScoreData, onUpdateTransfers, onUpdateIsLoadingData, onSetLiveData, onEntryPicksFetched
+            onSetScoreData, onUpdateTransfers, onUpdateIsLoadingData, onSetLiveData, onEntryPicksFetched,
+            onSetCaptainHistory
         } = this.props;
         let that = this;
 
@@ -201,24 +202,16 @@ class Login extends Component {
 
                         getTransfers(leagueData.managers).then(result => {
                             onUpdateTransfers(result);
-                            // if (result && result.length > 0) {
-                            //     result.forEach(function (i) {
-                            //         i.forEach(function (transfer) {
-                            //             const tidspunkt = new Date(transfer.time).toLocaleDateString() + ' ' + new Date(transfer.time).toLocaleTimeString();
-                            //             if (dataz[transfer.entry]['round' + transfer.event].transfers) {
-                            //                 dataz[transfer.entry]['round' + transfer.event].transfers.push([transfer.element_in, transfer.element_out, tidspunkt]);
-                            //             } else {
-                            //                 Object.assign(dataz[transfer.entry]['round' + transfer.event], {
-                            //                     transfers: [[transfer.element_in, transfer.element_out, tidspunkt]]
-                            //                 })
-                            //             }
-                            //         })
-                            //     })
-                            // }
-                            // console.log('dataz: ', dataz);
                             onUpdateIsLoadingData(false);
                             onAapneNySide('funfacts');
                         });
+
+                        const completedRounds = Object.keys(stats).filter(r => stats[r] && stats[r].finished).map(Number);
+                        if (completedRounds.length > 0) {
+                            getCaptainHistory(leagueData.managers, completedRounds)
+                                .then(data => onSetCaptainHistory(data))
+                                .catch(() => {});
+                        }
                     })
                 });
             } else {
@@ -421,6 +414,7 @@ Login.propTypes = {
     onUpdateLeagueData: PropTypes.func,
     onSetLiveData: PropTypes.func,
     onEntryPicksFetched: PropTypes.func,
+    onSetCaptainHistory: PropTypes.func,
     onAapneNySide: PropTypes.func,
     leagueIdChosenByUser: PropTypes.number,
     currentPage: PropTypes.string,
@@ -454,6 +448,7 @@ const mapDispatchToProps = dispatch => ({
     onUpdateLeagueData: (leagueData) => dispatch(updateLeagueData(leagueData)),
     onSetLiveData: (round, averageScore) => dispatch(setLiveData(round, averageScore)),
     onEntryPicksFetched: (entryPicks) => dispatch(entryPicksFetched(entryPicks)),
+    onSetCaptainHistory: (captainHistory) => dispatch(setCaptainHistory(captainHistory)),
     onAapneNySide: (id) => dispatch(push(id)),
 });
 

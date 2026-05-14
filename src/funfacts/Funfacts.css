@@ -64,6 +64,11 @@
     padding-bottom: 5px;
     display: flex;
 }
+.ff-multiple-result-facts-2-stacked {
+    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+}
 .ff-multiple-result-facts-points{
     width: 15px;
     padding-right: 5px;

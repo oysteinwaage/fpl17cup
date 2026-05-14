@@ -63,6 +63,13 @@ export function calculateStats(round, managers, playerPoints, captainData, curre
     let lowestTotalHitsTaken = [];
     let bestTransferDiff = [];
     let worstTransferDiff = [];
+    let bestGlobalRankThisRound = [];
+    let worstGlobalRankThisRound = [];
+    let bestOverallGlobalRank = [];
+    let worstOverallGlobalRank = [];
+    let highestSquadValue = [];
+    let mostTotalCaptainPoints = [];
+    let fewestTotalCaptainPoints = [];
     (managers || []).forEach(function (teamId) {
         const roundNullsafe = tempNullCheckRound(teamId, 'round' + round, dataz);
         const points = roundNullsafe.points;
@@ -70,7 +77,24 @@ export function calculateStats(round, managers, playerPoints, captainData, curre
         const transfersUsed = tempNullCheck(teamId, dataz).totalTransfers;
         const totalPointsOnBench = tempNullCheck(teamId, dataz).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(teamId, dataz).totalHitsTaken;
-        const captainPoints = playerPoints && playerPoints[1] && captainData[teamId] && calculateCaptainPointsForPlayer(playerPoints, captainData, teamId);
+
+        // Captain points: live calculation for current round, pre-computed for historical rounds
+        const liveCaptain = captainData[teamId];
+        const historicalCaptain = roundNullsafe.captain;
+        let captainPoints = null;
+        let captainName = null;
+        if (liveCaptain && playerPoints && playerPoints[1]) {
+            captainPoints = calculateCaptainPointsForPlayer(playerPoints, captainData, teamId);
+            if (captainPoints !== null && captainPoints !== undefined) {
+                const activeCaptainId = hasCaptainPlayed(playerPoints, liveCaptain.player) ? liveCaptain.player : liveCaptain.vicePlayer;
+                captainName = roundStats.allPlayers && roundStats.allPlayers[activeCaptainId] ? roundStats.allPlayers[activeCaptainId].web_name : null;
+            }
+        } else if (historicalCaptain && historicalCaptain.captainPoints !== null && historicalCaptain.captainPoints !== undefined) {
+            captainPoints = historicalCaptain.captainPoints;
+            if (historicalCaptain.player && roundStats.allPlayers) {
+                captainName = roundStats.allPlayers[historicalCaptain.player] ? roundStats.allPlayers[historicalCaptain.player].web_name : null;
+            }
+        }
 
         if (points !== null && points !== undefined) {
             highestRoundScore = populateHighestValueListFor(highestRoundScore, points, teamId);
@@ -79,10 +103,7 @@ export function calculateStats(round, managers, playerPoints, captainData, curre
         if (pointsOnBench !== null && pointsOnBench !== undefined) {
             mostPointsOnBench = populateHighestValueListFor(mostPointsOnBench, pointsOnBench, teamId);
         }
-        if (captainPoints !== null && captainPoints !== undefined) {
-            const captainName = hasCaptainPlayed(playerPoints, captainData[teamId].player) ?
-                roundStats.allPlayers[captainData[teamId].player - 1].web_name :
-                roundStats.allPlayers[captainData[teamId].vicePlayer - 1].web_name;
+        if (captainPoints !== null && captainPoints !== undefined && captainName) {
             if (mostCaptainPoints.length === 0 || captainPoints > mostCaptainPoints[0][0]) {
                 mostCaptainPoints = [[captainPoints, teamId, captainName]];
             } else if (mostCaptainPoints.length > 0 && captainPoints === mostCaptainPoints[0][0]) {
@@ -127,6 +148,35 @@ export function calculateStats(round, managers, playerPoints, captainData, curre
             mostTransfersUsed = populateHighestValueListFor(mostTransfersUsed, transfersUsed, teamId);
             fewestTransfersUsed = populateLowestValueListFor(fewestTransfersUsed, transfersUsed, teamId);
         }
+
+        const gwRank = roundNullsafe.gwRank;
+        if (gwRank && gwRank > 0) {
+            bestGlobalRankThisRound = populateLowestValueListFor(bestGlobalRankThisRound, gwRank, teamId);
+            worstGlobalRankThisRound = populateHighestValueListFor(worstGlobalRankThisRound, gwRank, teamId);
+        }
+        const currentRank = tempNullCheck(teamId, dataz).currentOverallRank;
+        if (currentRank && currentRank > 0) {
+            bestOverallGlobalRank = populateLowestValueListFor(bestOverallGlobalRank, currentRank, teamId);
+            worstOverallGlobalRank = populateHighestValueListFor(worstOverallGlobalRank, currentRank, teamId);
+        }
+        const currentSquadValue = tempNullCheck(teamId, dataz).currentSquadValue;
+        if (currentSquadValue && currentSquadValue > 0) {
+            highestSquadValue = populateHighestValueListFor(highestSquadValue, currentSquadValue, teamId);
+        }
+
+        let totalCapPoints = 0;
+        let hasAnyCaptainData = false;
+        Object.keys(tempNullCheck(teamId, dataz)).filter(k => k.startsWith('round')).forEach(roundKey => {
+            const rd = tempNullCheck(teamId, dataz)[roundKey];
+            if (rd.captain && rd.captain.captainPoints !== null && rd.captain.captainPoints !== undefined) {
+                totalCapPoints += rd.captain.captainPoints;
+                hasAnyCaptainData = true;
+            }
+        });
+        if (hasAnyCaptainData) {
+            mostTotalCaptainPoints = populateHighestValueListFor(mostTotalCaptainPoints, totalCapPoints, teamId);
+            fewestTotalCaptainPoints = populateLowestValueListFor(fewestTotalCaptainPoints, totalCapPoints, teamId);
+        }
     });
     highestLeagueClimber[0] = convertForView(highestLeagueClimber, dataz);
     largestLeageDrop[0] = convertForView(largestLeageDrop, dataz);
@@ -151,6 +201,13 @@ export function calculateStats(round, managers, playerPoints, captainData, curre
         worstTransferDiff,
         chipsUsed,
         hitsTaken,
+        bestGlobalRankThisRound,
+        worstGlobalRankThisRound,
+        bestOverallGlobalRank,
+        worstOverallGlobalRank,
+        highestSquadValue,
+        mostTotalCaptainPoints,
+        fewestTotalCaptainPoints,
     }
 }
 
@@ -198,22 +255,6 @@ class Funfacts extends Component {
             }));
         this.fetchCaptainData(document.getElementsByName('selectBox')[0].value);
     };
-
-    fetchCaptainData(round) {
-        let that = this;
-        // TODO må hentes via nytt API
-        // if (round) {
-        //     $.get("/api/captain?round=" + round).done(function (result) {
-        //         Object.assign(that.state.captainData, result)
-        //         console.log("kapteinData: ", result);
-        //     });
-        //     $.get("/api/playerscores?round=" + round).done(function (result) {
-        //         that.setState({
-        //             playerPoints: result,
-        //         })
-        //     });
-        // }
-    }
 
     render() {
         const {currentRound, managerIds, dataz, players, isCurrentRoundFinished, liveScore} = this.props;
@@ -268,6 +309,8 @@ class Funfacts extends Component {
                         {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter', score.worstTransferDiff, players)}
                         {normalFact('Beste klatrer', score.highestLeagueClimber, players)}
                         {normalFact('Største fall', score.largestLeageDrop, players)}
+                        {makeMultipleResultsRowsStacked('Beste GW rank', score.bestGlobalRankThisRound.map(([r, t]) => [r.toLocaleString(), t]), players)}
+                        {makeMultipleResultsRowsStacked('Lavest GW rank', score.worstGlobalRankThisRound.map(([r, t]) => [r.toLocaleString(), t]), players)}
                         {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng', score.mostCaptainPoints, players)}
                         {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints, players)}
                         {makeMultipleResultsRows('Brukt chips', score.chipsUsed, players)}
@@ -281,6 +324,11 @@ class Funfacts extends Component {
                         {makeMultipleResultsRowsWithSameScore('Minst hits tatt', totalFewestHits, players)}
                         {makeMultipleResultsRowsWithSameScore('Flest poeng på benk', score.mostTotalPointsOnBench, players)}
                         {makeMultipleResultsRowsWithSameScore('Færrest poeng på benk', score.lowestTotalPointsOnBench, players)}
+                        {makeMultipleResultsRowsWithSameScore('Mest kapteinspoeng', score.mostTotalCaptainPoints, players)}
+                        {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.fewestTotalCaptainPoints, players)}
+                        {makeMultipleResultsRowsStacked('Best global rank', score.bestOverallGlobalRank.map(([r, t]) => [r.toLocaleString(), t]), players)}
+                        {makeMultipleResultsRowsStacked('Lavest global rank', score.worstOverallGlobalRank.map(([r, t]) => [r.toLocaleString(), t]), players)}
+                        {makeMultipleResultsRowsStacked('Høyest squad-verdi', score.highestSquadValue.map(([v, t]) => ['£' + (v / 10).toFixed(1) + 'm', t]), players)}
                     </div>
                 </div>
             </div>
@@ -326,6 +374,27 @@ export function makeMultipleResultsRowsWithSameScore(text, data, players, onlySc
             </div>
         </div>
     )
+}
+
+export function makeMultipleResultsRowsStacked(text, data, players) {
+    let firstRow = true;
+    return data.length === 0 ? null : (
+        <div className="ff-multiple-results-container">
+            <div className="ff-normal-fact-text">{text}</div>
+            <div className="ff-normal-fact-result">
+                {data.map(d => {
+                    const value = firstRow ? d[0] : '';
+                    firstRow = false;
+                    return (
+                        <div key={d[1] + 'r'} className="ff-multiple-result-facts-2-stacked">
+                            <div>{value}</div>
+                            <div>{players[d[1]]}</div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
 }
 
 export function normalFact(text, data, players, onlyScore) {

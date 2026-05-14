@@ -87,4 +87,12 @@ export function entryPicksFetched(entryPicks) {
     };
 }
 
+export const SET_CAPTAIN_HISTORY = 'SET_CAPTAIN_HISTORY';
+export function setCaptainHistory(captainHistory) {
+    return {
+        type: SET_CAPTAIN_HISTORY,
+        captainHistory,
+    };
+}
+
 // export const getPlayerScores

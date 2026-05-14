@@ -6,7 +6,8 @@ import {
     UPDATE_GROUP_DATA,
     UPDATE_IS_LOADING_DATA, UPDATE_LEAGUE_DATA,
     UPDATE_PLAYERS_LIST,
-    UPDATE_TRANSFERS
+    UPDATE_TRANSFERS,
+    SET_CAPTAIN_HISTORY
 } from '../actions/actions';
 
 export default function dataReducer(state = initialState.data, action) {
@@ -21,6 +22,9 @@ export default function dataReducer(state = initialState.data, action) {
                         pointsOnBench: b.points_on_bench,
                         takenHit: b.event_transfers_cost,
                         totalPoints: b.total_points,
+                        overallRank: b.overall_rank,
+                        gwRank: b.rank,
+                        squadValue: b.value,
                     },
                     totalPointsOnBench,
                     totalHitsTaken,
@@ -32,12 +36,16 @@ export default function dataReducer(state = initialState.data, action) {
         roundScore.forEach(player => {
             const myLeague = player.entry.leagues.classic.find(league => league.id === leagueIdChosenByUser);
             // TODO dette her blir litt feil. Det må inn pr runde sånn som for chips under (utenom managerName og name, det kan være her
+            const allRanks = player.current.map(r => r.overall_rank).filter(r => r > 0);
             Object.assign(datazObject[player.entry.id], {
                 leagueClimb: myLeague.entry_last_rank - myLeague.entry_rank,
                 leagueRank: myLeague.entry_rank,
                 lastRoundLeagueRank: myLeague.entry_last_rank,
                 managerName: player.entry.player_first_name + ' ' + player.entry.player_last_name,
-                name: player.entry.name
+                name: player.entry.name,
+                currentOverallRank: player.entry.summary_overall_rank,
+                bestOverallRank: allRanks.length > 0 ? Math.min(...allRanks) : null,
+                currentSquadValue: player.entry.last_deadline_value,
             });
             player.chips.forEach(chip => {
                 Object.assign(datazObject[player.entry.id]['round' + chip.event], {
@@ -118,6 +126,17 @@ export default function dataReducer(state = initialState.data, action) {
                 ...state,
                 showTeamStatsModal: action.teamId
             };
+        case SET_CAPTAIN_HISTORY: {
+            const newDataz = {...state.dataz};
+            action.captainHistory.forEach(({ teamId, round, captain, vice, multiplier, multiplierVice, captainPoints }) => {
+                if (captain !== null && newDataz[teamId] && newDataz[teamId]['round' + round]) {
+                    Object.assign(newDataz[teamId]['round' + round], {
+                        captain: { player: captain, vicePlayer: vice, multiplier, multiplierVice, captainPoints }
+                    });
+                }
+            });
+            return { ...state, dataz: newDataz };
+        }
         default:
             return state;
     }

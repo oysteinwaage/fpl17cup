@@ -133,6 +133,17 @@ export const getEntryPicks = (teams, round) => {
     });
 };
 
+export function getCaptainHistory(teams, rounds) {
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            fetch(`/api/getCaptainHistory?teams=${teams}&rounds=${rounds}`)
+                .then(r => r.json())
+                .then(data => resolve(data))
+                .catch(error => reject(error));
+        });
+    });
+}
+
 export function getTestNoe() {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
