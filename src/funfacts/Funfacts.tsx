@@ -86,7 +86,7 @@ export function calculateStats(
         const totalPointsOnBench = tempNullCheck(teamId, dataz).totalPointsOnBench;
         const totalHitsTaken = tempNullCheck(teamId, dataz).totalHitsTaken;
 
-        const liveCaptain = captainData[teamId];
+        const liveCaptain = captainData ? captainData[teamId] : null;
         const historicalCaptain = roundNullsafe.captain;
         let captainPoints: number | null = null;
         let captainName: string | null = null;

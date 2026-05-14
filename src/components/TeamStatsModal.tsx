@@ -14,6 +14,15 @@ import {showTeamsStatsModalFor} from '../actions/actions';
 import {roundsUpTilNow} from '../utils';
 import { RootState, DataState } from '../types';
 
+function StatRow({ label, value }: { label: string; value: string }) {
+    return (
+        <div className="ff-multiple-results-container">
+            <div className="ff-normal-fact-text">{label}</div>
+            <div className="ff-normal-fact-result">{value}</div>
+        </div>
+    );
+}
+
 interface TeamStatsModalProps {
     players: Record<number, string>;
     dataz: DataState['dataz'];
@@ -55,13 +64,32 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
             return <React.Fragment/>;
         }
 
-        const managerName = dataz[chosenTeamIdForModal] ? dataz[chosenTeamIdForModal].managerName : '';
-        const statsOnPlayer = chosenTeamIdForModal ?
-            calculateStats(this.state.selectedRoundDialog || currentRound!, [chosenTeamIdForModal], null, null, currentRound, dataz)
-            : null;
+        const selectedRound = this.state.selectedRoundDialog || currentRound;
+        const teamData = dataz[chosenTeamIdForModal] || {};
+        const managerName = teamData.managerName || '';
+        const roundData: any = teamData['round' + selectedRound] || {};
 
-        const totalHits = statsOnPlayer && statsOnPlayer.mostTotalHitsTaken &&
-            (statsOnPlayer.mostTotalHitsTaken.length === 0 ? ['0p', 12345] : ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]]);
+        const statsOnPlayer = calculateStats(selectedRound!, [chosenTeamIdForModal], null, null, currentRound, dataz);
+
+        const totalHits = statsOnPlayer.mostTotalHitsTaken.length === 0
+            ? ['0p', 12345]
+            : ['-' + statsOnPlayer.mostTotalHitsTaken[0][0] + 'p', statsOnPlayer.mostTotalHitsTaken[0][1]];
+
+        const captainPoints: number | null = roundData.captain?.captainPoints ?? null;
+        const gwRank: number | null = roundData.gwRank ?? null;
+
+        let totalCaptainPoints = 0;
+        let hasAnyCaptainData = false;
+        Object.keys(teamData).filter(k => k.startsWith('round')).forEach(roundKey => {
+            const rd = teamData[roundKey];
+            if (rd?.captain && rd.captain.captainPoints != null) {
+                totalCaptainPoints += rd.captain.captainPoints;
+                hasAnyCaptainData = true;
+            }
+        });
+        const squadValue: number | null = teamData.currentSquadValue ?? null;
+        const globalRank: number | null = teamData.currentOverallRank ?? null;
+
         return (
             <Dialog
                 open={!!chosenTeamIdForModal}
@@ -71,15 +99,14 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
             >
                 <DialogTitle>{players[chosenTeamIdForModal] + ' - ' + managerName}</DialogTitle>
                 <DialogContent>
-                    {statsOnPlayer &&
                     <div className="dialog-content">
                         <div className="ff-round-facts">
-                            <div className="ff-facts-header">
-                                Stats
-                                runde {this.state.selectedRoundDialog || currentRound}</div>
+                            <div className="ff-facts-header">Stats runde {selectedRound}</div>
                             {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRoundDialog.bind(this), '', 'Dialog')}
                             {makeMultipleResultsRowsWithSameScore('Score', statsOnPlayer.highestRoundScore, players, true)}
                             {makeMultipleResultsRowsWithSameScore('Poeng på benken', statsOnPlayer.mostPointsOnBench, players, true)}
+                            {captainPoints != null && <StatRow label="Kapteinspoeng" value={captainPoints + 'p'} />}
+                            {gwRank != null && <StatRow label="GW rank" value={gwRank.toLocaleString()} />}
                             {normalFact('Klatring i ligaen', statsOnPlayer.highestLeagueClimber, players, true)}
                             {normalFact('Fall i ligaen', statsOnPlayer.largestLeageDrop, players, true)}
                             {makeMultipleResultsRows('Brukt chips', statsOnPlayer.chipsUsed, players, true)}
@@ -90,9 +117,11 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
                             {makeMultipleResultsRowsWithSameScore('Antall bytter', statsOnPlayer.mostTransfersUsed, players, true)}
                             {normalFact('Hits tatt', totalHits, players, true)}
                             {makeMultipleResultsRowsWithSameScore('Poeng på benken', statsOnPlayer.mostTotalPointsOnBench, players, true)}
+                            {hasAnyCaptainData && <StatRow label="Total kapteinspoeng" value={totalCaptainPoints + 'p'} />}
+                            {squadValue != null && <StatRow label="Lagets verdi" value={'£' + (squadValue / 10).toFixed(1) + 'm'} />}
+                            {globalRank != null && <StatRow label="Global rank" value={globalRank.toLocaleString()} />}
                         </div>
                     </div>
-                    }
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary" onClick={() => onShowTeamStatsModal(null)}>Lukk</Button>
