@@ -230,6 +230,23 @@ export function makeGroupedRow(text: string, data: any[], players: Record<number
   );
 }
 
+export function makeCaptainPointsRows(text: string, data: any[], players: Record<number, string>, unit = ''): React.ReactElement | null {
+  if (!data.length) return null;
+  return (
+    <div className={ROW}>
+      <div className={LABEL}>{text}</div>
+      <div className={VALUE}>
+        <div className="flex flex-col items-end">
+          <span className="font-bold text-gray-900">{data[0][2]} - {data[0][0]}{unit}</span>
+          {data.map((d: any) => (
+            <span key={d[1]} className="text-gray-600 text-xs">{players[d[1]]}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function makeMultipleResultsRowsStacked(text: string, data: any[], players: Record<number, string>): React.ReactElement | null {
   if (!data.length) return null;
   let first = true;
@@ -337,8 +354,8 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
             {normalFact('Største fall',                                    score.largestLeageDrop,        players)}
             {makeMultipleResultsRowsStacked('Beste GW rank',  score.bestGlobalRankThisRound.map(([r, t]: [number, number])  => [r.toLocaleString(), t]), players)}
             {makeMultipleResultsRowsStacked('Lavest GW rank', score.worstGlobalRankThisRound.map(([r, t]: [number, number]) => [r.toLocaleString(), t]), players)}
-            {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng',   score.mostCaptainPoints,       players, false, 'p')}
-            {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints,     players, false, 'p')}
+            {makeCaptainPointsRows('Flest kapteinspoeng',   score.mostCaptainPoints,   players, 'p')}
+            {makeCaptainPointsRows('Færrest kapteinspoeng', score.lowestCaptainPoints, players, 'p')}
             {makeGroupedRow('Brukt chips',                                   score.chipsUsed,               players)}
             {makeGroupedRow('Tatt hit',                                     score.hitsTaken,               players)}
           </div>

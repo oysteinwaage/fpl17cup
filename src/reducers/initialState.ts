@@ -1,4 +1,4 @@
-import { DataState, LiveDataState } from '../types';
+import type { DataState, LiveDataState } from '@/types';
 
 export interface AppState {
     data: DataState;
@@ -15,7 +15,7 @@ const initialState: AppState = {
         leagueData: {},
         roundStats: {},
         leagueIdChosenByUser: null,
-        loadingData: false,
+        isLoadingData: false,
         players: {},
         showTeamStatsModal: null,
         isCurrentRoundFinished: true

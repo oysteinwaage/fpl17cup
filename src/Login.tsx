@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle } from './components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from './components/ui/dialog';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './components/ui/tooltip';
@@ -190,6 +190,7 @@ class Login extends Component<LoginProps, LoginState> {
           <Dialog open={isLoadingData} onOpenChange={() => {}}>
             <DialogContent
               hideClose
+              aria-describedby={undefined}
               className="text-center max-w-sm"
               onEscapeKeyDown={e => e.preventDefault()}
               onInteractOutside={e => e.preventDefault()}
@@ -210,9 +211,9 @@ class Login extends Component<LoginProps, LoginState> {
               onInteractOutside={e => e.preventDefault()}
             >
               <DialogTitle>Velg din liga</DialogTitle>
-              <p className="text-sm text-gray-500 mb-4 -mt-1">
+              <DialogDescription className="mb-4 -mt-1">
                 Skriv inn liga-ID eller velg fra listen
-              </p>
+              </DialogDescription>
 
               <div className="space-y-4">
                 {/* Manual ID input */}

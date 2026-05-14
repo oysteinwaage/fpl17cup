@@ -80,7 +80,7 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
         open={!!chosenTeamIdForModal}
         onOpenChange={open => !open && onShowTeamStatsModal(null)}
       >
-        <DialogContent className="max-w-lg p-0 overflow-hidden">
+        <DialogContent aria-describedby={undefined} className="max-w-lg p-0 overflow-hidden">
           {/* Header */}
           <div className="bg-fpl-purple text-fpl-green px-5 pt-5 pb-4">
             <DialogTitle className="text-fpl-green text-base mb-0">{teamName}</DialogTitle>
