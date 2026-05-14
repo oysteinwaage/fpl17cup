@@ -167,13 +167,13 @@ class Login extends Component<LoginProps, LoginState> {
 
         {/* ── Nav ── */}
         <nav className="bg-[#111]">
-          <ul className="flex flex-wrap m-0 p-0 list-none px-4">
-            <li><a className={`text-white font-bold py-5 px-5 inline-block cursor-pointer hover:bg-white/10 transition-colors ${currentPage === '/funfacts' ? 'bg-[#0099FF]' : ''}`} onClick={() => history.push('/funfacts')}>Funfacts</a></li>
-            <li><a className={`text-white font-bold py-5 px-5 inline-block cursor-pointer hover:bg-white/10 transition-colors ${currentPage === '/transfers' ? 'bg-[#0099FF]' : ''}`} onClick={() => history.push('/transfers')}>Bytter</a></li>
-            <li><a className={`text-white font-bold py-5 px-5 inline-block cursor-pointer hover:bg-white/10 transition-colors ${currentPage === '/leaguetable' ? 'bg-[#0099FF]' : ''}`} onClick={() => history.push('/leaguetable')}>Tabell</a></li>
-            <li>
+          <ul className="flex m-0 p-0 list-none">
+            <li className="flex-1"><a className={`text-white font-bold py-5 block text-center cursor-pointer hover:bg-white/10 transition-colors ${currentPage === '/funfacts' ? 'bg-[#0099FF]' : ''}`} onClick={() => history.push('/funfacts')}>Funfacts</a></li>
+            <li className="flex-1"><a className={`text-white font-bold py-5 block text-center cursor-pointer hover:bg-white/10 transition-colors ${currentPage === '/transfers' ? 'bg-[#0099FF]' : ''}`} onClick={() => history.push('/transfers')}>Bytter</a></li>
+            <li className="flex-1"><a className={`text-white font-bold py-5 block text-center cursor-pointer hover:bg-white/10 transition-colors ${currentPage === '/leaguetable' ? 'bg-[#0099FF]' : ''}`} onClick={() => history.push('/leaguetable')}>Tabell</a></li>
+            <li className="flex-1">
               <a
-                className="text-fpl-yellow font-bold py-5 px-5 inline-block cursor-pointer hover:bg-white/10 transition-colors"
+                className="text-fpl-yellow font-bold py-5 block text-center cursor-pointer hover:bg-white/10 transition-colors"
                 onClick={() => { history.push('/'); window.location.reload(); }}
               >
                 Bytt liga
