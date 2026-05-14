@@ -170,9 +170,10 @@ export function makeMultipleResultsRows(text: string, data: any[], players: Reco
       <div className={LABEL}>{text}</div>
       <div className={VALUE}>
         {data.map((d: any) => (
-          <span key={d[0]} className="font-medium text-gray-800">
-            {onlyScore ? d[1] : `${players[d[0]]} (${d[1]})`}
-          </span>
+          <div key={d[0]} className="flex flex-col items-end">
+            <span className="font-bold text-gray-900">{d[1]}</span>
+            {!onlyScore && <span className="text-gray-600 text-xs">{players[d[0]]}</span>}
+          </div>
         ))}
       </div>
     </div>
@@ -187,16 +188,43 @@ export function makeMultipleResultsRowsWithSameScore(text: string, data: any[], 
       <div className={LABEL}>{text}</div>
       <div className={VALUE}>
         {data.map((d: any) => {
-          const score  = first ? d[0] : '';
+          const score  = first ? d[0] : null;
           const player = onlyScore ? '' : `${players[d[1]]}${d[2] ? ` (${d[2]})` : ''}`;
           first = false;
           return (
-            <div key={d[1] + 'r'} className="flex items-baseline gap-1.5 justify-end">
-              {score !== '' && <span className="font-bold text-gray-900">{score}</span>}
+            <div key={d[1] + 'r'} className="flex flex-col items-end">
+              {score != null && <span className="font-bold text-gray-900">{score}</span>}
               {player && <span className="text-gray-600 text-xs">{player}</span>}
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+const CHIP_NAMES: Record<string, string> = { bboost: 'Bench Boost', freehit: 'Free Hit', wildcard: 'Wildcard' };
+
+export function makeChipsRow(text: string, data: any[], players: Record<number, string>): React.ReactElement | null {
+  if (!data.length) return null;
+  const groups: Record<string, number[]> = {};
+  data.forEach(([teamId, chipName]: [number, string]) => {
+    const label = CHIP_NAMES[chipName] ?? chipName;
+    if (!groups[label]) groups[label] = [];
+    groups[label].push(teamId);
+  });
+  return (
+    <div className={ROW}>
+      <div className={LABEL}>{text}</div>
+      <div className={VALUE}>
+        {Object.entries(groups).map(([chipName, teamIds]) => (
+          <div key={chipName} className="flex flex-col items-end mb-1 last:mb-0">
+            <span className="font-bold text-gray-900">{chipName}</span>
+            {teamIds.map(teamId => (
+              <span key={teamId} className="text-gray-600 text-xs">{players[teamId]}</span>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -225,11 +253,15 @@ export function makeMultipleResultsRowsStacked(text: string, data: any[], player
 }
 
 export function normalFact(text: string, data: any[], players: Record<number, string>, onlyScore?: boolean): React.ReactElement | null | false {
-  const teamName = onlyScore ? '' : ` (${players[data[1]]})`;
   return !!data[1] && (
     <div className={ROW}>
       <div className={LABEL}>{text}</div>
-      <div className="text-sm font-medium text-gray-800 text-right flex-1">{data[0]}{teamName}</div>
+      <div className={VALUE}>
+        <div className="flex flex-col items-end">
+          <span className="font-bold text-gray-900">{data[0]}</span>
+          {!onlyScore && <span className="text-gray-600 text-xs">{players[data[1]]}</span>}
+        </div>
+      </div>
     </div>
   );
 }
@@ -307,7 +339,7 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
             {makeMultipleResultsRowsStacked('Lavest GW rank', score.worstGlobalRankThisRound.map(([r, t]: [number, number]) => [r.toLocaleString(), t]), players)}
             {makeMultipleResultsRowsWithSameScore('Flest kapteinspoeng',   score.mostCaptainPoints,       players)}
             {makeMultipleResultsRowsWithSameScore('Færrest kapteinspoeng', score.lowestCaptainPoints,     players)}
-            {makeMultipleResultsRows('Brukt chips',                        score.chipsUsed,               players)}
+            {makeChipsRow('Brukt chips',                                    score.chipsUsed,               players)}
             {makeMultipleResultsRows('Tatt hit',                           score.hitsTaken,               players)}
           </div>
 
