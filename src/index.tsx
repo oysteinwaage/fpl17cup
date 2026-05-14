@@ -1,22 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Route } from 'react-router';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
 import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import App from './App';
-import { configureStore, history } from './store/configureStore';
+import { configureStore } from './store/configureStore';
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 const store = configureStore();
-ReactDOM.render(
+const root = createRoot(document.getElementById('root')!);
+root.render(
     <Provider store={store}>
-        <ConnectedRouter history={history}>
+        <BrowserRouter>
             <Route path="/" component={App} />
-        </ConnectedRouter>
+        </BrowserRouter>
         <Analytics />
-    </Provider>, document.getElementById('root'),
+    </Provider>,
 );
 // registerServiceWorker();

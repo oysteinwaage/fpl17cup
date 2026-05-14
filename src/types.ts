@@ -111,5 +111,4 @@ export interface LiveDataState {
 export interface RootState {
   data: DataState;
   liveData: LiveDataState;
-  router: any;
 }

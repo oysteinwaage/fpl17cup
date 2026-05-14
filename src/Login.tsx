@@ -15,7 +15,7 @@ import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import {push} from 'connected-react-router';
+import {withRouter, RouteComponentProps} from 'react-router-dom';
 import './App.css';
 import {
     updateChosenLeagueId,
@@ -46,7 +46,7 @@ const HtmlTooltip = styled(Tooltip)(({ theme }: any) => ({
 export let roundStats: any = {};
 
 
-interface LoginProps {
+interface LoginOwnProps extends RouteComponentProps {
     onUpdateChosenLeagueId: (leagueId: number | null) => void;
     onUpdatePlayersList: (players: Record<number, string>) => void;
     onSetScoreData: (round: any) => void;
@@ -57,9 +57,7 @@ interface LoginProps {
     onSetLiveData: (round: any, averageScore?: number) => void;
     onEntryPicksFetched: (entryPicks: any) => void;
     onSetCaptainHistory: (captainHistory: any) => void;
-    onAapneNySide: (id: string) => void;
     leagueIdChosenByUser: number | null;
-    currentPage: string;
     currentRound: number | null;
     managerIds: number[];
     isLoadingData: boolean;
@@ -68,6 +66,8 @@ interface LoginProps {
     liveScore: LiveDataState;
     children?: React.ReactNode;
 }
+
+type LoginProps = LoginOwnProps;
 
 interface LoginState {
     chosenLeagueId: boolean;
@@ -92,7 +92,7 @@ class Login extends Component<LoginProps, LoginState> {
         };
         this.toggleShowLeagueIdInfo = this.toggleShowLeagueIdInfo.bind(this);
         this.handleLigavalgFraInput = this.handleLigavalgFraInput.bind(this);
-        this.props.onAapneNySide('');
+        this.props.history.push('/');
     }
 
     fetchLiveData(): void {
@@ -107,7 +107,7 @@ class Login extends Component<LoginProps, LoginState> {
 
     fetchDataFromServer(): void {
         const {
-            leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onAapneNySide, onUpdateLeagueData,
+            leagueIdChosenByUser, onUpdatePlayersList, onSetRoundStats, onUpdateLeagueData,
             onSetScoreData, onUpdateTransfers, onUpdateIsLoadingData, onSetLiveData, onEntryPicksFetched,
             onSetCaptainHistory
         } = this.props;
@@ -145,7 +145,7 @@ class Login extends Component<LoginProps, LoginState> {
                         getTransfers(leagueData.managers).then((result: any) => {
                             onUpdateTransfers(result);
                             onUpdateIsLoadingData(false);
-                            onAapneNySide('funfacts');
+                            this.props.history.push('/funfacts');
                         });
 
                         const completedRounds = Object.keys(stats).filter(r => stats[r] && stats[r].finished).map(Number);
@@ -200,10 +200,11 @@ class Login extends Component<LoginProps, LoginState> {
     };
 
     render() {
-        const {onAapneNySide, currentPage, leagueIdChosenByUser, isLoadingData} = this.props;
+        const { leagueIdChosenByUser, isLoadingData, location, history } = this.props;
+        const currentPage = location.pathname;
 
         const onByttLiga = (): void => {
-            onAapneNySide('');
+            history.push('/');
             window.location.reload();
         };
 
@@ -219,15 +220,15 @@ class Login extends Component<LoginProps, LoginState> {
                     <div>
                         <li>
                             <a className={currentPage === '/funfacts' ? 'active' : ''}
-                               onClick={() => onAapneNySide('funfacts')}>Funfacts</a>
+                               onClick={() => history.push('/funfacts')}>Funfacts</a>
                         </li>
                         <li>
                             <a className={currentPage === '/transfers' ? 'active' : ''}
-                               onClick={() => onAapneNySide('transfers')}>Bytter</a>
+                               onClick={() => history.push('/transfers')}>Bytter</a>
                         </li>
                         <li>
                             <a className={currentPage === '/leaguetable' ? 'active' : ''}
-                               onClick={() => onAapneNySide('leaguetable')}>Tabell</a>
+                               onClick={() => history.push('/leaguetable')}>Tabell</a>
                         </li>
                         <li>
                             <a className="byttLiga" onClick={onByttLiga}>Bytt liga</a>
@@ -323,7 +324,6 @@ const customContentStyle: React.CSSProperties = {
 
 const mapStateToProps = (state: RootState) => ({
     leagueIdChosenByUser: state.data.leagueIdChosenByUser,
-    currentPage: state.router.location.pathname,
     currentRound: state.data.currentRound,
     managerIds: state.data.managerIds,
     isLoadingData: state.data.isLoadingData,
@@ -343,7 +343,6 @@ const mapDispatchToProps = (dispatch: any) => ({
     onSetLiveData: (round: any, averageScore?: number) => dispatch(setLiveData(round, averageScore)),
     onEntryPicksFetched: (entryPicks: any) => dispatch(entryPicksFetched(entryPicks)),
     onSetCaptainHistory: (captainHistory: any) => dispatch(setCaptainHistory(captainHistory)),
-    onAapneNySide: (id: string) => dispatch(push(id)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login) as any);
