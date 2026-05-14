@@ -10,7 +10,7 @@ class App extends Component<{}, {}> {
         return (
             <div>
                 <Login />
-                <div className="flex justify-center py-5 bg-gray-50 min-h-[calc(100vh-120px)]">
+                <div className="flex justify-center pb-5 pt-0 sm:pt-5 bg-gray-50 min-h-[calc(100vh-120px)]">
                     <Switch>
                         <Route exact path="/funfacts"   component={Funfacts} />
                         <Route path="/transfers"        component={Transfers} />
