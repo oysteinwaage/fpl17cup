@@ -219,51 +219,20 @@ class Funfacts extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            highestScorePlayer: '?',
-            highestRoundScore: '?',
-            lowestScorePlayer: '?',
-            lowestRoundScore: '?',
             selectedRound: props.currentRound,
-            captainData: {},
-            playerPoints: null,
         };
-        this.fetchCaptainData = this.fetchCaptainData.bind(this);
     };
 
-    // TODO denne må flyttes til Login.js og gjøres ETTER currentRound er satt!
-    componentDidMount() {
-        // let round = 1;
-        // let totalCaptainPoints = {};
-        // TODO må hentes via nytt API
-        // while (round <= currentRound) {
-        //     $.get("/api/captain?round=" + round).done(function (result) {
-        //         managerIds.forEach(pId => {
-        //             Object.assign(totalCaptainPoints, {
-        //                 playerId: pId,
-        //                 totalCapPoints: totalCaptainPoints.totalCapPoints + result[pId]
-        //             })
-        //         })
-        //     });
-        //     round++;
-        // }
-    }
-
     changeSelectedRound() {
-        this.setState(
-            Object.assign(this.state, {
-                selectedRound: document.getElementsByName('selectBox')[0].value
-            }));
-        this.fetchCaptainData(document.getElementsByName('selectBox')[0].value);
+        this.setState({ selectedRound: document.getElementsByName('selectBox')[0].value });
     };
 
     render() {
         const {currentRound, managerIds, dataz, players, isCurrentRoundFinished, liveScore} = this.props;
-        const {playerPoints, selectedRound, captainData} = this.state;
+        const {selectedRound} = this.state;
+        const playerPoints = null;
+        const captainData = {};
 
-        // TODO dette her er ikke riktig lenger. Hent kapteinsdata samtidig som alt annet i Login om det er mulig
-        if (playerPoints === null) {
-            this.fetchCaptainData(selectedRound);
-        }
         if (!isCurrentRoundFinished) {
             managerIds.forEach(id => {
                 dataz[id]['round' + currentRound].points = liveScore[id] && liveScore[id].totalPoints;
