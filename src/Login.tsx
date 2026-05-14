@@ -249,11 +249,7 @@ class Login extends Component<LoginProps, LoginState> {
                     <Dialog open={!this.state.chosenLeagueId} slotProps={{ paper: { style: customContentStyle } }}>
                         <DialogTitle>Velg din liga fra listen eller skriv inn egen liga id</DialogTitle>
                         <DialogContent>
-                            <p style={{color: 'red', fontSize: 'small'}}>
-                                Pga begrensninger i API'et til FPL får man pr.
-                                nå kun med data for de 50 beste i ligaen :/
-                            </p>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                                 <div style={{width: '75%', position: 'relative'}}>
                                     <TextField
                                         fullWidth

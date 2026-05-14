@@ -13,6 +13,7 @@ export const leaguesInDropdownList: League[] = [
     {id: 114757, name: "Graduates 2012 FTW!",},
     {id: 110024, name: "Never Give Up",},
     {id: 114769, name: "Holmen League",},
+    {id: 1165146, name: "Eika Fantasy",},
 ];
 
 export const allRounds: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38];
