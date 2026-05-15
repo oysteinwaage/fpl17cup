@@ -19,7 +19,8 @@ const initialState: AppState = {
         isLoadingData: false,
         players: {},
         showTeamStatsModal: null,
-        isCurrentRoundFinished: true
+        isCurrentRoundFinished: true,
+        participantsTruncated: false
     },
     liveData: {
         playersLiveScore: {},

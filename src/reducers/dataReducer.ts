@@ -89,7 +89,8 @@ export default function dataReducer(state: DataState = initialState.data, action
             return {
                 ...state,
                 leagueData: action.leagueData,
-                managerIds: action.leagueData.managers
+                managerIds: action.leagueData.managers,
+                participantsTruncated: action.leagueData.truncated ?? false,
             };
 
         case UPDATE_PLAYERS_LIST:

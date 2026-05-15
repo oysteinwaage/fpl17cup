@@ -98,6 +98,7 @@ export interface DataState {
   players: Record<number, string>;
   showTeamStatsModal: number | null;
   isCurrentRoundFinished: boolean;
+  participantsTruncated: boolean;
 }
 
 export interface LiveDataState {

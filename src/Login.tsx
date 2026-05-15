@@ -79,6 +79,7 @@ interface LoginOwnProps extends RouteComponentProps {
   dataz: DataState['dataz'];
   isCurrentRoundFinished: boolean;
   liveScore: LiveDataState;
+  participantsTruncated: boolean;
   children?: React.ReactNode;
 }
 
@@ -263,7 +264,7 @@ class Login extends Component<LoginProps, LoginState> {
   };
 
   render() {
-    const { leagueIdChosenByUser, isLoadingData, location, history } = this.props;
+    const { leagueIdChosenByUser, isLoadingData, location, history, participantsTruncated } = this.props;
     const {
       chosenLeagueId, leagueName, leagueIdInputField,
       loginTab, entryIdInputField, searchedEntry, confirmedEntry,
@@ -325,6 +326,13 @@ class Login extends Component<LoginProps, LoginState> {
             </li>
           </ul>
         </nav>
+
+        {/* ── Truncation warning ── */}
+        {participantsTruncated && (
+          <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 text-center text-sm text-amber-800">
+            For mange deltakere i valgt liga, kun de første 150 er hentet inn her for å unngå timeout mot FPL sine API-er
+          </div>
+        )}
 
         {/* ── Modals ── */}
         <div>
@@ -640,6 +648,7 @@ const mapStateToProps = (state: RootState) => ({
   dataz:                   state.data.dataz,
   isCurrentRoundFinished:  state.data.isCurrentRoundFinished,
   liveScore:               state.liveData,
+  participantsTruncated:   state.data.participantsTruncated,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
