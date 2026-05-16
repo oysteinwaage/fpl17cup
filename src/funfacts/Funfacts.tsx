@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { SelectBox, roundsUpTilNow } from '@/utils';
 import { roundStats } from '@/Login';
 import { transferDiff } from '@/transfers/Transfers';
+import { getPlayerScoresFor } from '@/api';
 import { connect } from 'react-redux';
 import LiveDataShown from '@/components/liveDataShown';
 import { RootState, DataState, LiveDataState } from '@/types';
@@ -39,13 +40,22 @@ function low(list: any[], value: any, player: number): any[] {
   return list;
 }
 
+export interface TransferPlayerStat {
+  playerId: number;
+  playerName: string;
+  points: number | null;
+  count: number;
+  teamIds: number[];
+}
+
 export function calculateStats(
   round: number | string,
   managers: number[] | null,
   playerPoints: any,
   captainData: any,
   currentRound: number | null,
-  dataz: DataState['dataz']
+  dataz: DataState['dataz'],
+  historicalPlayerPoints?: Record<number, { round: number; total_points: number }[]>
 ): any {
   let highestRoundScore: any[] = [], lowestRoundScore: any[] = [];
   let mostPointsOnBench: any[] = [];
@@ -60,6 +70,9 @@ export function calculateStats(
   let bestOverallGlobalRank: any[] = [], worstOverallGlobalRank: any[] = [];
   let highestSquadValue: any[] = [];
   let mostTotalCaptainPoints: any[] = [], fewestTotalCaptainPoints: any[] = [];
+
+  const boughtMap: Record<number, number[]> = {};
+  const soldMap: Record<number, number[]> = {};
 
   (managers || []).forEach(teamId => {
     const rnd = tempNullCheckRound(teamId, 'round' + round, dataz);
@@ -99,6 +112,14 @@ export function calculateStats(
       else if (captainPoints === lowestCaptainPoints[0][0])                               lowestCaptainPoints.push([captainPoints, teamId, captainName]);
     }
 
+    const transfers: [number, number, string][] = rnd.transfers || [];
+    transfers.forEach(([elementIn, elementOut]: [number, number, string]) => {
+      if (!boughtMap[elementIn]) boughtMap[elementIn] = [];
+      boughtMap[elementIn].push(teamId);
+      if (!soldMap[elementOut]) soldMap[elementOut] = [];
+      soldMap[elementOut].push(teamId);
+    });
+
     if (rnd.chipsPlayed)    chipsUsed.push([teamId, rnd.chipsPlayed.chipName]);
     if (rnd.takenHit > 0)   hitsTaken.push([teamId, '-' + rnd.takenHit + 'p']);
 
@@ -137,6 +158,24 @@ export function calculateStats(
   largestLeageDrop[0]     = convertForView(largestLeageDrop, dataz);
   hitsTaken.sort((a: any, b: any) => b[1].slice(1, -1) - a[1].slice(1, -1));
 
+  function buildTransferPlayerStats(map: Record<number, number[]>): TransferPlayerStat[] {
+    let maxCount = 0;
+    const entries = Object.entries(map).map(([pid, teamIds]) => ({ playerId: Number(pid), teamIds }));
+    entries.forEach(e => { if (e.teamIds.length > maxCount) maxCount = e.teamIds.length; });
+    if (maxCount < 2) return [];
+    return entries
+      .filter(e => e.teamIds.length === maxCount)
+      .map(e => {
+        const playerName = roundStats.allPlayers?.[e.playerId]?.web_name ?? '?';
+        const pp = historicalPlayerPoints?.[e.playerId];
+        const points = pp ? (pp.find((s: any) => s.round === Number(round))?.total_points ?? null) : null;
+        return { playerId: e.playerId, playerName, points, count: maxCount, teamIds: e.teamIds };
+      });
+  }
+
+  const mostBoughtPlayer = buildTransferPlayerStats(boughtMap);
+  const mostSoldPlayer   = buildTransferPlayerStats(soldMap);
+
   return {
     highestRoundScore, lowestRoundScore, mostPointsOnBench,
     mostTotalPointsOnBench, lowestTotalPointsOnBench,
@@ -149,6 +188,7 @@ export function calculateStats(
     bestGlobalRankThisRound, worstGlobalRankThisRound,
     bestOverallGlobalRank, worstOverallGlobalRank,
     highestSquadValue, mostTotalCaptainPoints, fewestTotalCaptainPoints,
+    mostBoughtPlayer, mostSoldPlayer,
   };
 }
 
@@ -247,6 +287,27 @@ export function makeCaptainPointsRows(text: string, data: any[], players: Record
   );
 }
 
+export function makeTransferPlayerRow(text: string, data: TransferPlayerStat[], players: Record<number, string>): React.ReactElement | null {
+  if (!data.length) return null;
+  return (
+    <div className={ROW}>
+      <div className={LABEL}>{text}</div>
+      <div className={VALUE}>
+        {data.map((d, i) => (
+          <div key={d.playerId + '-' + i} className="flex flex-col items-end mb-1 last:mb-0">
+            <span className="font-bold text-gray-900">
+              {d.playerName}{d.points != null ? ` - ${d.points}p` : ''}
+            </span>
+            {d.teamIds.map(teamId => (
+              <span key={teamId} className="text-gray-600 text-xs">{players[teamId]}</span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function makeMultipleResultsRowsStacked(text: string, data: any[], players: Record<number, string>): React.ReactElement | null {
   if (!data.length) return null;
   let first = true;
@@ -296,17 +357,43 @@ interface FunfactsProps {
 
 interface FunfactsState {
   selectedRound: number | string | null;
+  transferPlayerPoints: Record<number, { round: number; total_points: number }[]> | null;
 }
 
 class Funfacts extends Component<FunfactsProps, FunfactsState> {
   constructor(props: FunfactsProps) {
     super(props);
-    this.state = { selectedRound: props.currentRound };
+    this.state = { selectedRound: props.currentRound, transferPlayerPoints: null };
+  }
+
+  componentDidMount(): void {
+    if (this.state.selectedRound != null) {
+      this.fetchTransferPlayerPoints(this.state.selectedRound);
+    }
+  }
+
+  fetchTransferPlayerPoints(round: number | string): void {
+    const { managerIds, dataz } = this.props;
+    const playerIds = new Set<number>();
+    managerIds.forEach(teamId => {
+      const rnd = (dataz[teamId] || {})['round' + round] || {};
+      const transfers: [number, number, string][] = rnd.transfers || [];
+      transfers.forEach(([elementIn, elementOut]: [number, number, string]) => {
+        playerIds.add(elementIn);
+        playerIds.add(elementOut);
+      });
+    });
+    if (playerIds.size === 0) return;
+    getPlayerScoresFor([...playerIds])
+      .then((points: Record<number, { round: number; total_points: number }[]>) => this.setState(prev => ({ ...prev, transferPlayerPoints: points })))
+      .catch(() => {});
   }
 
   changeSelectedRound(): void {
     const el = document.getElementsByName('selectBox')[0] as HTMLSelectElement;
-    this.setState({ selectedRound: el ? el.value : null });
+    const newRound = el ? el.value : null;
+    this.setState({ selectedRound: newRound, transferPlayerPoints: null });
+    if (newRound != null) this.fetchTransferPlayerPoints(newRound);
   }
 
   render() {
@@ -323,7 +410,7 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
       });
     }
 
-    const score = calculateStats(selectedRound as number | string, managerIds, null, {}, currentRound, dataz);
+    const score = calculateStats(selectedRound as number | string, managerIds, null, {}, currentRound, dataz, this.state.transferPlayerPoints ?? undefined);
 
     let totalHits = score.mostTotalHitsTaken || [];
     if (totalHits[0]) totalHits[0] = ['-' + score.mostTotalHitsTaken[0][0] + 'p', score.mostTotalHitsTaken[0][1]];
@@ -353,6 +440,8 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
             {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench,       players, false, 'p')}
             {makeMultipleResultsRowsWithSameScore('Best diff bytter',      score.bestTransferDiff,        players)}
             {makeMultipleResultsRowsWithSameScore('Dårligst diff bytter',  score.worstTransferDiff,       players)}
+            {makeTransferPlayerRow('Mest kjøpt',                           score.mostBoughtPlayer,        players)}
+            {makeTransferPlayerRow('Mest solgt',                           score.mostSoldPlayer,          players)}
             {normalFact('Beste klatrer',                                   score.highestLeagueClimber,    players)}
             {normalFact('Største fall',                                    score.largestLeageDrop,        players)}
             {makeMultipleResultsRowsStacked('Beste GW rank',  score.bestGlobalRankThisRound.map(([r, t]: [number, number])  => [r.toLocaleString(), t]), players)}
