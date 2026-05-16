@@ -315,8 +315,11 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
 
     if (!isCurrentRoundFinished) {
       managerIds.forEach(id => {
-        dataz[id]['round' + currentRound].points       = liveScore[id]?.totalPoints;
-        dataz[id]['round' + currentRound].pointsOnBench = liveScore[id]?.benchPoints;
+        const roundKey = 'round' + currentRound;
+        if (dataz[id] && dataz[id][roundKey]) {
+          dataz[id][roundKey].points       = liveScore[id]?.totalPoints;
+          dataz[id][roundKey].pointsOnBench = liveScore[id]?.benchPoints;
+        }
       });
     }
 
