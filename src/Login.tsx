@@ -429,7 +429,7 @@ class Login extends Component<LoginProps, LoginState> {
                         <select
                           value={leaguesInDropdownList.find(l => l.id === leagueIdChosenByUser) ? leagueIdChosenByUser || '' : ''}
                           onChange={this.handleLigavalgFraDropdown}
-                          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-fpl-purple"
+                          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-fpl-purple"
                         >
                           <option value="">Velg liga her</option>
                           {leaguesInDropdownList.map(league => (
