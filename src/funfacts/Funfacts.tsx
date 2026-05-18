@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SelectBox, roundsUpTilNow } from '@/utils';
+import { roundsUpTilNow } from '@/utils';
 import { roundStats } from '@/Login';
 import { transferDiff } from '@/transfers/Transfers';
 import { getPlayerScoresFor } from '@/api';
@@ -418,7 +418,7 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
     let totalFewestHits = score.lowestTotalHitsTaken || [];
     if (totalFewestHits[0]) totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? '0p' : '-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
 
-    const disclaimer = '(Pr. nå er alt utenom endring i ligaplassering live for valgt runde. Stats totalt er ikke live)';
+    const disclaimer = '(Pr. nå er alt utenom endring i ligaplassering/GW rank live for valgt runde. De oppdateres samtidig som FPL oppdateres disse tingene etter hver dag er ferdigspilt. Stats totalt er ikke live)';
 
     const cardClass = 'flex-1 min-w-[340px]';
     const headerClass = 'text-center font-bold py-3 px-4 text-sm uppercase tracking-wider';
@@ -431,10 +431,19 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
         <div className="flex flex-wrap">
           {/* Round stats */}
           <div className={`${cardClass} bg-emerald-50`}>
-            <div className={`${headerClass} bg-emerald-100 text-emerald-800`}>
-              Stats runde {selectedRound}
+            <div className={`${headerClass} bg-emerald-100 text-emerald-800 flex items-center justify-center gap-2`}>
+              <span>Stats</span>
+              <select
+                name="selectBox"
+                onChange={this.changeSelectedRound.bind(this)}
+                value={selectedRound ?? undefined}
+                className="rounded-md border border-emerald-300 bg-white px-2 py-0.5 text-sm font-bold text-emerald-800 shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400 normal-case tracking-normal"
+              >
+                {roundsUpTilNow(currentRound).map(val => (
+                  <option key={val} value={val}>Runde {val}</option>
+                ))}
+              </select>
             </div>
-            {SelectBox(roundsUpTilNow(currentRound), this.changeSelectedRound.bind(this))}
             {makeMultipleResultsRowsWithSameScore('Høyest score',         score.highestRoundScore,       players, false, 'p')}
             {makeMultipleResultsRowsWithSameScore('Lavest score',          score.lowestRoundScore,        players, false, 'p')}
             {makeMultipleResultsRowsWithSameScore('Flest poeng på benken', score.mostPointsOnBench,       players, false, 'p')}
