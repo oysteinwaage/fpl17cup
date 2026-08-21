@@ -6,16 +6,16 @@ export interface League {
 }
 
 export const leaguesInDropdownList: League[] = [
-  { id: 114763,  name: 'Toern' },
-  { id: 1043487, name: 'Kragskogen Invtl.' },
-  { id: 1648230, name: 'Progit' },
-  { id: 732614,  name: 'Nå er det alvor FPL' },
-  { id: 503704,  name: '200-kroners ligaen' },
-  { id: 937424,  name: 'Dataligaen' },
-  { id: 114757,  name: 'Graduates 2012 FTW!' },
-  { id: 110024,  name: 'Never Give Up' },
-  { id: 114769,  name: 'Holmen League' },
-  { id: 1165146, name: 'Eika Fantasy' },
+  { id: 2427,    name: 'Never Give Up' },
+  { id: 42396,   name: '200-kronersligaen' },
+  { id: 179591,  name: 'Dataligaen' },
+  { id: 240022,  name: 'Graduates 2012 FTW!' },
+  { id: 240026,  name: 'Toern' },
+  { id: 240028,  name: 'Holmen League' },
+  { id: 298628,  name: 'Nå er det alvor FPL' },
+  { id: 1170808, name: 'Kragskogen invtl.' },
+  { id: 1209039, name: 'VASK 2016' },
+  { id: 1716038, name: '90minutefamily 250kr' },
 ];
 
 export const allRounds: number[] = Array.from({ length: 38 }, (_, i) => i + 1);

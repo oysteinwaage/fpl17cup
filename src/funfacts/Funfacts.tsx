@@ -418,6 +418,10 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
     let totalFewestHits = score.lowestTotalHitsTaken || [];
     if (totalFewestHits[0]) totalFewestHits[0] = [score.lowestTotalHitsTaken[0][0] === 0 ? '0p' : '-' + score.lowestTotalHitsTaken[0][0] + 'p', score.lowestTotalHitsTaken[0][1]];
 
+    // eslint-disable-next-line eqeqeq
+    const isViewingLiveRound = !isCurrentRoundFinished && currentRound == (selectedRound as any);
+    const lowestCaptainPointsToShow = (isViewingLiveRound && score.lowestCaptainPoints[0]?.[0] === 0) ? [] : score.lowestCaptainPoints;
+
     const disclaimer = '(Pr. nå er alt utenom endring i ligaplassering/GW rank live for valgt runde. De oppdateres samtidig som FPL oppdateres disse tingene etter hver dag er ferdigspilt. Stats totalt er ikke live)';
 
     const cardClass = 'flex-1 min-w-[340px]';
@@ -456,7 +460,7 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
             {makeMultipleResultsRowsStacked('Beste GW rank',  score.bestGlobalRankThisRound.map(([r, t]: [number, number])  => [r.toLocaleString(), t]), players)}
             {makeMultipleResultsRowsStacked('Lavest GW rank', score.worstGlobalRankThisRound.map(([r, t]: [number, number]) => [r.toLocaleString(), t]), players)}
             {makeCaptainPointsRows('Flest kapteinspoeng',   score.mostCaptainPoints,   players, 'p')}
-            {makeCaptainPointsRows('Færrest kapteinspoeng', score.lowestCaptainPoints, players, 'p')}
+            {makeCaptainPointsRows('Færrest kapteinspoeng', lowestCaptainPointsToShow, players, 'p')}
             {makeGroupedRow('Brukt chips',                                   score.chipsUsed,               players)}
             {makeGroupedRow('Tatt hit',                                     score.hitsTaken,               players)}
           </div>

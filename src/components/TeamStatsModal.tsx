@@ -71,6 +71,13 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
     const squadValue: number | null  = teamData.currentSquadValue ?? null;
     const globalRank: number | null  = teamData.currentOverallRank ?? null;
 
+    const totalChipsUsed: [number, string][] = [];
+    Object.keys(teamData).filter(k => k.startsWith('round')).forEach(k => {
+      const rd = teamData[k];
+      if (rd?.chipsPlayed) totalChipsUsed.push([Number(k.slice('round'.length)), rd.chipsPlayed.chipName]);
+    });
+    totalChipsUsed.sort((a, b) => a[0] - b[0]);
+
     const sectionHeader = (title: string, bg: string, text: string) => (
       <div className={`${bg} ${text} text-xs font-bold uppercase tracking-wider px-4 py-2`}>{title}</div>
     );
@@ -103,6 +110,7 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
             {/* Total stats */}
             {sectionHeader('Stats totalt', 'bg-sky-100', 'text-sky-800')}
             {makeMultipleResultsRowsWithSameScore('Antall bytter',  statsOnPlayer.mostTransfersUsed,     players, true)}
+            {makeMultipleResultsRows('Brukt chips', totalChipsUsed.map(([r, c]) => [r, CHIP_NAMES[c] ?? c]), players, true)}
             {normalFact('Hits tatt',                                totalHits,                           players, true)}
             {makeMultipleResultsRowsWithSameScore('Poeng på benken',statsOnPlayer.mostTotalPointsOnBench,players, true, 'p')}
             {hasAnyCaptainData && <StatRow label="Total kapteinspoeng" value={totalCaptainPoints + 'p'} />}

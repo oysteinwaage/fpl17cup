@@ -125,9 +125,12 @@ class Login extends Component<LoginProps, LoginState> {
   }
 
   fetchLiveData(): void {
-    const { currentRound, onSetLiveData, isCurrentRoundFinished } = this.props;
+    const { currentRound, onSetLiveData, isCurrentRoundFinished, managerIds, onSetCaptainHistory } = this.props;
     if (!isCurrentRoundFinished) {
       getLiveData(currentRound!).then(liveData => onSetLiveData(liveData));
+      getCaptainHistory(managerIds, [currentRound!])
+        .then(data => onSetCaptainHistory(data))
+        .catch(() => {});
     } else {
       clearInterval(this.intervalId);
     }
@@ -172,9 +175,11 @@ class Login extends Component<LoginProps, LoginState> {
               this.props.history.push('/funfacts');
             });
 
-            const completedRounds = Object.keys(stats).filter(r => stats[r]?.finished).map(Number);
-            if (completedRounds.length > 0) {
-              getCaptainHistory(leagueData.managers, completedRounds)
+            const roundsToFetch = Object.keys(stats)
+              .filter(r => stats[r]?.finished || Number(r) === localCurrentRound)
+              .map(Number);
+            if (roundsToFetch.length > 0) {
+              getCaptainHistory(leagueData.managers, roundsToFetch)
                 .then(data => onSetCaptainHistory(data))
                 .catch(() => {});
             }
