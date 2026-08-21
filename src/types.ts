@@ -107,6 +107,7 @@ export interface LiveDataState {
   entryPicks: EntryPick[];
   roundHits: Record<number, number>;
   averageScore: number | null;
+  lastUpdated: number | null;
 }
 
 export interface RootState {

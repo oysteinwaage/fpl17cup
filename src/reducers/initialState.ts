@@ -27,7 +27,8 @@ const initialState: AppState = {
         fplManagersLiveScore: {},
         entryPicks: [],
         roundHits: {},
-        averageScore: null
+        averageScore: null,
+        lastUpdated: null
     }
 };
 

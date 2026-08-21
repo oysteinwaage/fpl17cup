@@ -422,7 +422,7 @@ class Funfacts extends Component<FunfactsProps, FunfactsState> {
     const isViewingLiveRound = !isCurrentRoundFinished && currentRound == (selectedRound as any);
     const lowestCaptainPointsToShow = (isViewingLiveRound && score.lowestCaptainPoints[0]?.[0] === 0) ? [] : score.lowestCaptainPoints;
 
-    const disclaimer = '(Pr. nå er alt utenom endring i ligaplassering/GW rank live for valgt runde. De oppdateres samtidig som FPL oppdateres disse tingene etter hver dag er ferdigspilt. Stats totalt er ikke live)';
+    const disclaimer = '' // '(Pr. nå er alt utenom endring i ligaplassering/GW rank live for valgt runde. De oppdateres samtidig som FPL oppdateres disse tingene etter hver dag er ferdigspilt. Stats totalt er ikke live)';
 
     const cardClass = 'flex-1 min-w-[340px]';
     const headerClass = 'text-center font-bold py-3 px-4 text-sm uppercase tracking-wider';

@@ -2,8 +2,8 @@ import initialState from './initialState';
 import {
     ENTRY_PICKS_FETCHED,
     SET_LIVE_DATA, SET_SCORE_DATA,
-} from '../actions/actions';
-import { LiveDataState, EntryPick } from '../types';
+} from '@/actions/actions';
+import { LiveDataState, EntryPick } from '@/types';
 
 export default function liveDataReducer(state: LiveDataState = initialState.liveData, action: any): LiveDataState {
     const calculateLiveRoundScore = (entryPicks: EntryPick[], liveScore: any) => {
@@ -32,12 +32,14 @@ export default function liveDataReducer(state: LiveDataState = initialState.live
                     ...state,
                     playersLiveScore: action.liveData,
                     fplManagersLiveScore: calculateLiveRoundScore(state.entryPicks, action.liveData),
-                    averageScore: action.averageScore || state.averageScore
+                    averageScore: action.averageScore || state.averageScore,
+                    lastUpdated: Date.now()
                 };
             }
             return {
                 ...state,
-                playersLiveScore: action.liveData
+                playersLiveScore: action.liveData,
+                lastUpdated: Date.now()
             };
         case ENTRY_PICKS_FETCHED:
             return {
