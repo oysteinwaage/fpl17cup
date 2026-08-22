@@ -1,7 +1,7 @@
 import initialState from './initialState';
 import {
     SET_SCORE_DATA,
-    SET_ROUND_STATS, TOGGLE_SHOW_TEAM_STATS,
+    SET_ROUND_STATS, TOGGLE_SHOW_TEAM_STATS, TOGGLE_SHOW_PITCH_VIEW,
     UPDATE_CHOSEN_LEAGUE_ID,
     UPDATE_SELECTED_ENTRY_ID,
     UPDATE_IS_LOADING_DATA, UPDATE_LEAGUE_DATA,
@@ -129,6 +129,11 @@ export default function dataReducer(state: DataState = initialState.data, action
             return {
                 ...state,
                 showTeamStatsModal: action.teamId
+            };
+        case TOGGLE_SHOW_PITCH_VIEW:
+            return {
+                ...state,
+                showPitchViewModal: action.teamId
             };
         case SET_CAPTAIN_HISTORY: {
             const newDataz = {...state.dataz};

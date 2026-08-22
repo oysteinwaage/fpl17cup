@@ -16,6 +16,7 @@ import {
   getLiveData, getCaptainHistory, getEntryInfo,
 } from './api';
 import TeamStatsModal from './components/TeamStatsModal';
+import PitchViewModal from './components/PitchViewModal';
 import { getEntryPicks } from './api';
 import { RootState, DataState, LiveDataState } from './types';
 
@@ -342,6 +343,7 @@ class Login extends Component<LoginProps, LoginState> {
         {/* ── Modals ── */}
         <div>
           <TeamStatsModal />
+          <PitchViewModal />
 
           {/* Loading dialog */}
           <Dialog open={isLoadingData} onOpenChange={() => {}}>

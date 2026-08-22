@@ -71,6 +71,14 @@ export function showTeamsStatsModalFor(teamId: number | null) {
     };
 }
 
+export const TOGGLE_SHOW_PITCH_VIEW = 'TOGGLE_SHOW_PITCH_VIEW';
+export function showPitchViewModalFor(teamId: number | null) {
+    return {
+        type: TOGGLE_SHOW_PITCH_VIEW,
+        teamId
+    };
+}
+
 export const SET_LIVE_DATA = 'SET_LIVE_DATA';
 export function setLiveData(liveData: any, averageScore?: number) {
     return {

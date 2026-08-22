@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { showTeamsStatsModalFor } from '@/actions/actions';
+import { ChevronDown, ChevronUp, Shirt } from 'lucide-react';
+import { showTeamsStatsModalFor, showPitchViewModalFor } from '@/actions/actions';
 import LiveDataShown from '@/components/liveDataShown';
 import { RootState, DataState, LiveDataState, LeagueData } from '@/types';
 
@@ -10,6 +10,7 @@ interface LeagueTableProps {
   dataz: DataState['dataz'];
   leagueData: LeagueData;
   onShowTeamStatsModal: (teamId: number) => void;
+  onShowPitchView: (teamId: number) => void;
   liveScore: LiveDataState['fplManagersLiveScore'];
   isCurrentRoundFinished: boolean;
   selectedEntryId: number | null;
@@ -17,7 +18,7 @@ interface LeagueTableProps {
 
 class LeagueTable extends Component<LeagueTableProps, {}> {
   render() {
-    const { leagueData, onShowTeamStatsModal, isCurrentRoundFinished, liveScore, dataz, currentRound, selectedEntryId } = this.props;
+    const { leagueData, onShowTeamStatsModal, onShowPitchView, isCurrentRoundFinished, liveScore, dataz, currentRound, selectedEntryId } = this.props;
 
     const sorted = leagueData.standings?.results.reduce((acc: any[], team: any) => {
       const teamData = dataz[team.entry];
@@ -53,6 +54,7 @@ class LeagueTable extends Component<LeagueTableProps, {}> {
           <div className="flex-1">Lag</div>
           <div className="w-14 text-right">GW</div>
           <div className="w-16 text-right pr-2">TOT</div>
+          <div className="w-8 shrink-0" />
         </div>
 
         {/* Rows */}
@@ -88,6 +90,19 @@ class LeagueTable extends Component<LeagueTableProps, {}> {
 
               <div className="w-14 text-right font-mono text-sm">{team.gwPoints}</div>
               <div className="w-16 text-right pr-2 font-mono text-sm font-bold">{team.totalPoints}</div>
+              <button
+                type="button"
+                title="Vis lagoppstilling"
+                className={`w-8 shrink-0 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity ${
+                  isHighlighted ? 'text-fpl-purple' : 'text-fpl-green'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onShowPitchView(team.entry);
+                }}
+              >
+                <Shirt className="w-4 h-4" />
+              </button>
             </div>
           );
         })}
@@ -107,6 +122,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
   onShowTeamStatsModal: (teamId: number) => dispatch(showTeamsStatsModalFor(teamId)),
+  onShowPitchView: (teamId: number) => dispatch(showPitchViewModalFor(teamId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LeagueTable);

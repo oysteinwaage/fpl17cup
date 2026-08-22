@@ -111,6 +111,18 @@ export function getCaptainHistory(teams: number[], rounds: number[]): Promise<an
     });
 }
 
+export function getSquadDetail(entryId: number, round: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+        fetch(`/api/getSquadDetail?entryId=${entryId}&round=${round}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Kunne ikke hente lagoppstilling');
+                return r.json();
+            })
+            .then(data => resolve(data))
+            .catch(error => reject(error));
+    });
+}
+
 export function getEntryInfo(entryId: number): Promise<any> {
     return new Promise((resolve, reject) => {
         fetch(`/api/getEntryInfo?entryId=${entryId}`)

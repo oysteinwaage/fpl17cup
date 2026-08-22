@@ -84,6 +84,41 @@ export interface LeagueData {
   };
 }
 
+export interface SquadPick {
+  element: number;
+  position: number;
+  multiplier: number;
+  isCaptain: boolean;
+  isViceCaptain: boolean;
+  isSubIn: boolean;
+  isSubOut: boolean;
+  webName: string;
+  elementType: number;
+  teamCode: number;
+  teamShortName: string;
+  points: number;
+  minutes: number;
+  bonus: number;
+  inDreamteam: boolean;
+}
+
+export interface SquadDetail {
+  entryId: number;
+  round: number;
+  activeChip: string | null;
+  entryHistory: {
+    points: number;
+    points_on_bench: number;
+    event_transfers: number;
+    event_transfers_cost: number;
+    value: number;
+    bank: number;
+    rank: number;
+    overall_rank: number;
+  };
+  picks: SquadPick[];
+}
+
 export interface DataState {
   dataz: Record<number, TeamData>;
 
@@ -97,6 +132,7 @@ export interface DataState {
   isLoadingData: boolean;
   players: Record<number, string>;
   showTeamStatsModal: number | null;
+  showPitchViewModal: number | null;
   isCurrentRoundFinished: boolean;
   participantsTruncated: boolean;
 }

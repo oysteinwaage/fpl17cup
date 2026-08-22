@@ -19,6 +19,7 @@ const initialState: AppState = {
         isLoadingData: false,
         players: {},
         showTeamStatsModal: null,
+        showPitchViewModal: null,
         isCurrentRoundFinished: true,
         participantsTruncated: false
     },
