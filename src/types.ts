@@ -100,6 +100,10 @@ export interface SquadPick {
   minutes: number;
   bonus: number;
   inDreamteam: boolean;
+  fixtureStarted: boolean;
+  fixtureFinished: boolean;
+  opponentShortName: string | null;
+  isHome: boolean | null;
 }
 
 export interface SquadDetail {

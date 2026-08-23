@@ -19,9 +19,25 @@ module.exports = async (req, res) => {
 
         // A team's gameweek is only "finished" once all its fixtures this round have concluded.
         const teamFinished = {};
+        // First upcoming/current fixture per team this round, for the "not started yet" opponent badge.
+        const teamFixtureInfo = {};
         Object.values(teamsById).forEach(t => {
             const teamFixtures = fixtures.filter(f => f.team_h === t.id || f.team_a === t.id);
             teamFinished[t.id] = teamFixtures.length === 0 || teamFixtures.every(f => f.finished);
+
+            // finished_provisional flips true right at full-time; finished lags until bonus
+            // points are officially confirmed (can take a while), so use the provisional flag
+            // to decide whether a match is still live for display purposes.
+            const nextFixture = teamFixtures.find(f => !f.finished_provisional) || teamFixtures[0];
+            if (nextFixture) {
+                const isHome = nextFixture.team_h === t.id;
+                teamFixtureInfo[t.id] = {
+                    started: nextFixture.started,
+                    finished: nextFixture.finished_provisional,
+                    opponentTeamId: isHome ? nextFixture.team_a : nextFixture.team_h,
+                    isHome,
+                };
+            }
         });
 
         const picks = entryEvent.picks.map(p => ({ ...p }));
@@ -64,6 +80,8 @@ module.exports = async (req, res) => {
                 const el = elementsById[p.element] || {};
                 const team = teamsById[el.team] || {};
                 const liveStats = (liveById[p.element] || {}).stats || {};
+                const fixtureInfo = teamFixtureInfo[el.team];
+                const opponentTeam = fixtureInfo ? teamsById[fixtureInfo.opponentTeamId] : null;
                 return {
                     element: p.element,
                     position: p.position,
@@ -80,6 +98,10 @@ module.exports = async (req, res) => {
                     minutes: liveStats.minutes || 0,
                     bonus: liveStats.bonus || 0,
                     inDreamteam: liveStats.in_dreamteam || false,
+                    fixtureStarted: fixtureInfo ? fixtureInfo.started : true,
+                    fixtureFinished: fixtureInfo ? fixtureInfo.finished : true,
+                    opponentShortName: opponentTeam ? opponentTeam.short_name : null,
+                    isHome: fixtureInfo ? fixtureInfo.isHome : null,
                 };
             });
 

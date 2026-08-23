@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from 'lucide
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { getSquadDetail } from '@/api';
 import { showPitchViewModalFor } from '@/actions/actions';
-import { RootState, SquadDetail, SquadPick } from '@/types';
+import { RootState, DataState, LiveDataState, SquadDetail, SquadPick } from '@/types';
 
 const CHIP_LABELS: Record<string, string> = {
   wildcard: 'Wildcard',
@@ -19,7 +19,13 @@ function shirtUrl(teamCode: number, elementType: number): string {
 }
 
 function PlayerCard({ pick }: { pick: SquadPick }) {
-  const displayPoints = pick.points * pick.multiplier;
+  const showFixture = !pick.fixtureStarted && pick.opponentShortName;
+  const isLive = pick.fixtureStarted && !pick.fixtureFinished;
+  const displayValue = showFixture
+    ? `${pick.opponentShortName} (${pick.isHome ? 'H' : 'A'})`
+    // Bench players (and subbed-out starters) have multiplier 0 since they don't count
+    // towards the total, but their own points should still be visible.
+    : pick.multiplier > 0 ? pick.points * pick.multiplier : pick.points;
   const isBenched = pick.position > 11;
 
   return (
@@ -46,8 +52,8 @@ function PlayerCard({ pick }: { pick: SquadPick }) {
       <div className="w-full -mt-1 bg-white px-1 py-0.5 text-center leading-tight">
         <div className="text-[10px] font-bold text-fpl-purple truncate">{pick.webName}</div>
       </div>
-      <div className="w-full bg-fpl-purple px-1 py-0.5 text-center rounded-b-sm">
-        <div className="text-[10px] font-bold text-fpl-green">{displayPoints}</div>
+      <div className={`w-full px-1 py-0.5 text-center rounded-b-sm ${isLive && !showFixture ? 'bg-gradient-to-r from-fpl-purple to-orange-400' : 'bg-fpl-purple'}`}>
+        <div className="text-[10px] font-bold text-fpl-green truncate">{displayValue}</div>
       </div>
     </div>
   );
@@ -57,6 +63,9 @@ interface PitchViewModalProps {
   players: Record<number, string>;
   currentRound: number | null;
   roundStats: any;
+  dataz: DataState['dataz'];
+  liveScore: LiveDataState['fplManagersLiveScore'];
+  isCurrentRoundFinished: boolean;
   chosenTeamIdForModal: number | null;
   onClose: () => void;
 }
@@ -104,7 +113,7 @@ class PitchViewModal extends Component<PitchViewModalProps, PitchViewModalState>
   }
 
   render() {
-    const { players, currentRound, roundStats, chosenTeamIdForModal, onClose } = this.props;
+    const { players, currentRound, roundStats, dataz, liveScore, isCurrentRoundFinished, chosenTeamIdForModal, onClose } = this.props;
     const { squad, loading, error, selectedRound } = this.state;
 
     if (!chosenTeamIdForModal) return <></>;
@@ -117,7 +126,13 @@ class PitchViewModal extends Component<PitchViewModalProps, PitchViewModalState>
     const bench = picks.filter(p => p.position > 11).sort((a, b) => a.position - b.position);
     const rows = [1, 2, 3, 4].map(type => starters.filter(p => p.elementType === type)).filter(row => row.length > 0);
 
-    const netPoints = squad ? squad.entryHistory.points - squad.entryHistory.event_transfers_cost : null;
+    // Same value as the GW column on the Tabell page, for consistency.
+    const teamData = dataz[chosenTeamIdForModal];
+    const isLiveCurrentRound = round === currentRound && !isCurrentRoundFinished;
+    const live = liveScore?.[chosenTeamIdForModal];
+    const netPoints = isLiveCurrentRound
+      ? (live ? live.totalPoints : 0)
+      : (teamData?.['round' + round]?.points ?? null);
     const roundStat: any = round ? roundStats?.[round] : null;
     const average = roundStat?.average_entry_score ?? null;
     const highest = roundStat?.highest_score ?? null;
@@ -212,6 +227,9 @@ const mapStateToProps = (state: RootState) => ({
   players: state.data.players,
   currentRound: state.data.currentRound,
   roundStats: state.data.roundStats,
+  dataz: state.data.dataz,
+  liveScore: state.liveData.fplManagersLiveScore,
+  isCurrentRoundFinished: state.data.isCurrentRoundFinished,
   chosenTeamIdForModal: state.data.showPitchViewModal,
 });
 
