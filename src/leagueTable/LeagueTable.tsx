@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ChevronDown, ChevronUp, Shirt } from 'lucide-react';
+import { ChevronDown, ChevronUp, BarChart2 } from 'lucide-react';
 import { showTeamsStatsModalFor, showPitchViewModalFor } from '@/actions/actions';
 import LiveDataShown from '@/components/liveDataShown';
 import { RootState, DataState, LiveDataState, LeagueData } from '@/types';
@@ -73,7 +73,7 @@ class LeagueTable extends Component<LeagueTableProps, {}> {
                   ? 'bg-fpl-green text-fpl-purple'
                   : 'bg-fpl-purple text-fpl-green'
               }`}
-              onClick={() => onShowTeamStatsModal(team.entry)}
+              onClick={() => onShowPitchView(team.entry)}
             >
               <div className="w-10 shrink-0 flex items-center gap-0.5 text-base font-bold">
                 {rank}
@@ -92,16 +92,16 @@ class LeagueTable extends Component<LeagueTableProps, {}> {
               <div className="w-16 text-right pr-2 font-mono text-sm font-bold">{team.totalPoints}</div>
               <button
                 type="button"
-                title="Vis lagoppstilling"
+                title="Vis statistikk"
                 className={`w-8 shrink-0 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity ${
                   isHighlighted ? 'text-fpl-purple' : 'text-fpl-green'
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  onShowPitchView(team.entry);
+                  onShowTeamStatsModal(team.entry);
                 }}
               >
-                <Shirt className="w-4 h-4" />
+                <BarChart2 className="w-4 h-4" />
               </button>
             </div>
           );
