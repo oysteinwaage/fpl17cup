@@ -198,56 +198,58 @@ class PitchViewModal extends Component<PitchViewModalProps, PitchViewModalState>
 
             {/* Everything below scrolls as one unit, so the stats strip doesn't permanently eat space on short viewports */}
             <div className="flex-1 overflow-y-auto">
-              {/* Stats strip */}
-              <div className="flex items-center justify-around bg-white px-4 py-2.5">
-                <div className="text-center">
-                  <div className="text-lg font-extrabold text-fpl-purple leading-tight">{average ?? '-'}</div>
-                  <div className="text-[10px] text-gray-500">Average</div>
+              <div className="flex flex-col min-h-full">
+                {/* Stats strip */}
+                <div className="flex items-center justify-around bg-white px-4 py-2.5">
+                  <div className="text-center">
+                    <div className="text-lg font-extrabold text-fpl-purple leading-tight">{average ?? '-'}</div>
+                    <div className="text-[10px] text-gray-500">Average</div>
+                  </div>
+                  <div className="text-center bg-gradient-to-br from-sky-400 to-fpl-purple rounded-lg px-4 py-1">
+                    <div className="text-lg font-extrabold text-white leading-tight">{netPoints ?? '-'}</div>
+                    <div className="text-[10px] text-white/90">Total Pts</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-extrabold text-fpl-purple leading-tight">{highest ?? '-'}</div>
+                    <div className="text-[10px] text-gray-500">Highest</div>
+                  </div>
                 </div>
-                <div className="text-center bg-gradient-to-br from-sky-400 to-fpl-purple rounded-lg px-4 py-1">
-                  <div className="text-lg font-extrabold text-white leading-tight">{netPoints ?? '-'}</div>
-                  <div className="text-[10px] text-white/90">Total Pts</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-extrabold text-fpl-purple leading-tight">{highest ?? '-'}</div>
-                  <div className="text-[10px] text-gray-500">Highest</div>
-                </div>
+
+                {chipLabel && (
+                  <div className="text-center text-xs font-bold text-fpl-purple bg-fpl-green/60 py-1">
+                    {chipLabel} aktiv
+                  </div>
+                )}
+
+                {loading && <div className="text-center py-10 text-gray-400 text-sm">Laster...</div>}
+                {error && <div className="text-center py-10 text-red-500 text-sm">{error}</div>}
+
+                {!loading && !error && squad && (
+                  <>
+                    <div className="relative bg-gradient-to-b from-emerald-500 to-emerald-700 pt-1 pb-6 px-1 overflow-hidden">
+                      {/* Goal frame, fully visible at the top behind the keeper */}
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 top-0 w-20 h-9 border-2 border-white/70 border-b-0"
+                        style={NET_PATTERN}
+                      />
+                      <PitchLines />
+                      <div className="relative z-10">
+                        {rows.map((row, i) => (
+                          <div key={i} className={`flex items-start justify-around ${i < 2 ? 'py-2' : 'py-4'}`}>
+                            {row.map(p => <PlayerCard key={p.element} pick={p} />)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex-1 bg-emerald-100 py-2 px-1">
+                      <div className="text-center text-[11px] font-bold text-emerald-800 mb-1.5 uppercase tracking-wide">Benk</div>
+                      <div className="flex items-start justify-around">
+                        {bench.map(p => <PlayerCard key={p.element} pick={p} />)}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-
-              {chipLabel && (
-                <div className="text-center text-xs font-bold text-fpl-purple bg-fpl-green/60 py-1">
-                  {chipLabel} aktiv
-                </div>
-              )}
-
-              {loading && <div className="text-center py-10 text-gray-400 text-sm">Laster...</div>}
-              {error && <div className="text-center py-10 text-red-500 text-sm">{error}</div>}
-
-              {!loading && !error && squad && (
-                <>
-                  <div className="relative bg-gradient-to-b from-emerald-500 to-emerald-700 pt-1 pb-2 px-1 overflow-hidden">
-                    {/* Goal frame, fully visible at the top behind the keeper */}
-                    <div
-                      className="absolute left-1/2 -translate-x-1/2 top-0 w-20 h-9 border-2 border-white/70 border-b-0"
-                      style={NET_PATTERN}
-                    />
-                    <PitchLines />
-                    <div className="relative z-10">
-                      {rows.map((row, i) => (
-                        <div key={i} className={`flex items-start justify-around ${i < 2 ? 'py-1' : 'py-2'}`}>
-                          {row.map(p => <PlayerCard key={p.element} pick={p} />)}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="bg-emerald-100 py-2 px-1">
-                    <div className="text-center text-[11px] font-bold text-emerald-800 mb-1.5 uppercase tracking-wide">Benk</div>
-                    <div className="flex items-start justify-around">
-                      {bench.map(p => <PlayerCard key={p.element} pick={p} />)}
-                    </div>
-                  </div>
-                </>
-              )}
             </div>
           </div>
         </DialogContent>
