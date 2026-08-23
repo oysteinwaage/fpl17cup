@@ -18,6 +18,31 @@ function shirtUrl(teamCode: number, elementType: number): string {
   return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${suffix}-66.png`;
 }
 
+const NET_PATTERN: React.CSSProperties = {
+  backgroundImage:
+    'repeating-linear-gradient(45deg, rgba(255,255,255,0.45) 0 1px, transparent 1px 6px), ' +
+    'repeating-linear-gradient(-45deg, rgba(255,255,255,0.45) 0 1px, transparent 1px 6px)',
+};
+
+function PitchLines() {
+  return (
+    <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+      {/* Touchlines + goal line + bottom edge, narrower at the top for a perspective look */}
+      <path d="M18,0 L82,0 L100,100 L0,100 Z" fill="none" stroke="white" strokeOpacity="0.35" strokeWidth="0.4" />
+      {/* Penalty box */}
+      <path d="M22,0 L22,15 L78,15 L78,0" fill="none" stroke="white" strokeOpacity="0.35" strokeWidth="0.4" />
+      {/* Six-yard box */}
+      <path d="M38,0 L38,6 L62,6 L62,0" fill="none" stroke="white" strokeOpacity="0.35" strokeWidth="0.4" />
+      {/* Penalty arc */}
+      <path d="M42,15 Q50,20.5 58,15" fill="none" stroke="white" strokeOpacity="0.35" strokeWidth="0.4" />
+      {/* Halfway line + center circle */}
+      <line x1="0" y1="82" x2="100" y2="82" stroke="white" strokeOpacity="0.35" strokeWidth="0.4" />
+      <ellipse cx="50" cy="82" rx="16" ry="8" fill="none" stroke="white" strokeOpacity="0.35" strokeWidth="0.4" />
+      <circle cx="50" cy="82" r="0.7" fill="white" fillOpacity="0.35" />
+    </svg>
+  );
+}
+
 function PlayerCard({ pick }: { pick: SquadPick }) {
   const showFixture = !pick.fixtureStarted && pick.opponentShortName;
   const isLive = pick.fixtureStarted && !pick.fixtureFinished;
@@ -200,12 +225,20 @@ class PitchViewModal extends Component<PitchViewModalProps, PitchViewModalState>
 
               {!loading && !error && squad && (
                 <>
-                  <div className="bg-gradient-to-b from-emerald-500 to-emerald-700 py-2 px-1">
-                    {rows.map((row, i) => (
-                      <div key={i} className="flex items-start justify-around py-2">
-                        {row.map(p => <PlayerCard key={p.element} pick={p} />)}
-                      </div>
-                    ))}
+                  <div className="relative bg-gradient-to-b from-emerald-500 to-emerald-700 pt-1 pb-2 px-1 overflow-hidden">
+                    {/* Goal frame, fully visible at the top behind the keeper */}
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 top-0 w-20 h-9 border-2 border-white/70 border-b-0"
+                      style={NET_PATTERN}
+                    />
+                    <PitchLines />
+                    <div className="relative z-10">
+                      {rows.map((row, i) => (
+                        <div key={i} className={`flex items-start justify-around ${i < 2 ? 'py-1' : 'py-2'}`}>
+                          {row.map(p => <PlayerCard key={p.element} pick={p} />)}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div className="bg-emerald-100 py-2 px-1">
                     <div className="text-center text-[11px] font-bold text-emerald-800 mb-1.5 uppercase tracking-wide">Benk</div>
