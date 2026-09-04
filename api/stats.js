@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
                 transfers_out_event: player.transfers_out_event,
                 total_points: player.total_points,
                 in_dreamteam: player.in_dreamteam,
+                cost_change_event: player.cost_change_event,
             };
         });
 

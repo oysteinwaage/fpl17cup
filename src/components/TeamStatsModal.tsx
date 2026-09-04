@@ -8,7 +8,8 @@ import {
   makeMultipleResultsRowsWithSameScore, CHIP_NAMES,
 } from '@/funfacts/Funfacts';
 import { showTeamsStatsModalFor } from '@/actions/actions';
-import { RootState, DataState } from '@/types';
+import { roundStats } from '@/Login';
+import { RootState, DataState, LiveDataState } from '@/types';
 
 function StatRow({ label, value }: { label: string; value: string }) {
   return (
@@ -23,6 +24,7 @@ interface TeamStatsModalProps {
   players: Record<number, string>;
   dataz: DataState['dataz'];
   currentRound: number | null;
+  entryPicks: LiveDataState['entryPicks'];
   onShowTeamStatsModal: (teamId: number | null) => void;
   chosenTeamIdForModal: number | null;
 }
@@ -43,7 +45,7 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
   }
 
   render() {
-    const { players, currentRound, dataz, onShowTeamStatsModal, chosenTeamIdForModal } = this.props;
+    const { players, currentRound, dataz, entryPicks, onShowTeamStatsModal, chosenTeamIdForModal } = this.props;
 
     if (!chosenTeamIdForModal) return <></>;
 
@@ -52,6 +54,25 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
     const managerName   = teamData.managerName || '';
     const teamName      = players[chosenTeamIdForModal] || '';
     const roundData: any = teamData['round' + selectedRound] || {};
+
+    // FPL only exposes the price change since the start of the current gameweek, not
+    // historical per-round deltas, so this can only be shown while viewing the live round.
+    const playerNames: Record<number, string> = {};
+    const risingPlayers: [number, string][] = [];
+    const fallingPlayers: [number, string][] = [];
+    if (String(selectedRound) === String(currentRound)) {
+      const squadPicks = entryPicks.find(ep => ep.entryId === chosenTeamIdForModal)?.picks || [];
+      squadPicks.forEach(({ element }) => {
+        const info = roundStats.allPlayers?.[element];
+        const change = info?.cost_change_event;
+        if (!info || !change) return;
+        playerNames[element] = info.web_name;
+        const formatted = (change > 0 ? '+' : '') + (change / 10).toFixed(1) + 'm';
+        (change > 0 ? risingPlayers : fallingPlayers).push([element, formatted]);
+      });
+      risingPlayers.sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+      fallingPlayers.sort((a, b) => parseFloat(a[1]) - parseFloat(b[1]));
+    }
 
     const statsOnPlayer = calculateStats(selectedRound!, [chosenTeamIdForModal], null, null, currentRound, dataz);
 
@@ -106,6 +127,8 @@ class TeamStatsModal extends Component<TeamStatsModalProps, TeamStatsModalState>
             {normalFact('Fall i ligaen',     statsOnPlayer.largestLeageDrop,     players, true)}
             {makeMultipleResultsRows('Brukt chips', statsOnPlayer.chipsUsed.map(([t, c]: [number, string]) => [t, CHIP_NAMES[c] ?? c]), players, true)}
             {makeMultipleResultsRows('Tatt hit',    statsOnPlayer.hitsTaken,  players, true)}
+            {makeMultipleResultsRows('Steget i verdi', risingPlayers, playerNames)}
+            {makeMultipleResultsRows('Sunket i verdi', fallingPlayers, playerNames)}
 
             {/* Total stats */}
             {sectionHeader('Stats totalt', 'bg-sky-100', 'text-sky-800')}
@@ -133,6 +156,7 @@ const mapStateToProps = (state: RootState) => ({
   players:              state.data.players,
   currentRound:         state.data.currentRound,
   dataz:                state.data.dataz,
+  entryPicks:           state.liveData.entryPicks,
   chosenTeamIdForModal: state.data.showTeamStatsModal,
 });
 

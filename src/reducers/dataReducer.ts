@@ -137,10 +137,10 @@ export default function dataReducer(state: DataState = initialState.data, action
             };
         case SET_CAPTAIN_HISTORY: {
             const newDataz = {...state.dataz};
-            action.captainHistory.forEach(({ teamId, round, captain, vice, multiplier, multiplierVice, captainPoints }: any) => {
+            action.captainHistory.forEach(({ teamId, round, captain, vice, activePlayer, multiplier, multiplierVice, captainPoints }: any) => {
                 if (captain !== null && newDataz[teamId] && newDataz[teamId]['round' + round]) {
                     Object.assign(newDataz[teamId]['round' + round], {
-                        captain: { player: captain, vicePlayer: vice, multiplier, multiplierVice, captainPoints }
+                        captain: { player: captain, vicePlayer: vice, activePlayer, multiplier, multiplierVice, captainPoints }
                     });
                 }
             });

@@ -97,8 +97,9 @@ export function calculateStats(
       }
     } else if (historicalCaptain && historicalCaptain.captainPoints != null) {
       captainPoints = historicalCaptain.captainPoints;
-      if (historicalCaptain.player && roundStats.allPlayers) {
-        captainName = roundStats.allPlayers[historicalCaptain.player]?.web_name ?? null;
+      const activeId = historicalCaptain.activePlayer ?? historicalCaptain.player;
+      if (activeId && roundStats.allPlayers) {
+        captainName = roundStats.allPlayers[activeId]?.web_name ?? null;
       }
     }
 

@@ -14,6 +14,7 @@ export interface RoundData {
   captain?: {
     player: number;
     vicePlayer: number;
+    activePlayer: number;
     multiplier: number;
     multiplierVice: number;
     captainPoints: number | null;
@@ -58,7 +59,7 @@ export interface RoundStat {
 }
 
 export interface AllPlayersMap {
-  [playerId: number]: { web_name: string };
+  [playerId: number]: { web_name: string; cost_change_event?: number };
 }
 
 export interface RoundStats {

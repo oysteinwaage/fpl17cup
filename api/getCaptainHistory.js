@@ -33,6 +33,7 @@ module.exports = async (req, res) => {
                             );
 
                             let captainPoints = null;
+                            let activePlayer = captainId;
                             const live = liveByRound[round] || {};
                             if (captainId) {
                                 const captainLive = live[captainId];
@@ -42,6 +43,7 @@ module.exports = async (req, res) => {
                                     ? captainLive.points
                                     : (viceLive ? viceLive.points : 0);
                                 captainPoints = activePoints * multiplier;
+                                activePlayer = captainPlayed ? captainId : viceId;
                             }
 
                             return {
@@ -49,6 +51,7 @@ module.exports = async (req, res) => {
                                 round,
                                 captain: captainId,
                                 vice: viceId,
+                                activePlayer,
                                 multiplier,
                                 multiplierVice: vicePick ? vicePick.multiplier : null,
                                 captainPoints,
