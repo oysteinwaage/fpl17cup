@@ -52,7 +52,10 @@ export function getPlayerScoresFor(players: number[]): Promise<any> {
     return new Promise((resolve, reject) => {
         setTimeout(function () {
             fetch(`/api/playerscores?players=${players}`)
-                .then(r => r.json())
+                .then(r => {
+                    if (!r.ok) throw new Error('Kunne ikke hente spillerpoeng');
+                    return r.json();
+                })
                 .then(data => {
                     return resolve(data);
                 })

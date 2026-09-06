@@ -23,12 +23,13 @@ interface TransfersProps {
 interface TransfersState {
   selectedRound: number | null;
   playerPoints: any;
+  fetchError: string | null;
 }
 
 class Transfers extends Component<TransfersProps, TransfersState> {
   constructor(props: TransfersProps) {
     super(props);
-    this.state = { selectedRound: null, playerPoints: null };
+    this.state = { selectedRound: null, playerPoints: null, fetchError: null };
     this.fetchPlayerPoints = this.fetchPlayerPoints.bind(this);
     this.transfersForTeamAndRound = this.transfersForTeamAndRound.bind(this);
   }
@@ -52,6 +53,7 @@ class Transfers extends Component<TransfersProps, TransfersState> {
     if (!round) return;
     loading = true;
     onUpdateIsLoadingData(true);
+    this.setState({ fetchError: null });
     const ids = transferlist.reduce((prev: number[], curr: any[]) => {
       prev.push(...curr.reduce((p: number[], c: any) => {
         if (c.event === round) p.push(c.element_out, c.element_in);
@@ -60,8 +62,8 @@ class Transfers extends Component<TransfersProps, TransfersState> {
       return prev;
     }, []);
     getPlayerScoresFor([...new Set(ids)] as number[])
-      .then(points => { loading = false; onUpdateIsLoadingData(false); this.setState<'playerPoints'>({ playerPoints: points }); })
-      .catch(() => { onUpdateIsLoadingData(false); loading = false; });
+      .then(points => { loading = false; onUpdateIsLoadingData(false); this.setState({ playerPoints: points }); })
+      .catch(error => { onUpdateIsLoadingData(false); loading = false; this.setState({ fetchError: error.message }); });
   }
 
   componentDidMount(): void {
@@ -86,8 +88,8 @@ class Transfers extends Component<TransfersProps, TransfersState> {
     const transfers = dataz[teamId][roundId]?.transfers || [];
 
     const rows = transfers.map((t: [number, number, string]) => {
-      const pIn  = (pp[t[0]].find((s: any) => s.round === round) || { total_points: 0 }).total_points;
-      const pOut = (pp[t[1]].find((s: any) => s.round === round) || { total_points: 0 }).total_points;
+      const pIn  = ((pp[t[0]] || []).find((s: any) => s.round === round) || { total_points: 0 }).total_points;
+      const pOut = ((pp[t[1]] || []).find((s: any) => s.round === round) || { total_points: 0 }).total_points;
       totalIn  += pIn;
       totalOut += pOut;
       const diff = pIn - pOut;
@@ -133,6 +135,7 @@ class Transfers extends Component<TransfersProps, TransfersState> {
 
   render() {
     const { currentRound, managerIds, isCurrentRoundFinished } = this.props;
+    const { fetchError } = this.state;
     const chosenRound = this.getSelectedRound();
     return (
       <div className="w-full max-w-2xl px-4">
@@ -148,7 +151,15 @@ class Transfers extends Component<TransfersProps, TransfersState> {
           (Alle poeng for total differanse inkluderer potensielle minuspoeng for hits)
         </p>
 
-        {managerIds.map(teamId => this.transfersForTeamAndRound(teamId, chosenRound))}
+        {fetchError && (
+          <div className="text-center py-10 text-red-500 text-sm">
+            Feilet i innhenting av spillerpoeng fra Fantasy Premier League
+            <br />
+            <span className="text-xs text-gray-400">{fetchError}</span>
+          </div>
+        )}
+
+        {!fetchError && managerIds.map(teamId => this.transfersForTeamAndRound(teamId, chosenRound))}
       </div>
     );
   }
